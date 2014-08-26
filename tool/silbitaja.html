@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>Teksti silbitaja</title>
+		
+		<link rel="stylesheet" type="text/css" href="silbitaja.css" class="votasee">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="EKIToolkit.js" class="votasee"></script>
+		<script src="EKISyllModule.js" class="votasee"></script>
+		<script src="silbitaja.js" class="votasee"></script>
+	</head>
+
+<body>
+
+<div id="page_content">
+    <h1 id="bigword"><a href="http://artur.eki.ee/morf/">Teksti silbitaja</a></h1>
+    <div class="box">Silbitaja leiab sisestatud teksti sõnavormides kõik võimalikud silbituskohad. Silbitamisreeglid kehtivad üldiselt ka sõnavormide poolitamisel, kuid ühe kitsendusega: üksiktähte ei jäeta üksinda rea lõppu ega kanta üle järgmise rea algusse. Liitsõnade poolitamisel eelistatakse liitsõna osade piiri kohta.<br><br>
+Väljundis on mitme silbitusvariandiga sõnavormid alla joonitud. Klikkides saab valida nendest sobiva variandi. 
+<br></div>
+    <div id="usertext" contenteditable="true">Elu nimel lunite,<br>
+    Moene minimaal-aam.<br>
+    Inimene, ometi<br>
+nulle minule.</div>
+<input type="submit" name="analyze" value="Silbita">
+<div id="analyzedtext" contenteditable="false"></div>
+</div>
+
+</body></html>

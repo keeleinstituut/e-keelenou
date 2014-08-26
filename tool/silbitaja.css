@@ -1,0 +1,56 @@
+#usertext {
+    x-background-color: lightblue;
+    border: 1px solid black;
+    min-height: 1em;
+    max-height: 200px;
+    overflow: auto;
+}
+#analyzedtext {font-size: 14px;}
+
+.Vaste {display: none;}
+.Lemma {font-size: 16px; font-style: italic;}
+.Tyvi {/*display: none;*/}
+.Vorm {font-variant: small-caps;}
+.Tyyp {font-variant: small-caps;}
+
+.morphToken span {
+    font-size: 24px;
+    /*font-weight: 500;*/
+    display: block;
+}
+.morphRow:nth-child(even) {
+    background: gray;
+}
+.morphRow:nth-child(odd) {
+    background: lightblue;
+}
+.morphToken {
+    font-size: 22px;
+    text-align: center;
+    vertical-align: top;
+}
+.morphToken:nth-child(odd) {
+    background: lightgray;
+}
+.morphAnalysis span {
+    /*display: block;*/
+    margin-left: 2cm;
+}
+.morphAnalysis td {
+    font-size: 24px;
+}
+td {
+    border: 1px solid black;
+}
+.menu {
+    position: absolute;
+    border: 1px solid black;
+    background: white;
+    text-decoration: underline;
+    color: blue;
+}
+.multiple {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>e-keelenõu</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+
+        <!--script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js'></script-->
+        <script type='text/javascript' src='../lib/jquery.js'></script>
+
+        <script type='text/javascript' src='../lib/knockout-3.0.0.js'></script>
+        <!--
+        <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout.js'></script>
+        <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js'></script>
+        <script type='text/javascript' src='//rawgithub.com/SteveSanderson/knockout.mapping/master/build/output/knockout.mapping-latest.js'></script>
+        <script src="/js/jquery.form.js"></script> 
+        <script type='text/javascript' src='lib/shim.js'></script>
+        -->
+        <link rel="stylesheet" href="../css/style.css" />
+		
+        <script class="votasee" src="../lib/jquery-ui-1.10.3.custom.min.js"></script>
+        <script src="../lib/jquery.iecors.js" async></script>
+		
+		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.js'></script>
+        <link class="votasee" rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.css" />
+
+        <link rel="stylesheet" type="text/css" href="../css/ressursid.css" />
+        <link rel="stylesheet" type="text/css" href="../css/cleanstickyfooter.css" media="screen" charset="utf-8" />
+        
+        <script type='text/javascript' src="../lib/myshim.js"></script>
+        <script type='text/javascript' src='../lib/harray.js'></script>
+        <script type='text/javascript' src='../lib/dictarr.js'></script>
+
+        <script type='text/javascript' src='../app.js'></script>
+		<script type='text/javascript' src="../lib/javascript.js"></script>
+
+        <script src="../history.js/scripts/bundled-uncompressed/html4+html5/jquery.history.js"></script>
+        <script src="../lib/URI.js"></script>
+        <script src="../lib/Autolinker.min.js"></script>
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+        <link href='../gr/css/fontello.css' rel='stylesheet' type='text/css'>
+
+        <style>
+            .info {
+                font-size: smaller;
+                border: 1px solid white;
+                /*float: right;*/
+            }
+        </style>
+
+        <script>
+        $(function() {
+
+            var defaultTitle = 'e-keelenõu';
+            var makeTitle = function(q) {return  q + ' [' + defaultTitle + ']';}
+
+            app = new App();
+
+            //otsingu k2itumine
+            app.queryText = ko.observable();
+            app.searching = ko.observable(0);
+
+
+            // Bind to StateChange Event
+            History.Adapter.bind(window, 'statechange', function() {
+                var state = History.getState();
+
+                dbg('statechange:', state);
+                var data = state.data;
+                var q = data.Q;
+                app.queryText(q);
+                app.plainSearch(q);
+            });
+
+            var currentQuery = '';
+            var createState = function(queryText) {
+                if (currentQuery !== queryText) {
+
+                    dbg('createState: ');
+                    var st = History.getState();
+                    dbg('old state: ', st);
+
+                    var url = new URI(st.url);
+                    url.query({ Q: queryText});
+                    dbg('url', url.toString())
+
+
+                    History.pushState( {'Q': queryText}, makeTitle(queryText),  url.toString());
+                    dbg('new state: ', History.getState());
+
+                    //currentQuery = queryText;
+                }
+            }
+            var replaceState = function(queryText) {
+                if (1) {
+
+                    dbg('replaceState: ');
+                    var st = History.getState();
+                    dbg('before replace state: ', st);
+
+                    var url = new URI(st.url);
+                    url.query({ Q: queryText});
+                    dbg('url', url.toString())
+
+
+                    History.replaceState( {'Q': queryText}, makeTitle(queryText),  url.toString());
+                    //kontroll, kas tegi searchi (m6nik ei tee, kui esimene historys)
+                    if (currentQuery !== queryText) {
+                        dbg('ei otsinud, otsime siis ise:', queryText) //ainult Chromes
+                        window.document.title = makeTitle(queryText);
+                        app.plainSearch(queryText);
+
+                    }
+                    dbg('after replace state: ', History.getState());
+
+                    //currentQuery = queryText;
+                }
+            }
+
+            app.plainSearch = function(queryStr) {
+                var summq = new SW();
+                app.searching(1);
+                currentQuery = queryStr;
+
+                var p = this.qm.searchAll(queryStr);
+                $('#Q').select();
+
+                p.then(function () {
+                    app.searching(0);
+                    console.log('kogu päring ' + summq.get() + "ms");
+                    //call was this helpful
+
+                    //$(".social-buttons, #preloader").fadeOut("slow", function(){$("#poscontainer").fadeIn("slow");});
+                    //$(".info, .social-buttons").fadeOut("slow", function(){$("#page_content").fadeIn("slow");});
+
+                });
+
+            }
+
+            var onFirstSearch = function() {
+                $('#start_content, .mobile-text').hide();
+                $('#page_content').show();
+            }
+
+            //las tegeleb ainult otsimsega, ilma state'idest midagi teadmata.
+            app.formSearch = function () { //ko annab parameetriks kaasa [object HTMLFormElement]
+
+                //on first call of search() do additional tasks:
+                onFirstSearch();
+
+                app.formSearch = function () {
+                    var q1 = app.queryText();
+                    var q = q1.trim();
+                    if (q !== q1) {app.queryText(q);}
+                    createState(q);
+                }
+
+                //call actual function
+                app.formSearch();
+
+            }
+
+
+            ko.applyBindings(app);
+            $('#Q').focus();
+
+
+            /*
+            var q = app.getUrlParams('Q');
+            if (q) {
+                //defaultQuery = q;
+                app.queryText(q);
+                app.plainSearch(q);
+            }
+            */
+            var uri = new URI(window.location.search);
+            if (uri.hasQuery("Q")) {
+                var q = uri.search(true)['Q'];
+                app.queryText(q);
+                //app.plainSearch(q);
+
+                onFirstSearch();
+                replaceState(q);
+            }
+
+
+
+            var addRGSources = function() {
+
+                $.each(app.resultCategories, function( cid, o ) {
+                    var src_names = '';
+
+                    for (var rgk=0; rgk < o.grps.length; rgk++) { //iga RG-ga
+                        var rgdo = o.grps[rgk]; //RG descr obj
+
+                        for (var k=0; k < rgdo.res.length; k++) { //iga Src-ga
+                            var src_id = rgdo.res[k];
+                            var sdo = app.sources[src_id]; //src descr obj
+                            src_names += '<div>'+ sdo.name +'</div>'
+                        }
+                    }
+
+                    var $header = $('#' + cid + " h2");
+                    //$header.append('<span class="info" href="#"> i</span>' + '<div class="popup">'+ src_names +'</div>');
+                    $header.append('<div class="popup">'+ src_names +'</div>');
+                    $header.mouseenter(function(){
+                        $(this).children(".popup").fadeIn("slow");
+                    });
+                    $header.mouseleave(function(){
+                        $(this).children(".popup").fadeOut("slow");
+                    });
+                });
+
+            };
+            addRGSources();
+
+
+
+
+
+            //s6na tyybi infomulli tekitamine ===================================
+            //qtips = [];
+            app.onTyypLink(function($a, html, res) {
+                //$a - <a> lingi element jquery objektina.
+                //html - tyybi mulli sisu
+                //res - ressursi id ('qs' v6i 'def')
+                //tyyp - tyybi nr
+
+                var qt = $a.qtip({
+                    overwrite: false, // Make sure the tooltip won't be overridden once created
+                    content: {
+                        text: function(event, api) {
+
+                            //api.set('content.text', html);
+                            //return 'Laeb...';
+                            return html;
+                        }
+                    },
+                    hide: {
+                        fixed: true,
+                        delay: 300
+                    },
+                    events: {
+
+                        render: function(event, api) {
+                            // Grab the tooltip element from the API elements object
+                            //var tooltip = api.elements.tooltip;
+                            var $c = api.elements.content;
+                            //dbg('tooltip content:', $c)
+                            //dbg('$c.get(0)', $c.get(0))
+                            //dbg('$c.get(0)', $c.get(0))
+                            //var div = $c.get(0);
+                            //dbg(div)
+                            //var $as = $(div).find('div');
+                            //var $as = $div.find('a')
+
+                            //var $as = $c.find('a')
+
+                            setTimeout(function() {
+                                var $as = $c.find('a[href]');
+                                $as.each(function() {
+                                    var $tyyp_a = $(this);
+                                    var fragm_id = $tyyp_a.attr('href');
+                                    dbg(fragm_id)
+                                    app.doTyypTip($tyyp_a, res, fragm_id);
+                                })
+                            }, 10);
+
+
+                            //dbg('tooltip rendered:', tooltip);
+
+                        }
+
+                    }
+                });
+                //dbg('qtip', qt);
+                //qtips.push(qt);
+
+            });
+
+            //===================================================================
+
+        });
+
+
+			function animate(e){
+				var maxHeight = $(e).next(".boxContent").height()+60;
+				var eHeight = $(e).parent(".box").height();
+				var width = $(document).width();
+				if(width < "1080"){
+					console.log($(e).parent().attr("class"));
+					if(eHeight == "26"){
+						$(".box").animate({
+							height: "26px"
+						}, 400);
+						$(e).parent(".box").animate({
+							height: maxHeight
+						}, 600);
+					}else{
+						$(e).parent(".box").animate({
+							height: "26px"
+						}, 600);
+					}
+				}
+			}
+
+        </script>
+
+    </head>
+    <body>
+		<!--div id="preloader"> <div class="loader"></div> </div-->
+        <div id="wrapper">
+            <div id="content_wrapper" data-bind="with: app"> 
+                <div id="content_inner_wrapper">
+					<div id="header">
+						<div class="logo-wrapper">
+							<div class="logo">
+								<a href="http://keelenou.tk/"><img src="/gr/logo/logo_eki.gif"/></a>
+							</div>	
+							<a class="social opacity" style="clear: both; margin-right:0;"
+                               title="Soovita seda Facebookis"
+                               onclick="return !window.open(this.href, 'Facebook', 'width=550,height=320')"
+                               href="https://www.facebook.com/sharer/sharer.php?u=kn.eki.ee"
+                               target="_blank"><img src="/gr/facebook.png" alt="Facebook"/></a>
+                            <a class="social opacity"
+                               title="Säutsu sellest Twitteris"
+                               onclick="return !window.open(this.href, 'Twitter', 'width=550,height=420')"
+                               href="https://twitter.com/intent/tweet?text=e-keelenõu&url=kn.eki.ee"
+                               target="_blank"><img src="/gr/twitter.png" alt="twitter"/></a>
+							<a class="social opacity"
+                               href="mailto:?subject=e-keelenõu%20portaal&body=Vaata%20%C3%BCle%20http%3A%2F%2Fkn.eki.ee%2F"
+                               title="Soovita e-postiga"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
+						</div>
+						<div class="mobile-text">Ühispäring keeleinfot sisaldavatest allikatest</div>
+						<ul id="top-bar">
+							<li class="tools"><a href="#">Keeletööriistad</a>
+								<ul class="submenu">
+									<li><a href="/tool/morfoloogia.html">Morfoloogiline analüüs</a></li>
+									<li><a href="#">Morfoloogiline süntees</a></li>
+									<li><a href="#">Lemmatiseerimine</a></li>
+									<li><a href="/tool/vältetuvastus.html">Vältetuvastus</a></li>
+									<li><a href="#">Tüübituvastus</a></li>
+									<li><a href="/tool/silbitaja.html">Silbitus</a></li>
+									<li><a href="/tool/lausestaja.html">Lausestamine</a></li>
+									<li><a href="/tool/emo.html">Emotsioonidetektor</a></li>
+									<li><a href="/tool/speech.html">Kõnesüntees</a></li>
+                                    <li><a href="/tool/sonastik.html">Oma sõnastik</a></li>
+								</ul>
+							</li>
+							<li style="display: none;" class="sisene"><a href="#">Sisene</a>
+								<div class="submenu">
+									<div id="login">
+										<strong>Logi sisse kasutajaga</strong>
+										<input onblur="if (this.value == '') {this.value = 'Kasutajanimi';}" onfocus="if (this.value == 'Kasutajanimi') {this.value = '';}" name="login" type="text" value="Kasutajanimi"/>
+										<input onblur="if (this.value == '') {this.value = 'Parool';}" onfocus="if (this.value == 'Parool') {this.value = '';}" name="password" type="text" value="Parool" />
+										<a href="#" class="top_10">Registreeru</a>
+										<a href="#">Unustasin parooli</a>
+										<input type="button" value="Logi sisse"/>
+										<div style="clear:both;"></div>
+									</div>
+									<div id="social-login">
+										<strong>Kasuta sisselogimiseks</strong>
+										<a href="#" class="facebook-login opacity"></a>
+										<a href="#" class="goolge-login opacity"></a>
+										<a href="#" class="twitter-login opacity"></a>
+										<a href="#" class="id-login opacity"></a>
+									</div>
+								</div>
+							</li>
+                            <li class="tools"><a href="#">E-keelenõust</a>
+                                <ul class="submenu">
+                                    <li><a href="/lisainfo/keelenoust.html">Keelenõust</a></li>
+                                    <li><a href="/lisainfo/allikad.html">Allikate kirjeldus</a></li>
+                                    <li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
+                                    <li><a href="/lisainfo/rakendusliidesed.html">Rakendusliidesed</a></li>
+                                    <li><a href="#">Statistika</a></li>
+                                    <li><a href="/lisainfo/kasutustingimused.html">Kasutustingimused</a></li>
+                                </ul>
+                            </li>
+                            <!--<li><a href="keelenoust.html">E-keelenõust</a></li> -->
+
+						</ul>
+						<form data-bind="submit: formSearch" id="paring" class="topBar">
+							<input data-bind="value: queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" autofocus="" />
+							<input data-bind="style: { border: searching() ? '2px solid #ff6000' : ''}" id="otsi" value=""
+                                   type="submit" /><div data-bind="'if': searching" style="float: left; margin-top: 25px"
+                                ><img src="gr/loading-spinner.gif"></div>
+						</form>
+						<div class="social-buttons">
+							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
+							<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
+							<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
+						</div>
+						<div id="menu-wrapper">
+							<ul id="menu">
+								<li><a href="#qs">ÕSi vasted</a></li>
+								<li><a href="#def">EKKS seletused</a></li>
+								<li><a href="#ekkr">Käsiraamat</a></li>
+								<li><a href="#trans_en">Inglise vasted</a></li>
+								<li><a href="#trans_ru">Vene vasted</a></li>
+								<li><a href="#knab">Kohanimed</a></li>
+								<li><a href="#syn">Sünonüümid</a></li>
+								<li><a href="#sugg">Soovitused</a></li> 
+							</ul>
+						</div>
+
+					
+					</div>
+
+                    <div style="clear: both;"></div>
+
+                    <div id="page_content">
+                    
+                    <script>
+
+            jQuery(document).ready(function () {
+                var kuula_id = '';
+                var kuula_tekst = '';
+                var kuula_haal = '';
+                var kuula_meetod = '';
+                var kuula_haalenr = -1;
+                var faililingid = 0;
+                //IHein
+                jQuery('#nuppkuula').bind("click", function (e) {
+                    e.preventDefault();
+                    faililingid = 1;
+                    jQuery('#synttulemus').hide();
+                    kuula_tekst = jQuery('#kuulatekst').val();
+                    kuula_haalenr = jQuery('input[name="v"]:checked', '#kuulavorm').val();
+                    tee_audio(kuula_haalenr, kuula_tekst);
+                    jQuery('#synttulemus').show();
+                });
+
+                //IHein
+                function tee_audio(n, t) {
+                    jQuery.post(
+                            "http://heli.eki.ee/koduleht/kiisu/koduleht.php",
+                            { v: n, speech: t },
+                            function (data) {
+                                failidvalmis(data);
+                            },
+                            "json"
+                    );
+                }
+
+                //IHein
+                function failidvalmis(jsonvastus) {
+
+                    $("audio").remove();
+
+                    if (faililingid == 1) {
+                        syntfn = 'http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.wav;
+                        jQuery('#syntwav').attr('href', syntfn + '.wav');
+                        jQuery('#syntmp3').attr('href', syntfn + '.mp3');
+                    }
+                    sourcewav = '<source type="audio/x-wav" src="http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.wav + '.wav" />';
+                    sourcemp3 = '<source type="audio/mpeg" src="http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.mp3 + '.mp3" />';
+                    uusaudio = jQuery('<audio>' + sourcewav + sourcemp3 + '</audio>');
+
+                    jQuery('#playerplaceholder').append(uusaudio);
+
+                    uusaudioid = jsonvastus.mp3;
+                    uusaudio.attr('id', uusaudioid);
+                    uusaudio.attr('autoplay', 'true');
+                    uusaudio.attr('controls', 'controls'); // player nähtavaks
+                }
+
+            });
+
+        </script>
+                    
+        <h1 id="bigword"><a href="http://heli.eki.ee/koduleht/">Eestikeelne kõnesüntees</a></h1>
+                        <div style="margin: 16px 0;  padding: 0 0 15px 0;  font-size: 13px;">Tekst-kõne süntees on inimlugemise analoogiks. Arvutil imiteeritava lugemisprotsessi sisendiks on digitaalne tekst, mida töödeldakse lingvistiliselt. Järgnevad sünteesimeetodist sõltuvad etapid, mille tulemusena luuakse kõne.</div>
+
+                            <form method="post" id="kuulavorm" style="margin-top:2em">
+                                <div style="padding: 10px; background-color: #DAEAF4;">
+                                   
+                                        <textarea name="speech" style="height: 120px; width: 80%;"
+                                                  id="kuulatekst">Suusapõhjad olid hülgeid täis, pidamisalal vastukarva. Need nurrusid tõusudel.</textarea>
+                                
+                                    <table style="">
+                                        <tr>
+                                            <td><strong>Üksuste valik:</strong></td>
+                                            <td><strong>HTS:</strong></td>
+                                            <td><strong>muud:</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="radio" name="v" value="1">liisi<br/>
+                                                <input type="radio" name="v" value="2">riina<br/>
+                                                <input type="radio" name="v" value="3">tõnu<br/>
+                                                <input type="radio" name="v" value="12">eva<br/>
+                                                <input type="radio" name="v" value="4">liisi_cg
+                                            </td>
+                                            <td>  
+                                                <input type="radio" name="v" value="5">riina<br/>
+                                                <input type="radio" name="v" value="6" checked="checked">tõnu<br/>
+                                                <input type="radio" name="v" value="7">liisi<br/>
+                                                <input type="radio" name="v" value="11">eva<br/>
+                                                <input type="radio" name="v" value="8">luukas (lapsehääl)<br/>
+                                                <input type="radio" name="v" value="9">einar (adaptiivne)
+                                            </td>
+                                            <td>
+                                                <input type="radio" name="v" value="10"> espeak<br/>
+                                                <input type="radio" name="v" value="98"> mbrola (espeak'i kaudu)
+                                            </td>
+                                        </tr>
+                                    </table> 
+                                        
+                                    <div id="playerplaceholder"></div>
+              
+                                    <div style="padding: 6px; text-align: center;">
+                                        <input type="button" id="nuppkuula" value="Kuula">
+                                    </div>
+
+                                    <div style="padding: 6px; text-align: center; display: none;" id="synttulemus">
+                                        <a href="/koduleht/link" id="syntwav">WAV</a>
+                                        <a href="/koduleht/link" id="syntmp3">MP3</a>
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                        
+                    </div>
+
+
+                    
+                </div>
+            </div>
+			<div id="tagasiside" class="opacity form-button"></div>
+			<div id="language" class="opacity form-button"></div>
+			<div class="tagasiside">
+				<div id="feedback">
+					<div id="feedback-form">
+						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
+						<form action="" method="">
+							<div class="left small">
+								<label for="nimi">Nimi</label>
+								<input type="text" name="nimi">
+							</div>
+							<div class="left small">
+								<label for="email">E-mail</label>
+								<input type="email" name="email">
+							</div>
+							<div class="left big">
+								<label for="teema">Teema</label>
+								<input type="text" name="teema">
+							</div>
+							<div>
+								<label for="comment">Küsimus või kommentaar</label>
+								<textarea name="comment"></textarea>
+							</div>
+							<div id="spam-control">
+								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
+							</div>
+							<div id="feedback-footer">
+								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
+								<input class="send" type="button" value="Saada" name="saada"/>
+							</div>
+						</form>
+					</div>
+					<div class="close opacity"></div>
+				</div>
+			</div>
+			<div class="language">
+				<div id="feedback">
+					<div id="feedback-form">
+						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
+						<form action="" method="">
+							<div class="left small">
+								<label for="nimi">Nimi</label>
+								<input type="text" name="nimi">
+							</div>
+							<div class="left small">
+								<label for="email">E-mail</label>
+								<input type="email" name="email">
+							</div>
+							<div class="left big">
+								<label for="teema">Teema</label>
+								<input type="text" name="teema">
+							</div>
+							<div>
+								<label for="comment">Küsimus või kommentaar</label>
+								<textarea name="comment"></textarea>
+							</div>
+							<div id="spam-control">
+								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
+							</div>
+							<div id="feedback-footer">
+								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
+								<input class="send" type="button" value="Saada" name="saada"/>
+							</div>
+						</form>
+					</div>
+					<div class="close opacity"></div>
+				</div>
+			</div>
+			<div id="full-screen"></div>
+			<div style="clear:both"></div>
+			<div id="page-up"></div> 
+        </div> 
+        
+        <div id="footer_wrapper"> 
+            <div id="footer_inner_wrapper">
+				<div id="footer">
+					<div id="footer_l">
+						<div id="footer_r">
+							<p id="syndicate">
+                                <a href="http://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
+								Roosikrantsi 6, 10119 Tallinn.
+							</p>
+							<p id="power_by">
+								E-post: <a href="mailto:eki@eki.ee">eki@eki.ee</a><br/>
+								tel: 6177500
+							</p>
+						</div>
+					</div>
+				</div>
+            </div>
+			<div style="clear:both"></div>
+        </div> 
+
+
+        
+    </body>
+</html>

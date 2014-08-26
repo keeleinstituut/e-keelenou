@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Emotsioonidetektor [e-keelenõu]</title>
+
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/cleanstickyfooter.css">
+	<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
+    <script type='text/javascript' src="../lib/javascript.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+
+    <script class="votasee" type="text/javascript">
+
+        $(function() {
+            var $f = $('#frm').submit(function(event) {
+
+                // Get some values from elements on the page:
+                var $form = $( this ),
+                        $text = $form.find( "#text" ),
+                        txt = $text.val(),
+                        url = $form.attr( "action" );
+
+                // Send the data using post
+                var posting = $.post( url, { 'text': txt } );
+
+                // Put the results in a div
+                posting.done(function( data ) {
+                    var $data = $( data )
+                    //console.log('$data:', $data)
+                    //var content = $data.filter( "#body" );//ei t88ta
+                    //var content = $data[13]; //t88tab
+                    //var content = $data.filter( "div#content" ); //t88tab
+                    //var content = $data.find( "div#content" ); //ei t88ta
+                    //var content = $data.filter( "div#content").find(':not(h5,div.buttons)'); //jama
+                    var $content = $data.filter( "div#content" );
+                    $content.find('h5').remove();
+                    $content.find('div.buttons').remove();
+                    //console.log('content:', $content)
+                    $( "#result" ).empty().append( $content );
+                    $( "#response" ).show();
+                    $( "#form" ).hide();
+
+                });
+
+                event.preventDefault();
+            });
+
+            $('#text').focus();
+
+            $('#tagasi').click(function() {
+                $( "#response").hide();
+                $('#form').show();
+            })
+        })
+
+
+
+    </script>
+</head>
+<body id="body" class="emo">
+<noscript>
+<div style="font-weight:bold;color:red; padding: 50px 50px;">Please enable JavaScript.</div>
+</noscript>
+	<div id="wrapper">
+            <div id="content_wrapper" data-bind="with: app"> 
+                <div id="content_inner_wrapper">
+					<div id="header">
+						<div class="logo-wrapper">
+							<div class="logo">
+								<a href="http://www.eki.ee/"><img src="/gr/logo/logo_eki.gif"/></a>
+							</div>	
+							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
+							<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
+							<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
+						</div>
+						<ul id="top-bar">
+							<li class="tools"><a href="#">Keeletööriistad</a>
+								<ul class="submenu">
+									<li><a href="/tool/morfanal.html">Morfoloogiline analüüs</a></li>
+									<li><a href="#">Morfoloogiline süntees</a></li>
+									<li><a href="#">Lemmatiseerimine</a></li>
+									<li><a href="#">Vältetuvastus</a></li>
+									<li><a href="#">Tüübituvastus</a></li>
+									<li><a href="#">Silbitus</a></li>
+									<li><a href="#">Lausestamine</a></li>
+									<li><a href="/tool/emo.html">Emotsioonidetektor</a></li>
+									<li><a href="#">Kõnesüntees</a></li>
+								</ul>
+							</li>
+							<li class="sisene"><a href="#">Sisene</a>
+								<div class="submenu">
+									<div id="login">
+										<strong>Logi sisse kasutajaga</strong>
+										<input onblur="if (this.value == '') {this.value = 'Kasutajanimi';}" onfocus="if (this.value == 'Kasutajanimi') {this.value = '';}" name="login" type="text" value="Kasutajanimi"/>
+										<input onblur="if (this.value == '') {this.value = 'Parool';}" onfocus="if (this.value == 'Parool') {this.value = '';}" name="password" type="text" value="Parool" />
+										<a href="#" class="top_10">Registreeru</a>
+										<a href="#">Unustasin parooli</a>
+										<input type="button" value="Logi sisse"/>
+										<div style="clear:both;"></div>
+									</div>
+									<div id="social-login">
+										<strong>Kasuta sisselogimiseks</strong>
+										<a href="#" class="facebook-login opacity"></a>
+										<a href="#" class="goolge-login opacity"></a>
+										<a href="#" class="twitter-login opacity"></a>
+										<a href="#" class="id-login opacity"></a>
+									</div>
+								</div>
+							</li>
+						</ul>
+						<form data-bind="submit: search" id="paring" class="topBar left">
+							<input data-bind="value: queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" autofocus="" />
+							<input data-bind="" id="otsi" value="" type="submit" />
+						</form>
+						<div id="menu-wrapper">
+							<ul id="menu">
+								<li><a href="#qs">ÕSi vasted</a></li>
+								<li><a href="#def">EKKS seletused</a></li>
+								<li><a href="#ekkr">Käsiraamat</a></li>
+								<li><a href="#trans_en">Inglise vasted</a></li>
+								<li><a href="#trans_ru">Vene vasted</a></li>
+								<li><a href="#knab">Kohanimed</a></li>
+								<li><a href="#syn">Sünonüümid</a></li>
+								<li><a href="#sugg">Soovitused</a></li>  
+							</ul>
+						</div>
+					</div>
+                    <div style="clear: both;"></div>
+                    <div id="page_content">
+                        <div id="content"><h1 id="bigword"><a href="http://peeter.eki.ee:5000/valence">Emotsioonidetektor</a> <span style="font-size:80%;color:gray">v0.9</span></h1>
+						<div class="box">Emotsioonidetektor on Eesti Keele Instituudis riikliku programmi "Eesti keeletehnoloogia 2011-2017"
+						projekti "Kõne ja teksti emotsionaalsuse statistilised mudelid" raames loodav vahend kirjaliku teksti lõikude positiivsuse, negatiivsuse ja neutraalsuse tuvastamiseks.</div>
+						<div id="form" style="margin-top:2em">
+							<form id="frm" method="POST" action="http://keelenou.tk/nxpx/peeter/valence/color" accept-charset="UTF-8" >
+								<label style="display:none;" for="text" class="boxHead"><h2>Kopeeri tekst siia:</h2></label>
+        							<textarea id="text"  name="text" cols="82" rows="16" >Emotsioonituvastus toimib efektiivsemalt tekstilõigul. See tähendab, et soovitatav on analüüsimiseks sisestada rohkem teksti kui lause või paar.&#10;&#10;
+        							</textarea>
+        							<!--  NB! Nupule "Näita" vajutamise järel suunatakse Teid emotsioonidetektori kodulehele, et kuvada kogu funktsionaalsus.-->
+
+								<div class="buttons">
+									<input type="submit" value="N&auml;ita">
+								</div>
+							</form>
+						</div>
+
+						<div id="response" style="display: none">
+							<div id="result"></div>
+							<input value="Tagasi" type="button" id="tagasi"/>
+						</div>
+					</div>
+                    </div>
+                </div>
+            </div>
+            <div id="tagasiside" class="opacity form-button"></div>
+			<div id="language" class="opacity form-button"></div>
+			<div class="tagasiside">
+				<div id="feedback">
+					<div id="feedback-form">
+						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
+						<form action="" method="">
+							<div class="left small">
+								<label for="nimi">Nimi</label>
+								<input type="text" name="nimi">
+							</div>
+							<div class="left small">
+								<label for="email">E-mail</label>
+								<input type="email" name="email">
+							</div>
+							<div class="left big">
+								<label for="teema">Teema</label>
+								<input type="text" name="teema">
+							</div>
+							<div>
+								<label for="comment">Küsimus või kommentaar</label>
+								<textarea name="comment"></textarea>
+							</div>
+							<div id="spam-control">
+								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
+							</div>
+							<div id="feedback-footer">
+								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
+								<input class="send" type="button" value="Saada" name="saada"/>
+							</div>
+						</form>
+					</div>
+					<div class="close opacity"></div>
+				</div>
+			</div>
+			<div class="language">
+				<div id="feedback">
+					<div id="feedback-form">
+						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
+						<form action="" method="">
+							<div class="left small">
+								<label for="nimi">Nimi</label>
+								<input type="text" name="nimi">
+							</div>
+							<div class="left small">
+								<label for="email">E-mail</label>
+								<input type="email" name="email">
+							</div>
+							<div class="left big">
+								<label for="teema">Teema</label>
+								<input type="text" name="teema">
+							</div>
+							<div>
+								<label for="comment">Küsimus või kommentaar</label>
+								<textarea name="comment"></textarea>
+							</div>
+							<div id="spam-control">
+								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
+							</div>
+							<div id="feedback-footer">
+								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
+								<input class="send" type="button" value="Saada" name="saada"/>
+							</div>
+						</form>
+					</div>
+					<div class="close opacity"></div>
+				</div>
+			</div>
+			<div id="full-screen"></div>
+			<div id="page-up"></div> 
+        </div> 
+        
+        <div id="footer_wrapper"> 
+            <div id="footer_inner_wrapper">
+				<div id="footer">
+					<div id="footer_l">
+						<div id="footer_r">
+							<p id="syndicate">
+								Eesti Keele Instituut
+							</p>
+							<p id="power_by">
+								Roosikrantsi 6, 10119 Tallinn. <span>  |  </span> E-post: <a href="mailto:eki@eki.ee">eki@eki.ee</a> <span>  |  </span> tel: 6177500
+							</p>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div> 
+</body>
+</html>

@@ -1,0 +1,36 @@
+/* yldine stiilileht k6ikidele keelet88riistadele */
+
+.tool #usertext,
+textarea#text {
+    margin: 0 0 10px;
+	width: 98%;
+	padding: 10px;
+    border: 1px solid #9abbda;
+    min-height: 100px;
+    max-height: 400px;
+    overflow: auto;
+	color: #666666;
+	font-size: 14px;
+	font-family: 'Open Sans', sans-serif;
+}
+
+@media (max-width: 780px) {
+    .tool #usertext {
+        margin: 30px 20px 0;
+        max-width: 95%;
+
+        border: 1px solid black;
+        min-height: 60px;
+        max-height: 100px;
+        overflow: auto;
+    }
+}
+
+.tool #poscol1 {
+    clear: both;
+    float:none;
+    width: 100%;
+    background: #ededed;
+}
+
+.tool #menu-wrapper {display:none;}

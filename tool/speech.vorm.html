@@ -1,0 +1,108 @@
+<script>
+
+        jQuery(document).ready(function () {
+        var kuula_id = '';
+        var kuula_tekst = '';
+        var kuula_haal = '';
+        var kuula_meetod = '';
+        var kuula_haalenr = -1;
+        var faililingid = 0;
+        //IHein
+        jQuery('#nuppkuula').bind("click", function (e) {
+            e.preventDefault();
+            faililingid = 1;
+            jQuery('#synttulemus').hide();
+            kuula_tekst = jQuery('#kuulatekst').val();
+            kuula_haalenr = jQuery('input[name="v"]:checked', '#kuulavorm').val();
+            tee_audio(kuula_haalenr, kuula_tekst);
+            jQuery('#synttulemus').show();
+        });
+
+        //IHein
+        function tee_audio(n, t) {
+            jQuery.post(
+                    "http://heli.eki.ee/koduleht/kiisu/koduleht.php",
+                    { v: n, speech: t },
+                    function (data) {
+                        failidvalmis(data);
+                    },
+                    "json"
+            );
+        }
+
+        //IHein
+        function failidvalmis(jsonvastus) {
+
+            $("audio").remove();
+
+            if (faililingid == 1) {
+                syntfn = 'http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.wav;
+                jQuery('#syntwav').attr('href', syntfn + '.wav');
+                jQuery('#syntmp3').attr('href', syntfn + '.mp3');
+            }
+            sourcewav = '<source type="audio/x-wav" src="http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.wav + '.wav" />';
+            sourcemp3 = '<source type="audio/mpeg" src="http://heli.eki.ee/koduleht/kiisu/synteesitudtekstid/' + jsonvastus.mp3 + '.mp3" />';
+            uusaudio = jQuery('<audio>' + sourcewav + sourcemp3 + '</audio>');
+
+            jQuery('#playerplaceholder').append(uusaudio);
+
+            uusaudioid = jsonvastus.mp3;
+            uusaudio.attr('id', uusaudioid);
+            uusaudio.attr('autoplay', 'true');
+            uusaudio.attr('controls', 'controls'); // player nähtavaks
+        }
+
+    });
+
+</script>
+<h1>Eestikeelne kõnesüntees</h1>
+<div id="info">Tegu on korpuspõhise kõnesünteesiga, mis vajab sünteesi akustiliseks baasiks kõnekorpust.<br><br></div>
+
+<form method="post" id="kuulavorm" style="margin-top:2em">
+    <div style="padding: 10px; background-color: #DAEAF4;">
+       
+            <textarea name="speech" style="height: 120px; width: 80%;" id="kuulatekst">Suusapõhjad olid hülgeid täis, pidamisalal vastukarva. Need nurrusid tõusudel.</textarea>
+    
+        <table style="">
+            <tbody><tr>
+                <td><strong>Üksuste valik:</strong></td>
+                <td><strong>HTS:</strong></td>
+                <td><strong>muud:</strong></td>
+            </tr>
+            <tr>
+                <td>
+                    <input name="v" value="1" type="radio">liisi<br>
+                    <input name="v" value="2" type="radio">riina<br>
+                    <input name="v" value="3" type="radio">tõnu<br>
+                    <input name="v" value="12" type="radio">eva<br>
+                    <input name="v" value="4" type="radio">liisi_cg
+                </td>
+                <td>  
+                    <input name="v" value="5" type="radio">riina<br>
+                    <input name="v" value="6" checked="checked" type="radio">tõnu<br>
+                    <input name="v" value="7" type="radio">liisi<br>
+                    <input name="v" value="11" type="radio">eva<br>
+                    <input name="v" value="8" type="radio">luukas (lapsehääl)<br>
+                    <input name="v" value="9" type="radio">einar (adaptiivne)
+                </td>
+                <td>
+                    <input name="v" value="10" type="radio"> espeak<br>
+                    <input name="v" value="98" type="radio"> mbrola (espeak'i kaudu)
+                </td>
+            </tr>
+        </tbody></table> 
+            
+        <div id="playerplaceholder"></div>
+
+        <div style="padding: 6px; text-align: center;">
+            <input id="nuppkuula" value="Kuula" type="button">
+        </div>
+
+        <div style="padding: 6px; text-align: center; display: none;" id="synttulemus">
+            <a href="/koduleht/link" id="syntwav">WAV</a>
+            <a href="/koduleht/link" id="syntmp3">MP3</a>
+        </div>
+    </div>
+</form>
+ 
+                    

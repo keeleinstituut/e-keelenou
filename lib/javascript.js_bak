@@ -1,0 +1,99 @@
+$(document).ready(function(){
+	$(".tools").mouseenter(function(){
+		$(this).children("ul").fadeIn("fast");
+	});
+	$('#menu a').click(function(){
+		$("#menu li").removeClass("current");
+		$(this).parent("li").addClass("current");
+		$('html, body').animate({
+			scrollTop: $( $.attr(this, 'href') ).offset().top-70
+		}, 500);
+		return false;
+	});
+	$("#page-up").click(function(){
+		$('html, body').animate({
+			scrollTop: $("html").offset().top
+		}, 500);
+		return false;
+	});
+	$(".tools").mouseenter(function(){
+		$(".sisene").children(".submenu").fadeOut("fast");
+	});
+	$(".tools .submenu").mouseleave(function(){
+		$(this).fadeOut("fast");
+	});
+	$("#header").mouseleave(function(){
+		$(".tools .submenu").fadeOut("fast");
+	});
+	var menu = $("#menu").offset().top;
+	$(window).scroll(function(){
+		var w = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+		var dokument = $(document).height();
+		var windowHeigh = $(window).height();
+		var bottom = dokument-w-windowHeigh;
+		if(menu < w){
+			$("#menu-wrapper").addClass("fixed");
+			$("#page-up").show();
+			if(bottom < "93"){
+				$("#page-up").css("bottom","93px");
+			}else{
+				$("#page-up").css("bottom","0");
+			}
+		}else{
+			$("#menu-wrapper").removeClass("fixed");
+			$("#page-up").hide();
+		}
+	});
+	$(".form-button").click(function(){
+		var id = $(this).attr("id");
+		console.log(id);
+		if($('.'+id).css("right") == "-520px"){
+			$('.'+id).animate({right: "0"}, 800);
+			$(this).animate({right: "520"}, 800);
+		$("#full-screen").fadeIn("slow");
+		}else{
+			$('.'+id).animate({right: "-520"}, 800);
+			$(this).animate({right: "0"}, 800);
+			$("#feedback").removeClass("shadow");
+			$("#full-screen").fadeOut("slow");
+		}
+	});
+	$("#feedback .close, #full-screen, .send").click(function(){
+		$(".tagasiside, .language").animate({right: "-520"}, 800);
+		$(".form-button").animate({right: "0"}, 800);
+		$("#full-screen").fadeOut("slow");
+	});
+	$(".sisene a").click(function(e){
+		e.preventDefault();
+		if($(".sisene .submenu").is(":hidden")){
+			$(".sisene").children(".submenu").fadeIn("fast");
+			$(".tools .submenu").fadeOut("fast");
+		}else{
+			$(".sisene .submenu").fadeOut("fast");
+		}
+	});
+	$("#page_content").click(function(){
+		if($(".sisene .submenu").is(":hidden")){
+			
+		}else{
+			$(".sisene .submenu").fadeOut("fast");
+		}
+	});
+	$("#sugg h2").append('<span class="info"><img src="/gr/white_info.png"/></span><div class="popup">Inglise-eesti sõnastik on valminud ja täieneb pidevalt hobi korras muu töö kõrvalt. Eesti keele instituut lubab selle sõnastiku materjali kasutada mis tahes otstarbel, kuid ei taga, et sõnastik vastab EKI kvaliteedistandardile. Nii mõnigi oluline sõna või tähendus võib puududa, nii mõnigi pakutud vaste võib erineda ÕS-i soovitustest ja sõnastik on ebaühtlane.</div>'); 
+	$("#trans_en h2").append('<span class="info" href="#"><img src="/gr/orange_info.png"/></span><div class="popup">Inglise-eesti sõnastik on valminud ja täieneb pidevalt hobi korras muu töö kõrvalt. Eesti keele instituut lubab selle sõnastiku materjali kasutada mis tahes otstarbel, kuid ei taga, et sõnastik vastab EKI kvaliteedistandardile. Nii mõnigi oluline sõna või tähendus võib puududa, nii mõnigi pakutud vaste võib erineda ÕS-i soovitustest ja sõnastik on ebaühtlane.</div>'); 
+	$(".info").mouseenter(function(){
+		$(this).next(".popup").fadeIn("slow");
+	});
+	$(".info").mouseleave(function(){
+		$(this).next(".popup").fadeOut("slow");
+	});
+	$("#otsi").click(function(){
+		$("#preloader").fadeIn("slow");
+	});
+	window.onresize = function() {
+		var width = $(document).width();
+		if( width > "1080"){
+			$("#poscol1 .box").height("auto");
+		}
+	};
+});

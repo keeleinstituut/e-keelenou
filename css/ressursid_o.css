@@ -1,0 +1,86 @@
+
+#ekss .tervikart {margin-top: 3px}
+#ekss .rasvane {font-weight:bold;}
+#ekss .atvw_i, .atvw_tnr, .atvw_rnr, .atvw_att {font-weight:bold;}
+#ekss .atvw_mvtl, .atvw_tvtl {font-size:x-small; text-transform:uppercase;}
+#ekss .etvw_m, .etvw_mm {font-weight:bold;}
+#ekss .etvw_v, .etvw_s, .etvw_sa {font-size:x-small; text-transform:uppercase;}
+#ekss .etvw_gki, .etvw_vk, .etvw_sl, .etvw_rk {font-family:'Arial Narrow'; font-size:smaller;}
+#ekss .etvw_ld, .etvw_n, .etvw_c {font-style:italic;}
+#ekss .etvw_kom {color:Blue;}
+#ekss .inf {font-size:smaller;}
+#ekss .artpart {background-color:#cfecec}
+#ekss .leitud_id {background-color:#b4d8e7}
+#ekss .leitud_ss {background-color:#ffaeae}
+
+#evs .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#evs .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#evs .tervikart {margin-top: 3px}
+#evs .rasvane {font-weight:bold;}
+#evs .mvtl, .atvw_mvtl {font-style:italic;}
+#evs .m, .etvw_m {font-weight:bold;}
+#evs .inf {font-size:smaller;}
+#evs .artpart {background-color:#cfecec}
+#evs .leitud_id {background-color:#ddf0ee}
+#evs .leitud_ss {background-color:#ffdddd}
+#evs .ptr {cursor:pointer}
+
+#ies .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#ies .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#ies .tervikart {margin-top: 3px}
+#ies .rasvane {font-weight:bold;}
+#ies .mvtl, .atvw_mvtl {font-style:italic;}
+#ies .m, .etvw_m {font-weight:bold;}
+#ies .inf {font-size:smaller;}
+#ies .artpart {background-color:#cfecec}
+#ies .leitud_id {background-color:#ddf0ee}
+#ies .leitud_ss {background-color:#ffdddd}
+#ies .ptr {cursor:pointer}
+
+#qs13 .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#qs13 .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
+#qs13 .tervikart {margin-top: 3px}
+#qs13 .rasvane {font-weight:bold;}
+#qs13 .atvw_l {font-style:italic;}
+#qs13 .atvw_i {font-weight:bold;}
+#qs13 .etvw_m {font-family: Arial;font-weight:bold;}
+#qs13 .etvw_et {font-size:x-small;}
+#qs13 .etvw_hld, .etvw_k, .etvw_k1, .etvw_k2, .etvw_sl, .etvw_t, .etvw_t1, .etvw_gki, .etvw_vk, .etvw_lvk, .etvw_evk, .etvw_svk, .etvw_qvk, .etvw_avk, .etvw_vtl {font-style:italic;}
+#qs13 .etvw_s, .etvw_s1, .etvw_s2, .etvw_v, .etvw_v1, .etvw_v2 {font-size:x-small;text-transform:uppercase;}
+#qs13 .etvw_kom {background-color:sandybrown;}
+#qs13 .inf {font-size:smaller;}
+#qs13 .lspool {background-color:#dddddd}
+#qs13 .lslisa {background-color:#eeeeee}
+#qs13 .artpart {background-color:#cfecec}
+#qs13 .leitud_id {background-color:#FFFF80}
+#qs13 .leitud_ss {background-color:#ffd700}
+#qs13 .niru { background-color: lightsalmon }
+#qs13 .halb { background-color: lightsalmon; font-size: smaller }
+#qs13 .etem, .hea { background-color: palegreen }
+
+/*#syn .lingike  {text-decoration:underline;color:blue;background-color:cyan;cursor:pointer;}*/
+#syn .m  {font-weight:bold;font-family:Arial;}
+#syn .m_x_i  {font-weight:bold;vertical-align:super;font-size:x-small;}
+#syn .s  {font-variant:small-caps;color:green;}
+#syn .s_x_l  {color:green;}
+#syn .n  {font-style:italic;color:maroon;}
+#syn .KOM  {background-color:silver;}
+#syn .kom  {color:blue;}
+#syn .kaut  {font-size:x-small;}
+#syn .kaeg  {font-size:x-small;}
+#syn .syn  {font-family:Arial;}
+#syn .tx  {font-style:italic;}
+#syn .tvt_x_i  {vertical-align:super;}
+#syn .tvt_x_tvtl  {font-style:italic;}
+#syn .mvt_x_i  {vertical-align:super;}
+#syn .mvt_x_mvtl  {font-style:italic;}
+#syn .yd  {font-style:italic;text-decoration:underline;}
+#syn .v  {font-variant:small-caps;color:green;}
+#syn .v_x_l  {color:green;}
+#syn .sl  {font-style:italic;}
+#syn .leitud_ss {background-color:#ffd700}
+
+#ekkr .krpealkiri {
+    font-weight: bold;
+    color: navy;
+}
