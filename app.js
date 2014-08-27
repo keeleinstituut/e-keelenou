@@ -74,15 +74,34 @@ if (ie) {
     }
     */
 }
+/** A simple StopWatch
+ * 
+ * @class SW
+ */
 function SW() { //StopWatch
     this.start = new Date().getTime();
     
+    /**
+     * @method get
+     * @return end milliseconds since start 
+     */
     this.get = function() {
         var end = new Date().getTime();
         return end - this.start;
     };
 }
+
+/**
+ * O creates plain empty Objects inheriting null
+ * 
+ * @class O
+ */
 var O = {
+	/**
+	 * Returns a plain empty Object inheriting null
+	 * @method plain
+	 * @return Object.create(null)
+	 */
     plain: function() {
         return Object.create(null);
     }
@@ -92,6 +111,10 @@ var App = (function() {
     var app = this;
 
 
+    /**
+     * @class Source
+     * @deprecated
+     */
     //ei kasuta
     var Source = function(url, params) {
         var pars = params || {};
@@ -109,11 +132,24 @@ var App = (function() {
     }
     */
 
+    /**
+     * API to the 
+     * 
+     * @class StlAPI
+     * @param rid
+     */
     var StlAPI = function(rid) {
         this.id = rid;
         var pars = {R: rid };
 
-
+        /**
+         * Make a query
+         * 
+         * @method query
+         * @param query_str
+         * @param params
+         * @return 
+         */
         this.query = function(query_str, params) {
             $.extend(pars, {u: app.uid});
             $.extend(pars, params || {});
@@ -122,11 +158,24 @@ var App = (function() {
         };
     };
 
+    /**
+     * API to the Estonian WordNet
+     * 
+     * @class SourceThesAPI
+     * @param rid
+     */
     var SourceThesAPI = function(rid) {
         this.id = rid;
         var pars = {R: rid};
         var res;
-
+        /**
+         * Make a query
+         * 
+         * @method query
+         * @param query_str
+         * @param params
+         * @return 
+         */
         this.query = function(query_str, params) {
             $.extend(pars, params || {});
             $.extend(pars, {sone: query_str});
@@ -134,27 +183,59 @@ var App = (function() {
         };
     };
 
-
+    /**
+     * API to the EKI Keeleabi
+     * 
+     * @class SourceThesAPI
+     * @param rid
+     */
     var SourceEknAPI = function(rid) {
         this.id = rid;
         var pars = {R: rid};
         var res;
-
+        
+        /**
+         * Initialises the API
+         * 
+         * @method init
+         * @return 
+         */
         this.init = function() {
             res = $.getJSON("http://www.eki.ee/ekeeleabi/api.cgi", pars);
         };
-
+        
+        /**
+         * Make a query
+         * 
+         * @method query
+         * @param query_str
+         * @param params
+         * @return 
+         */
         this.query = function(query_str, params) {
             $.extend(pars, params || {});
             $.extend(pars, {Q: query_str});
             return $.getJSON("http://www.eki.ee/ekeeleabi/api.cgi", pars); //return promise
         };
     };
-
+    
+    /**
+     * Some kind of API test
+     * 
+     * @class SourceOTest
+     * @param rid
+     */
     var SourceOTest = function(rid) {
         this.id = rid;
         var pars = {R: rid};
         
+        /**
+         * Make a query
+         * @method query
+         * @param query_str
+         * @param params
+         * @return 
+         */
         this.query = function(query_str, params) {
             $.extend(pars, params || {});
             $.extend(pars, {Q: query_str});
@@ -174,10 +255,14 @@ var App = (function() {
         };
     };
 
-
+    /**
+     * LayoutManager
+     * 
+     * @class LayoutManager
+     */
     var LayoutManager = function() {
         var t = this;
-
+        
         t.bigword = {
             text: ko.observable(''),
             displayed: ko.observable(false)
@@ -186,6 +271,11 @@ var App = (function() {
         t.col1 = ko.observableArray(new Harray('id'));
         t.col2 = ko.observableArray(new Harray('id'));
 
+        /**
+         * Adds something to the LayoutManager
+         * @method add
+         * @param o
+         */
         t.add = function(o) {
             if (o.col == 1) {
                 t.col1.push(o);
@@ -196,6 +286,13 @@ var App = (function() {
 
         }
 
+        /**
+         * Returns a column from the
+         * 
+         * @method getCol
+         * @param nr
+         * @return ko.observableArray
+         */
         t.getCol = function(nr) {
             var c = [];
             for (var i in qm.views) {
@@ -212,6 +309,11 @@ var App = (function() {
     }
     app.lm = new LayoutManager();
 
+    /**
+     * QueryManager is some kind of mediator?
+     * 
+     * @class QueryManager
+     */
     var QueryManager = function() {
         var t = this;
 
@@ -224,15 +326,36 @@ var App = (function() {
 
         this.views = ko.observableArray(new Harray('id')); //miks obs?
         
+        /**
+         * Adds a Source (as an observer pattern?)
+         * 
+         * @method addSrc
+         * @param src_id
+         * @param src_o
+         */
         this.addSrc = function(src_id, src_o) {
             //t.src_ids.push(src_id);
             t.srcs.push(src_o);
         };
 
+        /**
+         * Adds a proc (as an observer pattern?)
+         * 
+         * @method addProc
+         * @param cid
+         * @param proc_o
+         */
         this.addProc = function(cid, proc_o) {
             t.procs.push(proc_o);
         };
-
+        
+        /**
+         * Adds a view (as an observer pattern?)
+         * 
+         * @method addView
+         * @param cid
+         * @param view_o
+         */
         this.addView = function(cid, view_o) {
             //t.view_ids.push(cid);
             t.views.push(view_o);
@@ -242,6 +365,14 @@ var App = (function() {
             //console.log('qm.addView: '+ view_id);
         };
         
+        /**
+         * Make a query to all registered Source APIs
+         * 
+         * @method queryAll
+         * @param query_str
+         * @param params
+         * @return resultArr
+         */
         //testing
         this.queryAll = function(query_str, params) {
             var resultArr = [];
@@ -251,6 +382,14 @@ var App = (function() {
             return resultArr;
         };
         
+        /**
+         * Make a search on all registered Source APIs
+         * 
+         * @method searchAll
+         * @param query_str
+         * @param params
+         * @return promises
+         */
         this.searchAll = function(query_str, params) {
             var responses = O.plain(); //{};
             var promises = [];
@@ -300,7 +439,12 @@ var App = (function() {
         
     };
 
-
+    /**
+     * Responce processer for promises
+     * 
+     * @class ResProcessor
+     * @param id
+     */
     var ResProcessor = function(id) {
         this.id = id;
         var t = this;
@@ -308,6 +452,12 @@ var App = (function() {
         t.srcs = O.plain(); //{}; //public
         t.src_ids = '';
 
+        /**
+         * Add a source (as an observer pattern?)
+         * @method addSrc
+         * @param src_id
+         * @param src_o
+         */
         t.addSrc = function(src_id, src_o) {
             t.srcs[src_id] = src_o;
             t.src_ids = (t.src_ids.length) ? (t.src_ids +' '+ src_id) : src_id;
@@ -317,15 +467,35 @@ var App = (function() {
         t.rslts = []; //taisvaade
         t.rsltsComp = []; //lyhivaade
 
+        /**
+         * Resets the result lists
+         * 
+         * @method reset
+         */
         t.reset = function() {
             t.rslts = [];
             t.rsltsComp = [];
         };
 
+        /**
+         * Initialises a query by setting a stopwath (SW) for
+         * timing the response time
+         * 
+         * @method initQuery
+         */
         t.initQuery = function(qrystr) {
             t.qtime = new SW();
         };
 
+        /**
+         * Processes all promises that have responded (e.g been received)
+         * Returns the processed results?
+         * 
+         * @method setResponses
+         * @param qrystr
+         * @param responses
+         * @return 
+         */
         //uus p2ring - antakse k6ik responsid promisitena
         t.setResponses = function(qrystr, responses) {
             dbg('ResProcessor setResponses', responses)
@@ -375,6 +545,13 @@ var App = (function() {
             return p;
         };
 
+        /**
+         * Applies the registered process to the corresponding source's response
+         * 
+         * @method procResponse
+         * @param sid
+         * @param data
+         */
         //overwriteb ainult ProcKeyw
         //k2ivitatakse nii mitu korda kui on src-id
         t.procResponse = function(sid, data) { //process one response
@@ -388,6 +565,14 @@ var App = (function() {
             //console.log(t.rslts.length);
         };
 
+        /**
+         * Processes all the results
+         * This is triggered when all responses has arrived
+         * 
+         * @method responsesArrived
+         * @param resps
+         * @param prom
+         */
         //k6ik andmed on saabunud
         //overwrite?
         t.responsesArrived = function(resps, prom) {
@@ -399,12 +584,24 @@ var App = (function() {
 
         };
 
+        /**
+         * Delays invoking the passed function with two milliseconds
+         * 
+         * @method delay
+         * @param fn the callback function
+         */
         t.delay = function(fn) {
             setTimeout(fn, 2);
         };
 
     };
 
+    /**
+     * Description
+     * 
+     * @class CategoryView
+     * @param id
+     */
     var CategoryView = function(id) {
         //ResProcessor.apply(this, arguments);
         this.id = id;
@@ -415,6 +612,12 @@ var App = (function() {
 
         t.rsltGrps = ko.observableArray(new Harray('id'));
 
+        /**
+         * Returns true if results are still loading, false if finished
+         * 
+         * @method loading
+         * @return {Bool}
+         */
         t.loading = ko.computed(function(){
             for (var i = 0; i < t.rsltGrps().length; i++) {
                 if (t.rsltGrps()[i].loading()) {
@@ -424,6 +627,13 @@ var App = (function() {
             return false;
         });
 
+        /**
+         * Returns the summed amount of results found from
+         * different sources
+         * 
+         * @method reslen
+         * @return {Number} sum of results found
+         */
         t.reslen = ko.computed(function() {
             var sum = 0;
             for (var i = 0; i < t.rsltGrps().length; i++) {
@@ -441,7 +651,15 @@ var App = (function() {
     };
 
 
-
+    /**
+     * General view component for RGs (resource groups?)
+     * This handles the viewing of the results and also invokes
+     * all the corresponding processing required to show the results
+     * 
+     * @class RGView
+     * @extends ResProcessor ???
+     * @param id
+     */
     var RGView = function(id) {
         ResProcessor.apply(this, arguments);
         //this.id = id;
@@ -469,12 +687,27 @@ var App = (function() {
             return t.items().length;
         });
 
+        /**
+         * Initialises the inserted query on the view, by:
+         * * setting a stopwatch to time the passage of time
+         * * setting the views loading parameter to true
+         * * setting the query string
+         * 
+         * @method initQuery
+         * @param {String} qrystr the query string
+         */
         t.initQuery = function(qrystr) {
             t.qtime = new SW();
             t.loading(true);
             t.qry_str( qrystr );
         };
 
+        /**
+         * @method showThoseItems
+         * @param rslts
+         * @return itemList
+         * @deprecated ???
+         */
         t.showThoseItems = function(rslts) {
             var itemList = [];
 
@@ -487,6 +720,9 @@ var App = (function() {
 
         };
 
+        /**
+         * @method showItems
+         */
         t.showItems = function() {
             var itemList = [];
             for (var i = 0; i < t.rslts.length; i++) {
@@ -501,6 +737,11 @@ var App = (function() {
             t.items(itemList); //n2itame uut arrayd
         };
 
+        /**
+         * @method responsesArrived
+         * @param resps
+         * @param prom
+         */
         t.responsesArrived = function(resps, prom) { //resps [undefined]
             t.procResults(t.rslts);
             t.showItems();
@@ -513,10 +754,23 @@ var App = (function() {
         };
 
         t.tasksOnViewReady = [];
+        /**
+         * Mediator for running tasks when view is finished loading
+         * 
+         * @method onViewReady
+         * @param {Function} fn the function to be invoked when ready
+         */
         t.onViewReady = function(fn) {
             t.tasksOnViewReady.push(fn);
         };
 
+        /**
+         * Trigger the tasks to be run when the view is ready. For not
+         * blocking the browser, there is a short delay (2 ms) between
+         * the tasks.
+         * 
+         * @method viewReady
+         */
         t.viewReady = function() {
             //k2ita
             $.each(t.tasksOnViewReady, function(k, v){
@@ -760,6 +1014,13 @@ var App = (function() {
 
     };
 
+    /**
+     * Constructor Module
+     * 
+     * @class CMLinker
+     * @param t
+     * @param id
+     */
     var CMLinker = function(t, id) { //Constructor Module
 
         t.procLinks = function() {
@@ -786,6 +1047,13 @@ var App = (function() {
 
     };
 
+    /**
+     * RGLinker
+     * 
+     * @class RGLinker
+     * @extends RGView
+     * @param id
+     */
     var RGLinker = function(id) {
         RGView.apply(this, arguments);
 
@@ -800,12 +1068,17 @@ var App = (function() {
 
     };
 
+    /**
+     * Resource Group for 
+     * 
+     * @class RGVakk
+     * @extends RGView
+     * @param id
+     */
     var RGVakk = function(id) {
         RGView.apply(this, arguments);
 
         var t = this;
-
-
 
         //http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
         t.getTextNodesIn = function (node, includeWhitespaceNodes) {
@@ -857,6 +1130,13 @@ var App = (function() {
 
     };
 
+    /**
+     * Resource Group for the Handbook of Estonian Language
+     * 
+     * @class RG_EKKR
+     * @extends RGView
+     * @param id
+     */
     var RG_EKKR = function(id) {
         RGView.apply(this, arguments);
 
@@ -1370,7 +1650,14 @@ var App = (function() {
 
 
     //ResultItem ---------------------------------------------------------------------------------------
-
+    /*
+     * ResultItem description 
+     * 
+     * @class ResultItem
+     * @param sid
+     * @param keyw
+     * @param result
+     */
     var ResultItem = function(sid, keyw, result) {
         
         var t = this;
@@ -1379,10 +1666,23 @@ var App = (function() {
         t.keyw = keyw;
         t.results = (result ? [result] : []);
         
+        /*
+         * Adds a result to the results list
+         * Lisab leiu leidude listi
+         * 
+         * @method add 
+         * @param result
+         */
         t.add = function(result) {
             results.push(result);
         };
         
+        /*
+         * Returns the results as a string
+         * 
+         * @method getHTML
+         * @return string
+         */
         t.getHTML = function() {
             var outp = '';
             for (var i in t.results) {
@@ -1392,17 +1692,46 @@ var App = (function() {
             return outp;
         };
         
+        /*
+         * Returns the abbreviated form of the Source's name
+         * 
+         * @method getSrc
+         * @return string
+         */
         t.getSrc = function() {
             return sources[t.sid].abbr;
         };
+        
+        /*
+         * Should return the Source's url
+         * 
+         * @beta
+         * @method srcURL
+         * @return string
+         */
         t.srcURL = function() {
+        	// return sources[t.sid].url;
             return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=kraam';
         };
+        
+        /*
+         * Returns the Source's name
+         * 
+         * @srcTitle
+         * @return string
+         */
         t.srcTitle = function() {
             return sources[t.sid].name;
         };
 
     };
+    
+    /*
+     * ResultList description
+     * 
+     * @class ResultList
+     * @param id
+     */
     var ResultList = function(id) {
         Harray.apply(this, arguments); //<- id
         var t = this;
@@ -1463,11 +1792,15 @@ var App = (function() {
             return exp;
         };
 
-        //deprecated
+        /*
+         * @deprecated
+         */
         t.getDefault = function() {
             return '[default]';
         };
-        //deprecated
+        /*
+         * @deprecated
+         */
         t.getHTML = function() {
             var html = (t.expanded() ? 
                             ( (exp) ? 
