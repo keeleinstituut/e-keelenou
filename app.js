@@ -77,13 +77,15 @@ if (ie) {
 /** A simple StopWatch
  * 
  * @class SW
+ * @constructor
  */
 function SW() { //StopWatch
     this.start = new Date().getTime();
     
     /**
+     * Returns milliseconds since the StopWatch started
      * @method get
-     * @return end milliseconds since start 
+     * @return {number} 
      */
     this.get = function() {
         var end = new Date().getTime();
@@ -95,10 +97,12 @@ function SW() { //StopWatch
  * O creates plain empty Objects inheriting null
  * 
  * @class O
+ * @constructor
  */
 var O = {
 	/**
 	 * Returns a plain empty Object inheriting null
+	 * 
 	 * @method plain
 	 * @return Object.create(null)
 	 */
@@ -106,10 +110,13 @@ var O = {
         return Object.create(null);
     }
 }
-
+/**
+ * Provides the e-keelenõu application
+ * 
+ * @module App
+ */
 var App = (function() {
     var app = this;
-
 
     /**
      * @class Source
@@ -120,7 +127,6 @@ var App = (function() {
         var pars = params || {};
         this.query = function(query_str, params) {
             //return $.Deferred();
-            
         };
     };
 
@@ -148,7 +154,7 @@ var App = (function() {
          * @method query
          * @param query_str
          * @param params
-         * @return 
+         * @return {promise}
          */
         this.query = function(query_str, params) {
             $.extend(pars, {u: app.uid});
@@ -174,7 +180,7 @@ var App = (function() {
          * @method query
          * @param query_str
          * @param params
-         * @return 
+         * @return {promise}
          */
         this.query = function(query_str, params) {
             $.extend(pars, params || {});
@@ -186,7 +192,7 @@ var App = (function() {
     /**
      * API to the EKI Keeleabi
      * 
-     * @class SourceThesAPI
+     * @class SourceEknAPI
      * @param rid
      */
     var SourceEknAPI = function(rid) {
@@ -657,7 +663,7 @@ var App = (function() {
      * all the corresponding processing required to show the results
      * 
      * @class RGView
-     * @extends ResProcessor ???
+     * @uses ResProcessor ???
      * @param id
      */
     var RGView = function(id) {
@@ -782,7 +788,9 @@ var App = (function() {
 
     };
 
-
+    /**
+     * Concrete RGView for 
+     */
     var RG_Ekn = function(id) {
         RGView.apply(this, arguments);
 
@@ -1051,7 +1059,7 @@ var App = (function() {
      * RGLinker
      * 
      * @class RGLinker
-     * @extends RGView
+     * @uses RGView
      * @param id
      */
     var RGLinker = function(id) {
@@ -1072,7 +1080,7 @@ var App = (function() {
      * Resource Group for 
      * 
      * @class RGVakk
-     * @extends RGView
+     * @uses RGView
      * @param id
      */
     var RGVakk = function(id) {
@@ -1134,7 +1142,7 @@ var App = (function() {
      * Resource Group for the Handbook of Estonian Language
      * 
      * @class RG_EKKR
-     * @extends RGView
+     * @uses RGView
      * @param id
      */
     var RG_EKKR = function(id) {
@@ -1383,7 +1391,7 @@ var App = (function() {
     };
 
 
-    //Allikate defineerimine:
+    //Allikate (nimede) defineerimine:
 
     var ekiSources = {
         qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
@@ -1406,6 +1414,9 @@ var App = (function() {
     var qm = new QueryManager() ;
     app.qm = qm;
 
+    /**
+     * @todo: change app.sources with an sources Observer pattern
+     */
     for (var key in app.sources) {
 
         var src = app.sources[key];
@@ -1561,8 +1572,11 @@ var App = (function() {
 
     /**
      * RGView tarvitab
-     * @param id
-     * @param html
+     * 
+     * @class Result
+     * @param [id]
+     * @param [full]
+     * @param [comp]
      * @constructor
      */
     var Result = function(id, full, comp) {
@@ -1580,13 +1594,25 @@ var App = (function() {
 
         t.full = full || '';
         t.expanded = ko.observable( t.collapsible ? false : true );
+        
+        /**
+         * Toggles the expanded state
+         * 
+         * @method toggleExp
+         */
         t.toggleExp = function() {
             t.expanded(!t.expanded());
             //proovime parandada linke //todo
             //eeldame et siin on dom juba ehitatud
-
         };
 
+        /**
+         * Returns the Result's content, either full or compact
+         * depending on whether the view is expanded or not
+         * 
+         * @method getHTML
+         * @return {string}
+         */
         t.getHTML = function() {
             //dbg('t.expanded()', t.expanded());
             //var r;
@@ -1612,12 +1638,32 @@ var App = (function() {
         //t.getCol = function() {return t.comp;};
         //t.getExp = function() {return t.full;};//t.getHTML;
 
+        /**
+         * Returns a static string 'src?'
+         * 
+         * @method getSrc
+         * @return {string}
+         */
         t.getSrc = function() {
             return 'src?';
         };
+        
+        /**
+         * Returns a static empty string ''
+         * 
+         * @method srcUrl
+         * @return {string}
+         */
         t.srcURL = function() {
             return '';
         };
+        
+        /**
+         * Returns a static string 'Allika nimi'
+         * 
+         * @method srcTitle
+         * @return {string}
+         */
         t.srcTitle = function() {
             return 'Allika nimi';
         };
@@ -1626,20 +1672,48 @@ var App = (function() {
 
 
 
+    /**
+     * Expandable description
+     * 
+     * @class Expandable
+     * @param id
+     * @param html
+     * @uses Result
+     */
     var Expandable = function(id, html) {
         Result.apply(this, arguments);
         var t = this;
         
+        /**
+         * empty function
+         * 
+         * @method expand
+         * @deprecated
+         */
         t.expand = function() {
             
         };
         
+        /**
+         * empty function
+         * 
+         * @method collapse
+         * @deprecated
+         */
         t.collapse = function() {
             
         };
         
     };
 
+    /**
+     * Section description
+     * 
+     * @class Section
+     * @param id
+     * @param html
+     * @uses Expandable
+     */
     var Section = function(id, html) {
         Expandable.apply(this, arguments);
         var t = this;
@@ -1650,7 +1724,7 @@ var App = (function() {
 
 
     //ResultItem ---------------------------------------------------------------------------------------
-    /*
+    /**
      * ResultItem description 
      * 
      * @class ResultItem
@@ -1666,7 +1740,7 @@ var App = (function() {
         t.keyw = keyw;
         t.results = (result ? [result] : []);
         
-        /*
+        /**
          * Adds a result to the results list
          * Lisab leiu leidude listi
          * 
@@ -1677,11 +1751,11 @@ var App = (function() {
             results.push(result);
         };
         
-        /*
+        /**
          * Returns the results as a string
          * 
          * @method getHTML
-         * @return string
+         * @return {string}
          */
         t.getHTML = function() {
             var outp = '';
@@ -1692,33 +1766,33 @@ var App = (function() {
             return outp;
         };
         
-        /*
+        /**
          * Returns the abbreviated form of the Source's name
          * 
          * @method getSrc
-         * @return string
+         * @return {string}
          */
         t.getSrc = function() {
             return sources[t.sid].abbr;
         };
         
-        /*
+        /**
          * Should return the Source's url
          * 
          * @beta
          * @method srcURL
-         * @return string
+         * @return {string}
          */
         t.srcURL = function() {
         	// return sources[t.sid].url;
             return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=kraam';
         };
         
-        /*
+        /**
          * Returns the Source's name
          * 
          * @srcTitle
-         * @return string
+         * @return {string}
          */
         t.srcTitle = function() {
             return sources[t.sid].name;
@@ -1726,7 +1800,7 @@ var App = (function() {
 
     };
     
-    /*
+    /**
      * ResultList description
      * 
      * @class ResultList
@@ -1753,6 +1827,16 @@ var App = (function() {
 
     //ExpandableList
     // kasutab: UniqueList
+    /**
+     * ExpandableDataitem description
+     * 
+     * @class ExpandableDataItem
+     * @param sid
+     * @param id
+     * @param keyw
+     * @param pcol
+     * @param pexp
+     */
     var ExpandableDataItem = function(sid, id, keyw, pcol, pexp) {
         var t = this;
         t.id = id; //selle j2rgi paneb Harray.push ta hashi.
@@ -1770,35 +1854,70 @@ var App = (function() {
         t.expanded = ko.observable(false);
         //t.HTML = ko.observable(result.col);
 
+        /**
+         * Toggles between expanded and collapsed view
+         * 
+         * @method toggleExp
+         */
         t.toggleExp = function() {
             var self = '';
             t.expanded(!t.expanded());
             //dbg('EDI expanded toggled: '+ t.expanded() + ' ' + self);
         };
         
+        /**
+         * Sets the item's column
+         * 
+         * @method setCol
+         * @param string s
+         */
         t.setCol = function(s) {
             col = s;
-        };   
+        };
+        
+        /**
+         * Sets the view as expanded
+         * 
+         * @method setExp
+         * @param s
+         */
         t.setExp = function(s) {
             exp = s;
             t.expandable = true;
         };
         
-
+        /**
+         * Returns the column
+         * 
+         * @method getCol
+         * @return {number}
+         */
         t.getCol = function() {
             return col;
         };
+        
+        /**
+         * Returns boolean if the item is expanded or not
+         * 
+         * @method getExp
+         * @return {bool}
+         */
         t.getExp = function() {
             return exp;
         };
 
-        /*
+        /**
+         * @method getDefault
+         * @return {string}
          * @deprecated
          */
         t.getDefault = function() {
             return '[default]';
         };
-        /*
+        
+        /**
+         * @method getHTML
+         * @return {string}
          * @deprecated
          */
         t.getHTML = function() {
@@ -1817,18 +1936,43 @@ var App = (function() {
         };
 
         //allikas
-
+        /**
+         * Returns the source's abbreviated name
+         * 
+         * @method getSrc
+         * @return {string}
+         */
         t.getSrc = function() {
             return sources[t.sid].abbr;
         };
+        
+        /**
+         * Returns a static url
+         * 
+         * @method srcUrl
+         * @return {string}
+         * @deprecated
+         */
         t.srcURL = function() {
             return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=test';
         };
+        
+        /**
+         * Returns the source's name
+         * 
+         * @method srcTitle
+         * @return {string}
+         */
         t.srcTitle = function() {
             return sources[t.sid].name;
         };
 
     };
+    
+    /**
+     * @class ExpandableList
+     * @uses Harray
+     */
     var ExpandableList = function() {
         //this.keyProperty = 'id';
         //Harray.apply(this, arguments); //<- id
@@ -1838,6 +1982,18 @@ var App = (function() {
         //new ExpandableList peaks kyll tegema, aga ei tee?? Mystika!
         //loogiline, Harray konstruktor k2itatakse ainult 1 kord prototyybi seadmisel.
         
+        /**
+         * Adds an ExpandableDataItem to the list
+         * Returns the ExpandableDataItem
+         * 
+         * @method add
+         * @param sid
+         * @param id
+         * @param keyw
+         * @param col
+         * @param exp
+         * @return {ExpandableDataItem}
+         */
         t.add = function(sid, id, keyw, col, exp) {
             var e;
             if (t.h[id]) {
@@ -1861,11 +2017,24 @@ var App = (function() {
         
     //this.ex = new ExpandableList();
 
+    /**
+     * UniqueList description
+     * 
+     * @class UniqueList
+     */
     var UniqueList = function() { //kasutab: ProcKeyw
         var t = this;
 
         t.h = {};
 
+        /**
+         * Adds an element as an ExpandableDataItem to the list only if it doesn't exist yet
+         * 
+         * @method add
+         * @param keyw
+         * @param o
+         * @return {ExpandableDataItem}
+         */
         t.add = function(keyw, o) {
             //t88delda keyw-eemaldada mittelubatud m2rgid
             var e; //element
@@ -1881,15 +2050,28 @@ var App = (function() {
             return e;
         };
 
+        /**
+         * Check if keyw exists in the list
+         * 
+         * @method has
+         * @param keyw
+         * @return {bool}
+         */
         t.has = function(keyw) {
             return (keyw in t.h);
         };
 
+        /**
+         * Return the item for keyw if it exists in the list,
+         * return undefined if not found
+         * 
+         * @method get
+         * @param keyw
+         * @return {bool, undefined}
+         */
         t.get = function(keyw) {
             return (t.h[keyw]);
         };
-
-
     };
 
     /*
