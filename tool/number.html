@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>Numbrite lahtikirjutaja</title>
+		
+		<link rel="stylesheet" type="text/css" href="number.css">
+		<script src="Soros.js" class="votasee"></script>
+		<script src="EKIToolkit.js" class="votasee"></script>
+	</head>
+
+<body onload="comp(); convert();">
+
+<div id="page_content">
+    <h1 id="bigword">Numbrite sõnadeks väljakirjutaja</h1>
+    <div class="box">Põhineb <a href="http://numbertext.org/">Soros</a> tehnoloogial ja on olemas ka OpenOffice'ile ja LibreOffice'ile.
+    Eesti numbrite grammatikakirjeldust on võimalik vaadata ja täiendada <a href="https://github.com/keeleinstituut/Soros-eesti-numbrid">koodihoidlas</a>.
+    </div>
+    <div id="number" contenteditable="true" onkeyup="convert()">1234</div>
+	  <!-- <input type="submit" name="analyze" value="Analüüsi"> -->
+    <div id="result" contenteditable="false"></div>
+    
+		<textarea id="et" class="hidden">
+		__numbertext__
+		^0 null
+		1 üks
+		2 kaks
+		3 kolm
+		4 neli
+		5 viis
+		6 kuus
+		7 seitse
+		8 kaheksa
+		9 üheksa
+		10 kümme
+		1(\d) $1teistkümmend
+		(\d)(\d) $1kümmend $2
+		^1(\d\d) sada $1 # sada kaheksa
+		1(\d\d) ükssada $1 # tuhat ükssada
+		(\d)(\d\d) $1sada $2
+		^1(\d{3}) tuhat $1 # tuhat kolmsada
+		1(\d{3}) üks tuhat $1 # miljon üks tuhat
+		(\d)(\d{3}) $1 tuhat $2
+		(\d{2,3})(\d{3}) $1 tuhat $2
+		^1(\d{6}) miljon $1
+		1(\d{6}) üks miljon $1 # triljon üks miljon
+		(\d{1,3})(\d{6}) $1 miljonit $2
+		1(\d{9}) miljard $1
+		(\d{1,3})(\d{9}) $1 miljardit $2
+		1(\d{12}) biljon $1
+		(\d{1,3})(\d{12}) $1 biljonit $2
+		1(\d{15}) tuhat biljonit $1
+		(\d{1,3})(\d{15}) $1 tuhat biljonit $2
+		1(\d{18}) triljon $1
+		(\d{1,3})(\d{18}) $1 triljonit $2
+		1(\d{21}) tuhat triljonit $1
+		(\d{1,3})(\d{21}) $1 tuhat triljonit $2
+		1(\d{24}) kvadriljon $1
+		(\d{1,3})(\d{24}) $1 kvadriljonit $2
+		
+		# negative numbers
+		
+		[-−](\d+) miinus |$1
+		
+		# decimals
+		
+		([-−]?\d+)[.,]1 |$1| ja üks kümnendik
+		([-−]?\d+)[.,](\d) |$1| ja |$2 kümnendikku
+		([-−]?\d+)[.,]01 |$1| ja üks sajandik
+		([-−]?\d+)[.,](\d\d) |$1| ja |$2 sajandikku
+		([-−]?\d+)[.,]001 |$1| ja üks tuhandik # või hoopis promill?
+		([-−]?\d+)[.,](\d\d\d) |$1| ja |$2 tuhandikku
+		([-−]?\d+)[.,]0001 |$1| ja üks kümnetuhandik
+		([-−]?\d+)[.,](\d\d\d\d) |$1| ja |$2 kümnetuhandikku
+		([-−]?\d+)[.,]00001 |$1| ja üks sajatuhandik
+		([-−]?\d+)[.,](\d\d\d\d\d) |$1| ja |$2 sajatuhandikku
+		"([-−]?\d+[.,]\d+)(\d)" $1 |$2|
+		
+		# ühikud
+		"1[ ]*%" üks protsent
+		"(.+)[ ]*%" $1 protsenti
+		"1[ ]*‰" üks promill
+		"(.+)[ ]*‰" $1 promilli
+		"§[ ]*(\d+)" paragrahv $1
+		"^1[ ]*°[Cc]?" üks Celsiuse kraad
+		"(.+)[ ]*°[Cc]?" $1 Celsiuse kraadi
+		"1[ ]*°[Ff]" üks Fahrenheiti kraad
+		"(.+)[ ]*°[Ff]" $1 Fahrenheiti kraadi
+		</textarea>
+	<script>comp(); convert();</script>
+</div>
+</body></html>

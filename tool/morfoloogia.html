@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>Teksti morfoloogiline analüsaator</title>
+		
+		<link rel="stylesheet" type="text/css" href="morfoloogia.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="EKIToolkit.js" class="votasee"></script>
+		<script src="EKIMorphModule.js" class="votasee"></script>
+		<script src="morfoloogia.js" class="votasee"></script>
+	</head>
+
+<body>
+
+<div id="page_content">
+    <h1 id="bigword"><a href="http://artur.eki.ee/morf/">Teksti morfoloogiline analüsaator</a></h1>
+    <div class="box">Morfoloogiline analüüs ütleb suvalise tekstisõne kohta, mis on selle algvorm ja mis käändes või pöördes sõna parajasti võib olla.<br><br>
+			Analüsaatori väljundis on:
+            <ul>
+                <li>sõne = tekstis esinev sõnavorm</li>
+                <li>lemma = sõna algvorm</li>
+                <li>tüvi = sõnavormi osa enne muutelõppu (kannab sõna leksikaalset tähendust)</li>
+                <li>vormikood = sõna muutevormi tähis (kannab sõnavormi grammatilist tähendust)</li>
+                <li>tüüp_sõnaliik = sõna muuttüübi number ja sõnaliik</li>
+            </ul>
+
+            <div style="clear: both;"></div>
+Väljund on tabeli kujul ja sobib töötlemiseks tabelarvutusprogrammis. Kasutatud lühendite loendid vt <a href="http://www.eki.ee/tarkvara/morf_lisa.html#lisa2">siit</a> ja <a href="http://www.eki.ee/tarkvara/morf_yld.html">siit</a>, veebiliideses võib ka hoida hiirt lühendi peal.<br><br>
+    
+Analüüs pakub sageli mitu võimalust, mille hulgast tuleks valida see analüüsivariant, mis antud lausesse sobib (= ühestamine). Siinne analüsaator analüüsib iga tekstis esinevat sõnavormi eraldi ega kasuta automaatset ühestamist. Kasutaja saab tulemuste tabelis ise valida sisendi lausesse sobiva väljundi.<br><br>
+Morfoloogiline analüüs on osa Eesti Keele Instituudi reeglipõhisest <a href="http://www.eki.ee/tarkvara/">morfoloogiasüsteemist</a>, mille aluseks on <a href="http://www.eki.ee/teemad/avatud_mrf.html">avatud morfoloogiamudel</a>, mis analüüsib ja sünteesib ka tundmatute sõnade vorme.<br><br>
+</div>
+    <div id="usertext" contenteditable="true">Ainus viis aega võita on teda mitte tähele panna.</div>
+	<input type="submit" name="analyze" value="Analüüsi">
+	<!-- <div style="float: right;margin-right: 10px;margin-top: 10px;font-size: 14px;">
+	<input type="checkbox" name="chkTuletusega"> Proovi tuletusi
+    <input type="checkbox" name="chkLiitsqnaga" checked> Vaata liitsõnu
+    <input type="checkbox" name="chkSqnastikuga" checked> Kasuta sõnastikku
+    </div> -->
+    <div id="analyzedtext" contenteditable="false"></div>
+</div>
+
+</body></html>

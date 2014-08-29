@@ -1,0 +1,27 @@
+body {
+       margin: 0;
+       padding: 0px;
+	   background: #f7f7f7;
+ }
+ 
+
+div#footer_wrapper {
+       width: 100%;
+	   clear: both;
+	   background: #cccccc;
+	   position: relative; 
+	   padding: 10px 0 40px;
+	   margin-bottom: -62px; 
+ }
+div#footer_inner_wrapper {
+    margin: 4px;
+ }
+ 
+
+div#content_wrapper {
+       width: 100%;
+       padding: 0;
+ }
+ 
+
+ 

@@ -1,0 +1,18 @@
+
+#analyzedtext {font-size: 14px;}
+
+.Vaste {display: none;}
+.Lemma {font-size: 16px; font-style: italic;}
+.Tyvi {display: none;}
+.Vorm {font-variant: small-caps;}
+.Tyyp {font-variant: small-caps;}
+
+.morphToken {
+    font-size: 24px;
+    /*font-weight: 500;*/
+    display: block;
+}
+.morphAnalysis {
+    display: block;
+    margin-left: 2cm;
+}
