@@ -74,6 +74,7 @@ if (ie) {
     }
     */
 }
+
 /** A simple StopWatch
  * 
  * @class SW
@@ -94,7 +95,8 @@ function SW() { //StopWatch
 }
 
 /**
- * O creates plain empty Objects inheriting null
+ * O creates plain empty Objects inheriting null, that is
+ * hash arrays
  * 
  * @class O
  * @constructor
@@ -110,10 +112,12 @@ var O = {
         return Object.create(null);
     }
 }
+
 /**
  * Provides the e-keelenõu application
  * 
  * @module App
+ * @constructor
  */
 var App = (function() {
     var app = this;
@@ -139,7 +143,7 @@ var App = (function() {
     */
 
     /**
-     * API to the 
+     * API to the site's general logging facility
      * 
      * @class StlAPI
      * @param rid
@@ -149,7 +153,7 @@ var App = (function() {
         var pars = {R: rid };
 
         /**
-         * Make a query
+         * Make a query (actually it saves the query in the log)
          * 
          * @method query
          * @param query_str
@@ -226,7 +230,7 @@ var App = (function() {
     };
     
     /**
-     * Some kind of API test
+     * Some kind of test API
      * 
      * @class SourceOTest
      * @param rid
@@ -240,7 +244,7 @@ var App = (function() {
          * @method query
          * @param query_str
          * @param params
-         * @return 
+         * @return data
          */
         this.query = function(query_str, params) {
             $.extend(pars, params || {});
@@ -260,7 +264,48 @@ var App = (function() {
             })
         };
     };
-
+    
+    /**
+     * API facade for querying the Estonian Wikipedia
+     * 
+     * @class SourceEstWikiAPI
+     * @param rid
+     */
+    var SourceEstWikiAPI = function(rid) {
+    	this.id = rid;
+    	
+    	/**
+    	 * Make a query to the open MediaWiki API
+    	 * See https://et.wikipedia.org/w/api.php for descriptions 
+    	 * 
+    	 * @method query
+    	 * @param query_str
+    	 * @param params
+    	 * @return data
+    	 */
+    	this.query = function(query_str, params) {
+    		var url = 'https://et.wikipedia.org/w/api.php';
+    		var promise;
+    		
+    		// define default parameters
+    		if (typeof params === undefined) {
+    			params = {};
+    			params['action']  = 'query';
+    			params['prop']    = 'categories|extracts';
+    			params['exintro'] = '';
+    			params['format']  = 'json';
+    		}
+    		
+    		params['titles'] = query_str;
+    		
+    		promise = $.getJSON(url, params);
+            
+    		return promise.then(function done(data) {
+    			return data;
+            });
+    	};
+    };
+    
     /**
      * LayoutManager
      * 
@@ -293,7 +338,7 @@ var App = (function() {
         }
 
         /**
-         * Returns a column from the
+         * Returns a column from the LayoutManager
          * 
          * @method getCol
          * @param nr
@@ -316,7 +361,7 @@ var App = (function() {
     app.lm = new LayoutManager();
 
     /**
-     * QueryManager is some kind of mediator?
+     * QueryManager is some kind of mediator? between sources, processers and views?
      * 
      * @class QueryManager
      */
@@ -1804,6 +1849,8 @@ var App = (function() {
      * ResultList description
      * 
      * @class ResultList
+     * @extends Harray
+     * @uses Harray
      * @param id
      */
     var ResultList = function(id) {
