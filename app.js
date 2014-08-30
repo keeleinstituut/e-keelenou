@@ -268,10 +268,10 @@ var App = (function() {
     /**
      * API facade for querying the Estonian Wikipedia
      * 
-     * @class SourceEstWikiAPI
+     * @class SourceWikiEstAPI
      * @param rid
      */
-    var SourceEstWikiAPI = function(rid) {
+    var SourceWikiEstAPI = function(rid) {
     	this.id = rid;
     	
     	/**
@@ -708,7 +708,7 @@ var App = (function() {
      * all the corresponding processing required to show the results
      * 
      * @class RGView
-     * @uses ResProcessor ???
+     * @uses ResProcessor
      * @param id
      */
     var RGView = function(id) {
@@ -816,9 +816,9 @@ var App = (function() {
         };
 
         /**
-         * Trigger the tasks to be run when the view is ready. For not
+         * Triggers the tasks to be run when the view is ready. For not
          * blocking the browser, there is a short delay (2 ms) between
-         * the tasks.
+         * the triggers.
          * 
          * @method viewReady
          */
@@ -827,14 +827,15 @@ var App = (function() {
             $.each(t.tasksOnViewReady, function(k, v){
                 t.delay(v);
             });
-
         };
-
-
     };
 
     /**
-     * Concrete RGView for 
+     * View for Resource Group of
+     * 
+     *  @class RG_Ekn
+     *  @uses RGView
+     *  @param id
      */
     var RG_Ekn = function(id) {
         RGView.apply(this, arguments);
@@ -847,6 +848,11 @@ var App = (function() {
             t.sarnased = [];
         };
 
+        /**
+         * Process the response by:
+         * 1. gather the near-synonyms
+         * 2. gather their ?
+         */
         t.procResponse = function(sid, data) { //process one response
             //$.extend(t.items(), data.taisvaade);
 
@@ -870,8 +876,10 @@ var App = (function() {
 
             //console.log(t.rslts.length);
         };
-
-
+        
+        /**
+         * Show the collected near-synonyms
+         */
         t.showItems = function() {
             var itemList = [];
             for (var i = 0; i < t.rslts.length; i++) {
@@ -885,10 +893,15 @@ var App = (function() {
             }
             t.items(itemList); //n2itame uut arrayd
         };
-
-
     };
-
+    
+    /**
+     * Links the View and content processing for 
+     * 
+     * @class RG_Ekn_Linker
+     * @uses RG_Ekn
+     * @param id
+     */
     var RG_Ekn_Linker = function(id) {
         RG_Ekn.apply(this, arguments);
 
@@ -899,9 +912,15 @@ var App = (function() {
         t.onViewReady(function(){
             t.procLinks();
         });
-
     };
-
+    
+    /**
+     * View for Estonian Wordnet Resource Group
+     * 
+     * @class RGThes
+     * @uses RGView
+     * @param id
+     */
     //Eesti Wordnet
     var RGThes = function(id) {
         RGView.apply(this, arguments);
@@ -914,7 +933,10 @@ var App = (function() {
             antonym: "Vastandid",
             hyponym: "Alammõisted"
         };
-
+        
+        /**
+         * Process the results
+         */
         t.procResponse = function(sid, data) { //process one response
 
             //dbg('RGThes procResponse', t.rslts)
@@ -954,8 +976,26 @@ var App = (function() {
 
     };
 
-
-
+    /**
+     * View for the Estonina Wikipedia
+     * 
+     * @class RGWikiEst
+     * @uses RGView
+     * @param id
+     */
+    var RGWikiEst = function(id) {
+        RGView.apply(this, arguments);
+        var self = this;
+        
+        self.procResponse = function(sid, data) {};
+        self.word_cnt = 0;
+        self.reslen = 0;
+        self.showItems = function() {
+        	var itemList = [];
+        	self.items(itemList);
+        };
+    }
+    
     /**
      *
      * @param res_id
@@ -999,7 +1039,13 @@ var App = (function() {
     };
 
 
-
+    /**
+     * RGTyyp description
+     * 
+     * @class RGTyyp
+     * @param id
+     * @uses RGLinker
+     */
     var RGTyyp = function(id) {
         RGLinker.apply(this, arguments);
 
@@ -1453,7 +1499,8 @@ var App = (function() {
         thes: {id: 'thes', cls: SourceThesAPI, abbr: 'EWN', name: 'Eesti Wordnet'},
         ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS'},
         ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ'},
-        stl: {id: 'stl', cls: StlAPI, abbr: 'stl'}
+        stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
+        WikiEst: {id: 'vikiet', cls: SourceWikiEst, abbr: 'viki', name: 'Eesti Vikipeedia'}
     });
 
     var qm = new QueryManager() ;
@@ -1461,6 +1508,7 @@ var App = (function() {
 
     /**
      * @todo: change app.sources with an sources Observer pattern
+     *        QueryManager allready is the observer?
      */
     for (var key in app.sources) {
 
@@ -1544,6 +1592,10 @@ var App = (function() {
             knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
             knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
         }},
+        /* c_WikiEst: {h: 'Vikipeedia', col:2, grps: {
+         * 	WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'lisada'}
+         * }}
+         */
         c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
             ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
         }}
