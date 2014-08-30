@@ -1500,7 +1500,7 @@ var App = (function() {
         ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS'},
         ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ'},
         stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-        WikiEst: {id: 'vikiet', cls: SourceWikiEst, abbr: 'viki', name: 'Eesti Vikipeedia'}
+        WikiEst: {id: 'vikiet', cls: SourceWikiEstAPI, abbr: 'viki', name: 'Eesti Vikipeedia'}
     });
 
     var qm = new QueryManager() ;
