@@ -1528,7 +1528,9 @@ var App = (function() {
 
 
     //Allikate (nimede) defineerimine:
-
+    /**
+     * Add description of sources attributes
+     */
     var ekiSources = {
         qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
         ekss: {id: 'ekss', abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
@@ -1553,7 +1555,7 @@ var App = (function() {
 
     /**
      * @todo: change app.sources with an sources Observer pattern
-     *        QueryManager allready is the observer?
+     *        QueryManager allready is the observer? but uses query_all?
      */
     for (var key in app.sources) {
 
@@ -1604,7 +1606,10 @@ var App = (function() {
             ekkr: {h: 'Käsiraamat', res: ['ekkr'], cview: CatEKKR, col: 1, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
         };
     */
-
+    
+    /**
+     * Add description of resultCategories attributes
+     */
     var resultCategories =
     app.resultCategories = {
         //keyw: {h: 'Märksõna', res: ['qs', 'ekss'], cview: CatKeyw, col: 1}, //tuleb luua, aga mitte lisada qm-i?
