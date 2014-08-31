@@ -276,12 +276,13 @@ var App = (function() {
     	
     	/**
     	 * Make a query to the open MediaWiki API
-    	 * See https://et.wikipedia.org/w/api.php for descriptions 
+    	 * See https://et.wikipedia.org/w/api.php for descriptions
+    	 * and also http://www.mediawiki.org/wiki/Manual:CORS 
     	 * 
     	 * @method query
     	 * @param query_str
-    	 * @param params
-    	 * @return data
+    	 * @param [params]
+    	 * @return promise
     	 */
     	this.query = function(query_str, params) {
     		var url = 'https://et.wikipedia.org/w/api.php';
@@ -295,11 +296,18 @@ var App = (function() {
     			params['exintro'] = null;
     			params['redirects'] = null;
     			params['format']  = 'json';
+    			params['origin']  = location.origin;
     		}
     		
     		params['titles'] = query_str;
     		
-    		promise = $.getJSON(url, params);
+    		// set the Origin header to tell Wikipedia who is requesting
+    		promise = $.ajax({
+    			url: url,
+    			dataType: 'json',
+    			data: params,
+    			'xhrFields': { 'withCredentials': true }
+    		});
             
     		return promise.then(function done(data) {
     			return data;
