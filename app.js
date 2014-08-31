@@ -288,11 +288,12 @@ var App = (function() {
     		var promise;
     		
     		// define default parameters
-    		if (typeof params === undefined) {
+    		if (typeof params === 'undefined') {
     			params = {};
     			params['action']  = 'query';
     			params['prop']    = 'categories|extracts';
-    			params['exintro'] = '';
+    			params['exintro'] = null;
+    			params['redirects'] = null;
     			params['format']  = 'json';
     		}
     		
@@ -680,7 +681,7 @@ var App = (function() {
 
         /**
          * Returns the summed amount of results found from
-         * different sources
+         * different sources (global across the site's search)
          * 
          * @method reslen
          * @return {Number} sum of results found
@@ -715,7 +716,7 @@ var App = (function() {
         ResProcessor.apply(this, arguments);
         //this.id = id;
         var t = this;
-
+        
         t.qry_time = ko.observable(0);
         t.qry_str = ko.observable('');
         t.loading = ko.observable(false);
@@ -731,7 +732,8 @@ var App = (function() {
             }
             return false; //ei reageeri lingile
         };
-
+        
+        // This binds the items datamodels with their HTML views as KO observers
         t.compItems = ko.observableArray(new Harray('id')); //kuvatavad objektid
         t.items = ko.observableArray(new Harray('id')); //kuvatavad objektid
         t.reslen = ko.computed(function() {
@@ -987,12 +989,47 @@ var App = (function() {
         RGView.apply(this, arguments);
         var self = this;
         
-        self.procResponse = function(sid, data) {};
+        /**
+         * Processes the data coming from the API
+         * Steps:
+         * 1.
+         * 2.
+         */
+        self.procResponse = function(sid, data) {
+        	// only query part is needed
+        	data = data['query'];
+        	
+        	// if the article redirects, it should be reflected in the title header
+        	if ('redirects' in data) {
+        		// headerValue = data['redirects']['from'] + "⇒" + data['redirects']['to'];
+        	} else {
+        		// headerValue = query_str; //??
+        	}
+        	
+        	// add the found pages to the view's list
+        	for (page in data['pages']) {
+        		item = {};
+        		item['title'] = page['title'];
+        		item['content'] = page['extract'];
+        		
+        		// add the associated categories
+        		item['categories'] = [];
+        		for (category in page['categories']) {
+        			item['categories'].push(category['title']);
+        		}
+        		self.rslts.push(item);
+        	}
+        };
         self.word_cnt = 0;
-        self.reslen = 0;
+        self.reslen = ko.computed(function () {
+        	var sum = 0;
+        	return sum;
+        });
         self.showItems = function() {
-        	var itemList = [];
-        	self.items(itemList);
+        	//var itemList = [];
+        	// proovida lihtsalt paar staatilist ?ResultItem? lisada ja püüda tekitada GUIs
+        	//self.items(itemList);
+        	self.items(self.rslts);
         };
     }
     
@@ -1592,10 +1629,9 @@ var App = (function() {
             knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
             knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
         }},
-        /* c_WikiEst: {h: 'Vikipeedia', col:2, grps: {
-         * 	WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'lisada'}
-         * }}
-         */
+        c_WikiEst: {h: 'Vikipeedia', col:2, grps: {
+        	WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'lisada'}
+        }},
         c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
             ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
         }}
@@ -1827,7 +1863,7 @@ var App = (function() {
      * @class ResultItem
      * @param sid
      * @param keyw
-     * @param result
+     * @param [result]
      */
     var ResultItem = function(sid, keyw, result) {
         
@@ -1932,9 +1968,9 @@ var App = (function() {
      * @class ExpandableDataItem
      * @param sid
      * @param id
-     * @param keyw
-     * @param pcol
-     * @param pexp
+     * @param [keyw]
+     * @param [pcol]
+     * @param [pexp]
      */
     var ExpandableDataItem = function(sid, id, keyw, pcol, pexp) {
         var t = this;
@@ -2150,7 +2186,7 @@ var App = (function() {
         };
 
         /**
-         * Check if keyw exists in the list
+         * Returns boolean if keyw exists in the list
          * 
          * @method has
          * @param keyw
