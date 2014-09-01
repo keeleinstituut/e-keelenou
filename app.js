@@ -291,23 +291,57 @@ var App = (function() {
     		// define default parameters
     		if (typeof params === 'undefined') {
     			params = {};
-    			params['action']  = 'query';
-    			params['prop']    = 'categories|extracts';
-    			params['exintro'] = null;
-    			params['redirects'] = null;
-    			params['format']  = 'json';
-    			params['origin']  = location.origin;
+    			params['action']       = 'query'; // make a query
+    			params['prop']         = 'extracts'; // get page content extract
+    			params['prop']        += '|categories'; // and page's categories
+    			params['exintro']      = null; // specify extract as only the first paragraph
+    			params['redirects']    = null; // handle redirects automatically
+    			params['format']       = 'json';
+    			params['origin']       = location.origin; // needed for Cross-Origin Requests
+    			params['cllimit']      = 10; // maximum 10 categories
+    			params['exlimit']      = 10; // maximum 10 extracts  
+    			params['indexpageids'] = null; // get a list of pageIds separately
+    			params['maxlag']       = 10; // don't request if there is a 10 sec lag
+    			params['callback']     = '?'; // needed for Cross-Origin Requests
     		}
     		
     		params['titles'] = query_str;
     		
     		// set the Origin header to tell Wikipedia who is requesting
-    		promise = $.ajax({
+    		/*promise = $.ajax({
     			url: url,
     			dataType: 'json',
     			data: params,
-    			'xhrFields': { 'withCredentials': true }
-    		});
+    			callback: function(data){console.log('------------------------------VIKI:', data);},
+    			xhrFields: {
+    				'withCredentials': true, // needed for Cross-Origin Requests
+    				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
+    			}
+    		});*/
+    		promise = $.getJSON(
+    		// promise = $.ajax( {
+    		    'https://et.wikipedia.org/w/api.php',
+    		    'action=query'  + // make a query
+    			        '&prop=extracts' + // get page content extract
+    			        '|categories'    + // and page's categories
+    			        '&exintro'       + // specify extract as only the first paragraph
+                        '&redirects'     + // handle redirects automatically
+    			        '&format=json'   +
+    			        '&origin=' + location.origin + // needed for Cross-Origin Requests
+    			        '&cllimit=10'    + // maximum 10 categories
+    			        '&exlimit=10'    + // maximum 10 extracts  
+    			        '&indexpageids'  + // get a list of pageIds separately
+    			        '&maxlag=10'     + // don't request if there is a 10 sec lag
+    			        '&callback=?'    + // needed for Cross-Origin Requests
+    			        '&titles=' + query_str // append the query string
+    		    /*'xhrFields': {
+    		    	'Origin': location.origin, // needed for Cross-Origin Requests
+    		        'withCredentials': true, // needed for Cross-Origin Requests
+    				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // followingAPI bot best practices 
+    		    },*/
+    		//    'dataType': 'json'
+    		//} );
+    			        );
             
     		return promise.then(function done(data) {
     			return data;
@@ -1009,7 +1043,7 @@ var App = (function() {
         	
         	// if the article redirects, it should be reflected in the title header
         	if ('redirects' in data) {
-        		// headerValue = data['redirects']['from'] + "⇒" + data['redirects']['to'];
+        		// headerValue = data['redirects']['from'] + " → " + data['redirects']['to'];
         	} else {
         		// headerValue = query_str; //??
         	}
@@ -1028,7 +1062,7 @@ var App = (function() {
         		self.rslts.push(item);
         	}
         };
-        self.word_cnt = 0;
+        self.word_cnt = 0; //data['indexpageids'].length;
         self.reslen = ko.computed(function () {
         	var sum = 0;
         	return sum;
@@ -1547,7 +1581,7 @@ var App = (function() {
         ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS'},
         ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ'},
         stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-        WikiEst: {id: 'vikiet', cls: SourceWikiEstAPI, abbr: 'viki', name: 'Eesti Vikipeedia'}
+        WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Viki', name: 'Eesti Vikipeedia'}
     });
 
     var qm = new QueryManager() ;
@@ -1642,7 +1676,7 @@ var App = (function() {
             knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
             knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
         }},
-        c_WikiEst: {h: 'Vikipeedia', col:2, grps: {
+        c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
         	WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'lisada'}
         }},
         c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
