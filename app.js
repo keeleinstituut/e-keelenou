@@ -305,44 +305,38 @@ var App = (function() {
     			params['callback']     = '?'; // needed for Cross-Origin Requests
     		}
     		
-    		params['titles'] = query_str;
+    		params['titles'] = query_str; // append the query string
     		
-    		// set the Origin header to tell Wikipedia who is requesting
-    		/*promise = $.ajax({
+    		// ajutine arendaja lihtne valimine $.ajax ja $.getJSON meetodite vahel 
+    		if (true) {
+    		promise = $.ajax({
     			url: url,
     			dataType: 'json',
     			data: params,
-    			callback: function(data){console.log('------------------------------VIKI:', data);},
     			xhrFields: {
     				'withCredentials': true, // needed for Cross-Origin Requests
     				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
     			}
-    		});*/
+    		});
+    		} else { // proovime $.getJSON meetodiga
     		promise = $.getJSON(
-    		// promise = $.ajax( {
     		    'https://et.wikipedia.org/w/api.php',
     		    'action=query'  + // make a query
-    			        '&prop=extracts' + // get page content extract
-    			        '|categories'    + // and page's categories
-    			        '&exintro'       + // specify extract as only the first paragraph
-                        '&redirects'     + // handle redirects automatically
-    			        '&format=json'   +
-    			        '&origin=' + location.origin + // needed for Cross-Origin Requests
-    			        '&cllimit=10'    + // maximum 10 categories
-    			        '&exlimit=10'    + // maximum 10 extracts  
-    			        '&indexpageids'  + // get a list of pageIds separately
-    			        '&maxlag=10'     + // don't request if there is a 10 sec lag
-    			        '&callback=?'    + // needed for Cross-Origin Requests
-    			        '&titles=' + query_str // append the query string
-    		    /*'xhrFields': {
-    		    	'Origin': location.origin, // needed for Cross-Origin Requests
-    		        'withCredentials': true, // needed for Cross-Origin Requests
-    				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // followingAPI bot best practices 
-    		    },*/
-    		//    'dataType': 'json'
-    		//} );
-    			        );
-            
+    		    '&prop=extracts' + // get page content extract
+    		    '|categories'    + // and page's categories
+    		    '&exintro'       + // specify extract as only the first paragraph
+    		    '&redirects'     + // handle redirects automatically
+    		    '&format=json'   +
+    		    '&origin=' + location.origin + // needed for Cross-Origin Requests
+    		    '&cllimit=10'    + // maximum 10 categories
+    		    '&exlimit=10'    + // maximum 10 extracts  
+    		    '&indexpageids'  + // get a list of pageIds separately
+    		    '&maxlag=10'     + // don't request if there is a 10 sec lag
+    		    '&callback=?'    + // needed for Cross-Origin Requests
+    		    '&titles=' + query_str // append the query string
+    		    );
+    		}
+    		
     		return promise.then(function done(data) {
     			return data;
             });
