@@ -306,43 +306,21 @@ var App = (function() {
     		
     		params['titles'] = query_str; // append the query string
     		
-    		// ajutine arendaja lihtne valimine $.ajax ja $.getJSON meetodite vahel 
-    		if (true) { // kas kasutame $.ajax meetodit (soovitatud)
+    		// make the ajax request to the wikipedia API
     		promise = $.ajax({
     			url: url,
     			dataType: 'jsonp', // needed for Cross-Origin Requests
     			cache: true, // needed because dataType is 'jsonp'
     			data: params,
-    			success: function(data, status, jqxhr) { return JSON.parse(data); }, // @todo: needed for jsonp??
     			xhrFields: {
     				'withCredentials': true, // needed for Cross-Origin Requests
     				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
     			}
     		});
-    		} else { // või kasutame $.getJSON meetodit
-    		promise = $.getJSON(
-    		    'https://et.wikipedia.org/w/api.php',
-    		    'action=query'  + // make a query
-    		    '&prop=extracts' + // get page content extract
-    		    '|categories'    + // and page's categories
-    		    '&exintro'       + // specify extract as only the first paragraph
-    		    '&redirects'     + // handle redirects automatically
-    		    '&format=json'   +
-    		    //'&origin=' + location.origin + // needed for Cross-Origin Requests
-    		    '&cllimit=10'    + // maximum 10 categories
-    		    '&exlimit=10'    + // maximum 10 extracts  
-    		    '&indexpageids'  + // get a list of pageIds separately
-    		    '&maxlag=10'     + // don't request if there is a 10 sec lag
-    		    '&callback=?'    + // needed for Cross-Origin Requests
-    		    '&titles=' + query_str // append the query string
-    		    , function(data) { // define the callback (e.g success)
-    		    	return $.parseJSON(data);
-    		    	}
-    		    );
-    		}
     		
     		return promise.then(function done(data) {
-    			return $.parseJSON(data);
+    			// the returned Wikipedia API datamodel is fine, just return the data 
+    			return data;
             });
     	};
     };
