@@ -297,29 +297,29 @@ var App = (function() {
     			params['exintro']      = null; // specify extract as only the first paragraph
     			params['redirects']    = null; // handle redirects automatically
     			params['format']       = 'json';
-    			params['origin']       = location.origin; // needed for Cross-Origin Requests
+    			//params['origin']       = location.origin; // needed for Cross-Origin Requests
     			params['cllimit']      = 10; // maximum 10 categories
     			params['exlimit']      = 10; // maximum 10 extracts  
     			params['indexpageids'] = null; // get a list of pageIds separately
     			params['maxlag']       = 10; // don't request if there is a 10 sec lag
-    			params['callback']     = '?'; // needed for Cross-Origin Requests
     		}
     		
     		params['titles'] = query_str; // append the query string
     		
     		// ajutine arendaja lihtne valimine $.ajax ja $.getJSON meetodite vahel 
-    		if (false) {
+    		if (true) { // kas kasutame $.ajax meetodit (soovitatud)
     		promise = $.ajax({
     			url: url,
-    			dataType: 'json',
+    			dataType: 'jsonp', // needed for Cross-Origin Requests
+    			cache: true, // needed because dataType is 'jsonp'
     			data: params,
-    			jsonp: 'callback',
+    			success: function(data, status, jqxhr) { return JSON.parse(data); }, // @todo: needed for jsonp??
     			xhrFields: {
     				'withCredentials': true, // needed for Cross-Origin Requests
     				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
     			}
     		});
-    		} else { // proovime $.getJSON meetodiga
+    		} else { // või kasutame $.getJSON meetodit
     		promise = $.getJSON(
     		    'https://et.wikipedia.org/w/api.php',
     		    'action=query'  + // make a query
