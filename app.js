@@ -308,11 +308,12 @@ var App = (function() {
     		params['titles'] = query_str; // append the query string
     		
     		// ajutine arendaja lihtne valimine $.ajax ja $.getJSON meetodite vahel 
-    		if (true) {
+    		if (false) {
     		promise = $.ajax({
     			url: url,
     			dataType: 'json',
     			data: params,
+    			jsonp: 'callback',
     			xhrFields: {
     				'withCredentials': true, // needed for Cross-Origin Requests
     				'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
@@ -327,18 +328,21 @@ var App = (function() {
     		    '&exintro'       + // specify extract as only the first paragraph
     		    '&redirects'     + // handle redirects automatically
     		    '&format=json'   +
-    		    '&origin=' + location.origin + // needed for Cross-Origin Requests
+    		    //'&origin=' + location.origin + // needed for Cross-Origin Requests
     		    '&cllimit=10'    + // maximum 10 categories
     		    '&exlimit=10'    + // maximum 10 extracts  
     		    '&indexpageids'  + // get a list of pageIds separately
     		    '&maxlag=10'     + // don't request if there is a 10 sec lag
     		    '&callback=?'    + // needed for Cross-Origin Requests
     		    '&titles=' + query_str // append the query string
+    		    , function(data) { // define the callback (e.g success)
+    		    	return $.parseJSON(data);
+    		    	}
     		    );
     		}
     		
     		return promise.then(function done(data) {
-    			return data;
+    			return $.parseJSON(data);
             });
     	};
     };
@@ -1558,6 +1562,7 @@ var App = (function() {
     //Allikate (nimede) defineerimine:
     /**
      * Add description of sources attributes
+     * @todo
      */
     var ekiSources = {
         qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
@@ -1575,7 +1580,8 @@ var App = (function() {
         ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS'},
         ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ'},
         stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-        WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Viki', name: 'Eesti Vikipeedia'}
+        /*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
+        WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
     });
 
     var qm = new QueryManager() ;
@@ -1605,7 +1611,10 @@ var App = (function() {
     //test
     //ekss.query("kibe", {}, [function(d){console.log(d)}])
 
-
+    /**
+     * Add description to processor definiton attributes
+     * @todo
+     */
     //Vahet88tlejate defineerimine:
     var processors = {
         keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
@@ -1637,6 +1646,15 @@ var App = (function() {
     
     /**
      * Add description of resultCategories attributes
+     * @todo
+     * resultCategories = {
+     *   <name of>: {
+     *     h: "this is the header shown in the view",
+     *     res: ["array of"],
+     *     cview: NameOfConcreteRGView,
+     *     url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+     *   }
+     * }
      */
     var resultCategories =
     app.resultCategories = {
@@ -1671,6 +1689,7 @@ var App = (function() {
             knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
         }},
         c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
+        	/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
         	WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'lisada'}
         }},
         c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
