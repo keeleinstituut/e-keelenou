@@ -393,7 +393,12 @@ var App = (function() {
         this.srcs = new Harray('id');
         //this.view_ids = [];
         this.procs = new Harray('id');
-
+        
+        /**
+         * Returns the views ?
+         * @method views
+         * @return {array}
+         */
         this.views = ko.observableArray(new Harray('id')); //miks obs?
         
         /**
@@ -1014,28 +1019,36 @@ var App = (function() {
          * 2.
          */
         self.procResponse = function(sid, data) {
-        	// only query part is needed
+        	// only the query part is needed
         	data = data['query'];
         	
-        	// if the article redirects, it should be reflected in the title header
-        	if ('redirects' in data) {
-        		// headerValue = data['redirects']['from'] + " → " + data['redirects']['to'];
-        	} else {
-        		// headerValue = query_str; //??
-        	}
-        	
         	// add the found pages to the view's list
-        	for (page in data['pages']) {
+        	for (pageids_i=0; pageids_i<data['pageids'].length; pageids_i+=1) {
+        		pageId = data['pageids'][pageids_i];
+        		page = data['pages'][pageId];
+        		
         		item = {};
         		item['title'] = page['title'];
         		item['content'] = page['extract'];
         		
         		// add the associated categories
         		item['categories'] = [];
-        		for (category in page['categories']) {
+        		for (categories_i=0; categories_i<page['categories'].length; categories_i+=1) {
+        			category = page['categories'][categories_i];
         			item['categories'].push(category['title']);
         		}
-        		self.rslts.push(item);
+        		console.log('VIKIPEEDIA ITEM', item);
+        		//self.rslts.push(item);
+        	}
+
+        	// if the article redirects, it should be reflected in the view's result header
+        	if ('redirects' in data) {
+        		// actually we should only get length 1, but anyways we can loop it
+        		for (redirects_i=0; redirects_i<data['redirects'].length; redirects_i+=1) {
+        			// headerValue = data['redirects'][redirects_i]['from'] + " → " + data['redirects'][redirects_i]['to'];
+        		}
+        	} else {
+        		// headerValue = query_str; //??
         	}
         };
         self.word_cnt = 0; //data['indexpageids'].length;
@@ -1624,6 +1637,7 @@ var App = (function() {
     
     /**
      * Add description of resultCategories attributes
+     * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
      * @todo
      * resultCategories = {
      *   <name of>: {
