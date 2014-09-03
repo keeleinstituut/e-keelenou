@@ -1015,7 +1015,7 @@ var App = (function() {
         RGView.apply(this, arguments);
         var self = this;
 
-        self.word_cnt = 0; //data['indexpageids'].length;
+        self.word_cnt = 0;
         /**
          * Processes the data coming from the API
          * Steps:
@@ -1023,6 +1023,9 @@ var App = (function() {
          * 2.
          */
         self.procResponse = function(sid, data) {
+        	// init the counter
+        	self.word_cnt = 0;
+        	
         	// only the query part is needed
         	data = data['query'];
         	
