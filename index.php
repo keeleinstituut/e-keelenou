@@ -42,7 +42,7 @@
         <script src="lib/URI.js"></script>
         <script src="lib/Autolinker.min.js"></script>
 
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
         <link href='gr/css/fontello.css' rel='stylesheet' type='text/css'>
 
         <script>
