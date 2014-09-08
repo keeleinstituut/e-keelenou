@@ -60,7 +60,7 @@ var App = (function() {
 	var app = this;
 
 	/**
-	 * API to the site's general logging facility
+	 * Facade to the site's general logging facility API
 	 * 
 	 * @class StlAPI
 	 * @param rid
@@ -74,7 +74,7 @@ var App = (function() {
 		 * 
 		 * @method query
 		 * @param query_str
-		 * @param params
+		 * @param [params]
 		 * @return {promise}
 		 */
 		this.query = function(query_str, params) {
@@ -126,6 +126,7 @@ var App = (function() {
 		 * Initialises the API
 		 * 
 		 * @method init
+		 * @deprecated ?
 		 * @return 
 		 */
 		this.init = function() {
@@ -137,7 +138,7 @@ var App = (function() {
 		 * 
 		 * @method query
 		 * @param query_str
-		 * @param params
+		 * @param [params]
 		 * @return 
 		 */
 		this.query = function(query_str, params) {
@@ -161,7 +162,7 @@ var App = (function() {
 		 * Make a query
 		 * @method query
 		 * @param query_str
-		 * @param params
+		 * @param [params]
 		 * @return data
 		 */
 		this.query = function(query_str, params) {
@@ -171,7 +172,8 @@ var App = (function() {
 			var p = $.getJSON("http://www.eki.ee/ekeeleabi/o_test.cgi", pars);
 			
 			return p.then(function done(data) {
-				if (data['lyhivaade'].length === 1 && data['lyhivaade'][0] === 'Ei leidnud') {
+				if (data['lyhivaade'].length === 1 && 
+						data['lyhivaade'][0] === 'Ei leidnud') {
 					data.lyhivaade = [];
 					data.taisvaade = [];
 				}
@@ -188,7 +190,42 @@ var App = (function() {
 	 */
 	var SourceWikiEstAPI = function(rid) {
 		this.id = rid;
+		var self = this;
 		var url = 'https://et.wikipedia.org/w/api.php';
+		
+		/**
+		 * Make an open search on MediaWiki API
+		 * This is used when direct queries find no results
+		 */
+		this.openSearch = function(query_str, params) {
+			var promise;
+			
+			// define default parameters
+			if (typeof params === 'undefined') {
+				params = {};
+				params['action'] = 'opensearch';
+				//params['limit']    = 20; // Maximum amount of results
+				//params['namespace']= 0; // Namespaces to search
+				params['format']   = 'json'; // The format of the output
+			}
+			params['search']   = query_str; // Search string
+			
+			// make the ajax request to the wikipedia API
+			promise = $.ajax({
+				url: url,
+				dataType: 'jsonp', // needed for Cross-Origin Requests
+				cache: true, // needed because dataType is 'jsonp'
+				data: params,
+				xhrFields: {
+					'withCredentials': true, // needed for Cross-Origin Requests
+					'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
+				}
+			});
+			
+			return promise.then(function done(data) {
+				return {'opensearch': data};
+			});
+		};
 		
 		/**
 		 * Make a query to the open MediaWiki API
@@ -238,22 +275,7 @@ var App = (function() {
 			return promise.then(function done(data) {
 				// if nothing precise was found, make an open search instead
 				if ('-1' in data['query']['pages']) {
-					return {
-						'query': {
-							'pageids': ['-1'],
-							'pages': {
-								'-1': {
-									'pageid': '-1',
-									'title': 'ei leitud',
-									'extract': '',
-									'categories': [{
-										"ns": 0,
-										"title": ''
-									}]
-								}
-							}	
-						}
-					};
+					return self.openSearch(query_str);
 				} else {
 					// the returned Wikipedia API datamodel is fine, just send 
 					// it to RGWikiEst.procResponse @todo: kuhu saadetakse?
@@ -278,15 +300,19 @@ var App = (function() {
 		};
 		
 		// right now we handle only two columns
+		self.cols = [];
 		self.col1 = ko.observableArray(new Harray('id'));
+		// @todo: self.cols.push(ko.observableArray(new Harray('id')));
 		self.col2 = ko.observableArray(new Harray('id'));
+		// @todo: self.cols.push(ko.observableArray(new Harray('id')));
 		
 		/**
-		 * Inserts a ResultCategory's CategoryView in a column (displayed as a box)
+		 * Insert a ResultCategory's CategoryView in a column (displayed as a box)
 		 * @method add
 		 * @param {CategoryView} catView
 		 */
 		self.add = function(catView) {
+			// @todo: self.cols[catView.col - 1];
 			if (catView.col == 1) {
 				self.col1.push(catView);
 			}
@@ -296,19 +322,19 @@ var App = (function() {
 		};
 		
 		/**
-		 * Returns a column from the LayoutManager
+		 * Returns all CategoryViews in a column from the LayoutManager
 		 * 
 		 * @method getCol
-		 * @param nr
+		 * @param {Number} nr number of the column
 		 * @return ko.observableArray
 		 */
 		self.getCol = function(nr) {
 			var c = [];
 			for (var i in qm.views) {
-				// @todo: kas tõesti kasutada 'alert'??
+				// @kaur: kas tõesti kasutada 'alert'??
 				alert(qm.views.name);
 				var v = qm.views[i];
-				if (v.col == nr) {
+				if (v.col === nr) {
 					c.push(v);
 				}
 			}
@@ -328,9 +354,7 @@ var App = (function() {
 	 */
 	var QueryManager = function() {
 		var self = this;
-
-		//this.queryText = ko.observable();
-
+		
 		//this.src_ids = [];
 		this.srcs = new Harray('id');
 		//this.view_ids = [];
@@ -383,23 +407,6 @@ var App = (function() {
 		};
 		
 		/**
-		 * Make a query to all registered Source APIs
-		 * 
-		 * @method queryAll
-		 * @param query_str
-		 * @param params
-		 * @return resultArr
-		 */
-		//testing
-		this.queryAll = function(query_str, params) {
-			var resultArr = [];
-			for (var i = 0; i < self.srcs.length; i++) {
-				resultArr.push( self.srcs[i].query(query_str, params) );
-			}
-			return resultArr;
-		};
-		
-		/**
 		 * Make a search on all registered Source APIs
 		 * 
 		 * @method searchAll
@@ -412,20 +419,20 @@ var App = (function() {
 			var promises = [];
 
 			//kas teeks teistmoodi?:
-			// 1. käime läbi kõik RG-d, mis antud kasutaja konfi puhul midgi otsida tahavad
+			// 1. käime läbi kõik RG-d, mis antud kasutaja konfi puhul midagi otsida tahavad
 			// 1.1 kogume neilt kokku kõik src-id
 			// 2. teeme päringud
 			// 3. jagame vastused RG-dele.
 			//----------------------
 
 			//tee kõik päringud
-			for (var i = 0; i < self.srcs.length; i++) {
+			for (var i = 0; i < self.srcs.length; i += 1) {
 				var s = self.srcs[i];
 				responses[s.id] = s.query(query_str, params); //promise
 			}
 
 			//jaga vastused proc-idele:
-			for (var i = 0; i < self.procs.length; i++) {
+			for (var i = 0; i < self.procs.length; i += 1) {
 				var pr = self.procs[i];
 				var prResponses = O.plain(); //{}; //miks hash?
 				for (var sk in pr.srcs) { //pr.srcs on {}
@@ -436,10 +443,10 @@ var App = (function() {
 			}
 
 			//jaga vastused cat-idele: iga view saab temale vajalikud vastused
-			for (var i = 0; i < self.views().length; i++) {
+			for (var i = 0; i < self.views().length; i += 1) {
 				var cat = self.views()[i];
 
-				for (var si = 0; si < cat.rsltGrps().length; si++) {
+				for (var si = 0; si < cat.rsltGrps().length; si += 1) {
 					var rg = cat.rsltGrps()[si];
 					var vResponses = O.plain(); //{};
 					for (var sk in rg.srcs) { //v.srcs on {}
@@ -456,7 +463,7 @@ var App = (function() {
 	};
 
 	/**
-	 * Responce processer for promises
+	 * Response processer for promises
 	 * 
 	 * @class ResProcessor
 	 * @param id
@@ -482,7 +489,7 @@ var App = (function() {
 		//resultide kokku kogumiseks eri responsidest.
 		self.rslts = []; //taisvaade
 		self.rsltsComp = []; //lyhivaade
-
+     
 		/**
 		 * Resets the result lists
 		 * 
@@ -970,48 +977,63 @@ var App = (function() {
 			// base url for view more
 			var baseUrl = 'https://et.wikipedia.org/wiki/';
 			
-			// only the query part is needed
-			data = data['query'];
-			
-			// add the found pages to the view's list
-			for (pageids_i=0; pageids_i<data['pageids'].length; pageids_i+=1) {
-				var pageId = data['pageids'][pageids_i];
-				var page = data['pages'][pageId];
-				
-				self.word_cnt += 1;
-				var item = {};
-				
-				// if the article redirects, it should be reflected in the title
-				if ('redirects' in data) {
-					// we should only get length 1, but anyways we can loop it
-					//for (redirects_i=0; redirects_i<data['redirects'].length; redirects_i+=1) {
-						item['title'] = data['redirects'][0]['from'] + " → " + page['title'];
-						item['url'] = baseUrl + data['redirects'][0]['to'];
-					//}
-				} else {
-					item['title'] = page['title'];
-					item['url'] = baseUrl + page['title'];
+			// find out what kind of action we ended up with
+			if ('opensearch' in data) {
+				data = data['opensearch'];
+				for (searchterm_i = 0; searchterm_i < data.length; searchterm_i += 2) {
+					var item = {};
+					var searchterm = data[searchterm_i];
+					var searchtermMatches = data[searchterm_i + 1];
+					
+					item['content'] = 'Leiti sarnaseid: ';
+					item['content'] += searchtermMatches.join(', ');
+					item['content'] += '.';
+					self.rslts.push(item);
 				}
+			} else if ('query' in data) {
+				// only the query part is needed
+				data = data['query'];
 				
-				// add the extracted content
-				item['content'] = page['extract'];
-				// remove <hr> and trim whitespace
-				item['content'] = item['content'].replace(/<hr[ ]?[/]?>/gi, '');
-				item['content'] = item['content'].trim();
-				
-				// add the associated categories (but not blaclisted)
-				item['categories'] = [];
-				if ('categories' in page) {
-					var categories_i;
-					var categoriesLength = page['categories'].length;
-					var category;
-					for (categories_i = 0; categories_i < categoriesLength; categories_i += 1) {
-						category = page['categories'][categories_i];
-						item['categories'].push(stripNamespace(category['title']));
+				// add the found pages to the view's list
+				for (pageids_i=0; pageids_i<data['pageids'].length; pageids_i+=1) {
+					var pageId = data['pageids'][pageids_i];
+					var page = data['pages'][pageId];
+					
+					self.word_cnt += 1;
+					var item = {};
+					
+					// if the article redirects, it should be reflected in the title
+					if ('redirects' in data) {
+						// we should only get length 1, but anyways we can loop it
+						//for (redirects_i=0; redirects_i<data['redirects'].length; redirects_i+=1) {
+							item['title'] = data['redirects'][0]['from'] + " → " + page['title'];
+							item['url'] = baseUrl + data['redirects'][0]['to'];
+						//}
+					} else {
+						item['title'] = page['title'];
+						item['url'] = baseUrl + page['title'];
 					}
+					
+					// add the extracted content
+					item['content'] = page['extract'];
+					// remove <hr> and trim whitespace
+					item['content'] = item['content'].replace(/<hr[ ]?[/]?>/gi, '');
+					item['content'] = item['content'].trim();
+					
+					// add the associated categories (but not blaclisted)
+					item['categories'] = [];
+					if ('categories' in page) {
+						var categories_i;
+						var categoriesLength = page['categories'].length;
+						var category;
+						for (categories_i = 0; categories_i < categoriesLength; categories_i += 1) {
+							category = page['categories'][categories_i];
+							item['categories'].push(stripNamespace(category['title']));
+						}
+					}
+					
+					self.rslts.push(item);
 				}
-				
-				self.rslts.push(item);
 			}
 		};
 		
@@ -1083,7 +1105,9 @@ var App = (function() {
 				var html = '';
 				
 				// title section
-				html += "<p><u>" + item['title'] + "</u></p>";
+				if (typeof item['title'] !== 'undefined') {
+					html += "<p><u>" + item['title'] + "</u></p>";
+				}
 				// content section
 				item['content'] = item['content'].replace(/(\n)/g, '<br>');
 				html += "<p>" + item['content'] + "</p>";
@@ -1102,7 +1126,8 @@ var App = (function() {
 	};
 	
 	/**
-	 *
+	 * 
+	 * method getTyyp
 	 * @param res_id
 	 * @param fragm_id - Ex: #mt12
 	 * @returns {*}
