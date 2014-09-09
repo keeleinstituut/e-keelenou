@@ -1785,23 +1785,7 @@ var App = (function() {
          * @return {string}
          */
         t.getHTML = function() {
-            //dbg('t.expanded()', t.expanded());
-            //var r;
             var r = (t.expanded()) ? t.full : t.comp;
-            /*
-            var ex = t.expanded();
-            dbg('ex', ex);
-            if (ex === true) {
-                dbg('v6tab full')
-                r = t.full;
-            } else {
-                dbg('v6tab comp')
-                r = t.comp;
-            }
-            dbg('t.full', t.full);
-            dbg('t.comp', t.comp);
-            dbg('r', r);
-            */
             return r;
         };
         //t.HTML = ko.observable(t.getHTML());
@@ -2246,18 +2230,6 @@ var App = (function() {
             return (t.h[keyw]);
         };
     };
-
-    /*
-    var uql = new UniqueList();
-    uql.add('kason', 'sss')
-    var k = uql.get('midapole')
-    console.log(k)
-    if( k  ) {
-        console.log('on')
-    } else {
-        console.log('pole')
-    }
-     */
 
 });
 
