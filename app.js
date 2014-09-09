@@ -291,17 +291,18 @@ var App = (function() {
     		// define default parameters
     		if (typeof params === 'undefined') {
     			params = {};
-    			params['action']       = 'query'; // make a query
-    			params['prop']         = 'extracts'; // get page content extract
-    			params['prop']        += '|categories'; // and page's categories
-    			params['exintro']      = null; // specify extract as only the first paragraph
-    			params['redirects']    = null; // handle redirects automatically
-    			params['format']       = 'json';
-    			//params['origin']       = location.origin; // needed for Cross-Origin Requests
-    			params['cllimit']      = 10; // maximum 10 categories
-    			params['exlimit']      = 10; // maximum 10 extracts  
-    			params['indexpageids'] = null; // get a list of pageIds separately
-    			params['maxlag']       = 10; // don't request if there is a 10 sec lag
+    			params['action']          = 'query'; // make a query
+    			params['prop']            = 'extracts'; // get page content extract
+    			params['prop']           += '|categories'; // and page's categories
+    			params['exintro']         = null; // extract only the first paragraph
+    			params['explaintext']     = null; 
+    			params['redirects']       = null; // handle redirects automatically
+    			params['format']          = 'json';
+    			params['cllimit']         = 10; // maximum 10 categories
+    			params['exlimit']         = 10; // maximum 10 extracts  
+    			params['indexpageids']    = null; // get a list of pageIds separately
+    			params['maxlag']          = 10; // don't request if there is a 10 sec lag
+    			//params['origin']          = location.origin; // needed for Cross-Origin Requests
     		}
     		
     		params['titles'] = query_str; // append the query string
@@ -393,7 +394,12 @@ var App = (function() {
         this.srcs = new Harray('id');
         //this.view_ids = [];
         this.procs = new Harray('id');
-
+        
+        /**
+         * Returns the views ?
+         * @method views
+         * @return {array}
+         */
         this.views = ko.observableArray(new Harray('id')); //miks obs?
         
         /**
@@ -792,6 +798,8 @@ var App = (function() {
         };
 
         /**
+         * Appends every (HTML) item stored in the rslts array as
+         * a Result item that is shown in the view
          * @method showItems
          */
         t.showItems = function() {
@@ -1006,7 +1014,8 @@ var App = (function() {
     var RGWikiEst = function(id) {
         RGView.apply(this, arguments);
         var self = this;
-        
+
+        self.word_cnt = 0; //data['indexpageids'].length;
         /**
          * Processes the data coming from the API
          * Steps:
@@ -1014,40 +1023,77 @@ var App = (function() {
          * 2.
          */
         self.procResponse = function(sid, data) {
-        	// only query part is needed
+        	// only the query part is needed
         	data = data['query'];
         	
-        	// if the article redirects, it should be reflected in the title header
-        	if ('redirects' in data) {
-        		// headerValue = data['redirects']['from'] + " → " + data['redirects']['to'];
-        	} else {
-        		// headerValue = query_str; //??
-        	}
-        	
         	// add the found pages to the view's list
-        	for (page in data['pages']) {
+        	for (pageids_i=0; pageids_i<data['pageids'].length; pageids_i+=1) {
+        		pageId = data['pageids'][pageids_i];
+        		page = data['pages'][pageId];
+        		
+        		self.word_cnt += 1;
         		item = {};
         		item['title'] = page['title'];
         		item['content'] = page['extract'];
         		
         		// add the associated categories
         		item['categories'] = [];
-        		for (category in page['categories']) {
-        			item['categories'].push(category['title']);
+        		if ('categories' in page) {
+        			for (categories_i=0; categories_i<page['categories'].length; categories_i+=1) {
+        				category = page['categories'][categories_i];
+        				item['categories'].push(category['title']);
+        			}
         		}
-        		self.rslts.push(item);
+        		
+    			self.rslts.push(item);
+        	}
+
+        	// if the article redirects, it should be reflected in the view's result header
+        	if ('redirects' in data) {
+        		// actually we should only get length 1, but anyways we can loop it
+        		for (redirects_i=0; redirects_i<data['redirects'].length; redirects_i+=1) {
+        			// headerValue = data['redirects'][redirects_i]['from'] + " → " + data['redirects'][redirects_i]['to'];
+        		}
+        	} else {
+        		// headerValue = query_str; //??
         	}
         };
-        self.word_cnt = 0; //data['indexpageids'].length;
+        
+        /**
+         * Returns the number of results
+         * 
+         * @method reslen
+         * @return {Number}
+         */
         self.reslen = ko.computed(function () {
-        	var sum = 0;
-        	return sum;
+            if (self.items().length) {
+                return self.word_cnt;
+            } else {
+            	return 0;
+            }
         });
+        
+        /**
+         * Generates a HTML serialisation of the items in the rslt array
+         * 
+         * @method showItems
+         */
         self.showItems = function() {
-        	//var itemList = [];
-        	// proovida lihtsalt paar staatilist ?ResultItem? lisada ja püüda tekitada GUIs
-        	//self.items(itemList);
-        	self.items(self.rslts);
+            var itemList = [];
+            for (var rslts_i = 0; rslts_i < self.rslts.length; rslts_i+=1) {
+            	var item = self.rslts[rslts_i];
+            	var html = '';
+            	
+            	html += "<p><u>" + item['title'] + "</u></p>";
+            	html += "<p>" + item['content'] + "</p>";
+            	if (item['categories'].length) {
+            		html += "<p><i>Esineb kategooriates " + item['categories'].join(', ') + ".</i></p>";
+            	}
+                var vi = new Result('', html);
+                //var vi = new ExpandableDataItem('', '', '', '', t.rslts[i]);
+                itemList.push( vi );
+            }
+            self.items(itemList); //n2itame uut arrayd
         };
     }
     
@@ -1624,6 +1670,7 @@ var App = (function() {
     
     /**
      * Add description of resultCategories attributes
+     * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
      * @todo
      * resultCategories = {
      *   <name of>: {
@@ -1742,6 +1789,7 @@ var App = (function() {
 
 
     /**
+     * Result items are shown in the RGView as a list
      * RGView tarvitab
      * 
      * @class Result
