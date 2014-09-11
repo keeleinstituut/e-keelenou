@@ -2318,17 +2318,6 @@ var App = (function() {
 		};
 	};
 
-	/*
-	var uql = new UniqueList();
-	uql.add('kason', 'sss')
-	var k = uql.get('midapole')
-	console.log(k)
-	if( k  ) {
-		console.log('on')
-	} else {
-		console.log('pole')
-	}
-	 */
 
 });
 

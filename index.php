@@ -36,6 +36,7 @@
 		<script type='text/javascript' src='lib/dictarr.js'></script>
 
 		<script type='text/javascript' src='app.js'></script>
+		<script type='text/javascript' src="lib/feedbform.js"></script>
 		<script type='text/javascript' src="lib/javascript.js"></script>
 
 		<script src="history.js/scripts/bundled-uncompressed/html4+html5/jquery.history.js"></script>
@@ -196,61 +197,7 @@
 			};
 
 
-			app.forms = {
-				sendForm: function(formElement) {
-
-					$fe = $(formElement);
-					var addr = $fe.attr('action');
-
-					dbg('post: ', addr);
-					var $msg = $fe.find('.f_message');
-
-					$msg.toggleClass('error-message', false);
-					$msg.text("Toimub teate saatmine...");
-
-					$fe.find('.send').attr('value', app.uid) //kasutame uid transpordiks
-					var srld = $fe.serialize();
-					dbg('serialized:', srld);
-
-					var jqxhr = $.post( addr, srld, function(){}, 'json')
-							.done(function(data, textStatus, jqXHR) {
-								dbg( "success..", textStatus);
-								dbg('..data:', data );
-
-								if (data.r < 0) {
-									//viga
-									$msg.toggleClass('error-message', true);
-									$msg.text("Viga: "+ data.msg);
-
-								} else {
-
-									$msg.toggleClass('error-message', false);
-									$msg.text("Teade on edastatud. Täname!");
-									setTimeout(close, 2000);
-								}
-
-
-							})
-							.fail(function(jqXHR, textStatus, errorThrown) {
-								dbg( "fail",  jqXHR);
-								dbg('textStatus:', textStatus);
-								dbg('errorThrown:', errorThrown);
-
-								$msg.text("Viga:");
-								$msg.toggleClass('error-message', true);
-							});
-
-					var close = function() {
-						$fe.find('.send').click(); //javascript.js: $(".send").click - s6idutab vormi kinni
-						setTimeout(function(){
-							$fe[0].reset();
-							$msg.text('');
-						}, 800)
-
-					};
-
-				} //sendForm
-			}; //app.forms
+			app.forms = EKN.forms;
 
 
 			ko.applyBindings(app);
@@ -687,9 +634,10 @@
 				<div id="feedback">
 					<div id="feedback-form">
 						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
-						<form id="f_feedback_dev" action="http://kn.eki.ee/kn/post.php?addr=dev" method="POST"
-							  data-bind="submit: forms.sendForm">
-							<input type="hidden" name="checkme" value="formmail">
+						<form id="f_feedback_dev" method="POST" data-addr="dev"
+                            data-bind="submit: app.forms.sendForm"
+                            action="http://kn.eki.ee/kn/spam.php">
+                            <input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffd_nimi">Nimi</label>
 								<input type="text" name="nimi" id="ffd_nimi">
@@ -706,14 +654,15 @@
 								<label for="ffd_comment">Küsimus või kommentaar</label>
 								<textarea name="kiri" id="ffd_comment"></textarea>
 							</div>
-							<div class="spam-control">
-								<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.
-							</div>
-							<div class="feedback-footer">
-								<span class="f_message"></span>
-								<input class="" type="submit" value="Saada" name="saada"/>
-								<input class="send" type="hidden" value="vuid" name="uid"/>
-							</div>
+                            <div class="spam-control">
+                                <!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
+                                <span>&nbsp;</span>
+                            </div>
+                            <div class="feedback-footer">
+                                <span class="f_message"></span>
+                                <input class="" type="submit" value="Saada" name="saada"/>
+                                <input class="send" type="hidden" value="vuid" name="uid"/>
+                            </div>
 						</form>
 					</div>
 					<div class="close opacity"></div>
@@ -723,9 +672,10 @@
 				<div id="feedback">
 					<div id="feedback-form">
 						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
-						<form id="f_feedback_lang" method="POST"
-							  data-bind="submit: forms.sendForm" action="http://kn.eki.ee/kn/post.php?addr=lang">
-							<input type="hidden" name="checkme" value="formmail">
+						<form id="f_feedback_lang" method="POST" data-addr="lang"
+                          data-bind="submit: app.forms.sendForm"
+                          action="http://kn.eki.ee/kn/spam.php">
+                            <input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffl_nimi">Nimi</label>
 								<input type="text" name="nimi" id="ffl_nimi">
@@ -743,7 +693,8 @@
 								<textarea name="kiri" id="ffl_comment"></textarea>
 							</div>
 							<div class="spam-control">
-								<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.
+								<!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
+                            	<span>&nbsp;</span>
 							</div>
 							<div class="feedback-footer">
 								<span class="f_message"></span>
