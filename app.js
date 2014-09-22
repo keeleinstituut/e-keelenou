@@ -331,15 +331,11 @@ var App = (function() {
 		self.getCol = function(nr) {
 			var c = [];
 			for (var i in qm.views) {
-				// @kaur: kas tõesti kasutada 'alert'??
-				alert(qm.views.name);
 				var v = qm.views[i];
 				if (v.col === nr) {
 					c.push(v);
 				}
 			}
-			// @todo: kas tõesti kasutada 'alert'??
-			alert('getCol:' + c.length);
 			return ko.observableArray(c);
 		};
 		
@@ -1417,10 +1413,8 @@ var App = (function() {
 
 
 		self.procLinks = function() {
-			//dbg(id+ ' procLinks:')
 
-			var $rs = $('#'+ id +' .result');
-
+            var $rs = $('#'+ id +' .result');
 
 			$rs.each(function() {
 				var myTextEl = this;
@@ -1713,6 +1707,7 @@ var App = (function() {
 		};
 	};
 
+    //========================================================================================
 
 	/**
 	 * Definitions used for building the QueryManager
@@ -1834,12 +1829,12 @@ var App = (function() {
 
 		var pdef = processors[cid];
 
-		var pr;
+		var pr; //processor
 		if (typeof pdef['proc'] === 'function') {
 			pr = new pdef.proc(cid);
 		}
 
-		//for (var i in pdef.res)
+		//anname processorile tema src-d
 		for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
 			var src_id = pdef.res[i];
 			pr.addSrc(src_id, qm.srcs.h[src_id]);
@@ -1873,7 +1868,7 @@ var App = (function() {
 			} else { //default
 				rgv = new RGView(gid);
 			}
-			dbg('gid', gid, 'new rgv', rgv);
+			//dbg('gid', gid, 'new rgv', rgv);
 
 			rgv.heading = g.h;
 
@@ -1894,7 +1889,7 @@ var App = (function() {
 		qm.addView(cid, catv);
 	}
 
-
+    //============================================================================
 
 	/**
 	 * Result items are shown in the RGView as a list
