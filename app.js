@@ -1330,15 +1330,15 @@ var App = (function() {
 	 * Constructor Module
 	 * 
 	 * @class CMLinker
-	 * @param t  @todo: palun paremat nimetust; kas võib vahetada "self"-iga? 
+	 * @param self
 	 * @param id
 	 */
-	var CMLinker = function(t, id) { //Constructor Module
+	var CMLinker = function(self, id) { //Constructor Module
 
 		/**
 		 * @method procLinks
 		 */
-		t.procLinks = function() {
+		self.procLinks = function() {
 			var $a = $('#'+ id +' .tervikart a');
 			$a.each(function() {
 				var $t = $(this);
@@ -1895,6 +1895,7 @@ var App = (function() {
 	}
 
 
+
 	/**
 	 * Result items are shown in the RGView as a list
 	 * RGView tarvitab
@@ -1997,164 +1998,6 @@ var App = (function() {
 
 
 
-
-	/**
-	 * Expandable description
-	 * 
-	 * @class Expandable
-	 * @param id
-	 * @param html
-	 * @uses Result
-	 */
-	var Expandable = function(id, html) {
-		Result.apply(this, arguments);
-		var self = this;
-		
-		/**
-		 * empty function
-		 * 
-		 * @method expand
-		 * @deprecated
-		 */
-		self.expand = function() {
-			
-		};
-		
-		/**
-		 * empty function
-		 * 
-		 * @method collapse
-		 * @deprecated
-		 */
-		self.collapse = function() {
-			
-		};
-		
-	};
-
-	/**
-	 * Section description
-	 * 
-	 * @class Section
-	 * @param id
-	 * @param html
-	 * @uses Expandable
-	 */
-	var Section = function(id, html) {
-		Expandable.apply(this, arguments);
-		var self = this;
-		this.id = id;
-		
-		self.html = '';
-	};
-
-
-	//ResultItem ---------------------------------------------------------------------------------------
-	/**
-	 * ResultItem description 
-	 * 
-	 * @class ResultItem
-	 * @param sid
-	 * @param keyw
-	 * @param [result]
-	 */
-	var ResultItem = function(sid, keyw, result) {
-		
-		var self = this;
-		//self.id is reserved
-		self.sid = sid;
-		self.keyw = keyw;
-		self.results = (result ? [result] : []);
-		
-		/**
-		 * Adds a result to the results list
-		 * Lisab leiu leidude listi
-		 * 
-		 * @method add 
-		 * @param result
-		 */
-		self.add = function(result) {
-			results.push(result);
-		};
-		
-		/**
-		 * Returns the results as a string
-		 * 
-		 * @method getHTML
-		 * @return {string}
-		 */
-		self.getHTML = function() {
-			var outp = '';
-			for (var i in self.results) {
-				outp += self.results[i].html;
-				//outp += '<div class="">'+'stuff'+'</div>';
-			}
-			return outp;
-		};
-		
-		/**
-		 * Returns the abbreviated form of the Source's name
-		 * 
-		 * @method getSrc
-		 * @return {string}
-		 */
-		self.getSrc = function() {
-			return sources[self.sid].abbr;
-		};
-		
-		/**
-		 * Should return the Source's url
-		 * 
-		 * @beta
-		 * @method srcURL
-		 * @return {string}
-		 */
-		self.srcURL = function() {
-			// return sources[self.sid].url;
-			return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=kraam';
-		};
-		
-		/**
-		 * Returns the Source's name
-		 * 
-		 * @srcTitle
-		 * @return {string}
-		 */
-		self.srcTitle = function() {
-			return sources[self.sid].name;
-		};
-
-	};
-	
-	/**
-	 * ResultList description
-	 * 
-	 * @class ResultList
-	 * @extends Harray
-	 * @uses Harray
-	 * @param id
-	 */
-	var ResultList = function(id) {
-		Harray.apply(this, arguments); //<- id
-		var self = this;
-		//self.harr = Harray('id');
-		
-		self.add = function(sid, keyw, result) {
-			if (self.h[keyw]) {
-				self.h[keyw].add(sid, keyw, result);
-			} else {
-				self.push( new ResultItem(sid, keyw, result) );
-			}
-			
-		};
-	};
-	ResultList.prototype = Harray.prototype;
-
-	// // ResultItem -------------------------------------------------------------------------------------
-
-
-	//ExpandableList
-	// kasutab: UniqueList
 	/**
 	 * ExpandableDataitem description
 	 * 
