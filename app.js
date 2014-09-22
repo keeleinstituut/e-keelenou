@@ -439,14 +439,43 @@ var App = (function() {
 		this.srcs = new Harray('id');
 		//this.view_ids = [];
 		this.procs = new Harray('id');
-		
-		/**
-		 * Returns the views ?
-		 * @method views
-		 * @return {array}
-		 */
+
+
+		//CategoryViews
 		this.views = ko.observableArray(new Harray('id')); //miks obs?
-		
+        this.RGs = new Harray('id');
+
+        //kasutaja valitud RG-d
+        this.userRGs = ko.computed({
+            read: function(){
+                var arr = [];
+                for (var iv = 0; iv < self.views().length; iv++) {
+                    var view = self.views()[iv];
+                    for (var i = 0; i < view.rsltGrps().length; i++) {
+                        if (view.rsltGrps()[i].active()) {
+                            arr.push(view.rsltGrps()[i].id);
+                        }
+                    }
+                }
+                return arr;
+            },
+            write: function(arr) {
+                dbg(arr)
+                for (var iv = 0; iv < self.views().length; iv++) {
+                    var view = self.views()[iv];
+                    for (var i = 0; i < view.rsltGrps().length; i++) {
+                        var rg = view.rsltGrps()[i];
+                        if (arr.indexOf(rg.id) != -1) {
+                            rg.active(1);
+                        } else {
+                            rg.active(0);
+                        }
+                    }
+                }
+            },
+            owner: this
+        });
+
 		/**
 		 * Adds a Source (as an observer pattern?)
 		 * 
@@ -551,6 +580,8 @@ var App = (function() {
 	var ResProcessor = function(id) {
 		this.id = id;
 		var self = this;
+
+        self.active = ko.observable(1); //näitab ja teeb päringuid
 
 		self.srcs = O.plain(); //{}; //public
 		self.src_ids = '';
@@ -752,7 +783,7 @@ var App = (function() {
 
 
 	/**
-	 * General view component for RGs (resource groups?)
+	 * General view component for RGs (Result Groups)
 	 * This handles the viewing of the results and also invokes
 	 * all the corresponding processing required to show the results
 	 * 
@@ -1709,6 +1740,7 @@ var App = (function() {
 
     //========================================================================================
 
+
 	/**
 	 * Definitions used for building the QueryManager
 	 * @todo
@@ -1767,10 +1799,30 @@ var App = (function() {
 		keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
 	};
 
+    /**
+     * Building the processors defined in app.processors
+     */
+    for (var cid in processors) {
+
+        var pdef = processors[cid];
+
+        var pr; //processor
+        if (typeof pdef['proc'] === 'function') {
+            pr = new pdef.proc(cid);
+        }
+
+        //anname processorile tema src-d
+        for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
+            var src_id = pdef.res[i];
+            pr.addSrc(src_id, qm.srcs.h[src_id]);
+        }
+
+        qm.addProc(cid, pr);
+    }
 
 
-	
-	/**
+
+    /**
 	 * Definitions for building the CategoryView objects
 	 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
 	 * @todo
@@ -1823,28 +1875,6 @@ var App = (function() {
 
 
 	/**
-	 * Building the processors defined in app.processors
-	 */
-	for (var cid in processors) {
-
-		var pdef = processors[cid];
-
-		var pr; //processor
-		if (typeof pdef['proc'] === 'function') {
-			pr = new pdef.proc(cid);
-		}
-
-		//anname processorile tema src-d
-		for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
-			var src_id = pdef.res[i];
-			pr.addSrc(src_id, qm.srcs.h[src_id]);
-		}
-
-		qm.addProc(cid, pr);
-	}
-
-
-	/**
 	 * Building CategoryView objects defined in app.resultCategories
 	 */
 	for (var cid in resultCategories) {
@@ -1864,7 +1894,6 @@ var App = (function() {
 			var rgv; //RGView
 			if (typeof g['cview'] === 'function') {
 				rgv = new g.cview(gid);
-
 			} else { //default
 				rgv = new RGView(gid);
 			}
@@ -1877,7 +1906,6 @@ var App = (function() {
 			}
 
 			//ressursid
-			//for (var i in rc.res) {
 			for (var i = 0; i < g.res.length; i++) { //anname cv-le sisendid
 				var src_id = g.res[i];
 				rgv.addSrc(src_id, qm.srcs.h[src_id]);
@@ -2191,7 +2219,7 @@ var App = (function() {
 	var UniqueList = function() { //kasutab: ProcKeyw
 		var self = this;
 
-		self.h = {};
+		self.h = O.plain(); //{};
 
 		/**
 		 * Adds an element as an ExpandableDataItem to the list only if it doesn't exist yet

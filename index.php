@@ -12,7 +12,7 @@
 		<!--script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js'></script-->
 		<script type='text/javascript' src='lib/jquery.js'></script>
 
-		<script type='text/javascript' src='lib/knockout-3.1.0.js'></script>
+		<script type='text/javascript' src='lib/knockout-3.2.0.js'></script>
 		<!--
 		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout.js'></script>
 		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js'></script>
@@ -534,6 +534,7 @@
 
 									<div class="boxContent" data-bind="css: {loading: loading() }, foreach: rsltGrps">
 
+                                        <!-- ko if: ($data.active) -->
 										<div class="resultGrp" data-bind="attr: {'id': id}">
 
 											<div class="rGrpHead" onclick="show(this);">
@@ -597,6 +598,7 @@
 											<div class="rGrpFoot"></div>
 
 										</div>
+                                        <!--/ko-->
 
 									</div>
 
