@@ -490,10 +490,23 @@ var App = (function() {
 
 		//CategoryViews
 		this.views = ko.observableArray(new Harray('id')); //miks obs?
-        this.RGs = new Harray('id');
+        
+        //RG Management
+        this.RGs = O.plain();
+        this.cookieRGs = cookieList('RGs');
+        
+        this.savedRGs = function() {
+        	return self.cookieRGs.items();
+        } 
+        this.saveRGs = function(arr) {
+        	self.cookieRGs.set(arr);
+        }
+        this.suggRGs = function(v) {//arr või 1
+        	self.screenRGs(v);
+        }
 
-        //kasutaja valitud RG-d
-        this.userRGs = ko.computed({
+        //ekraanil näha RG-d
+        this.screenRGs = ko.computed({
             read: function(){
                 var arr = [];
                 for (var iv = 0; iv < self.views().length; iv++) {

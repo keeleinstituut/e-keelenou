@@ -131,20 +131,20 @@
 					//url.query({ Q: queryText}); //teised param peale Q kaovad
 					//dbg('url', url.toString())
 
-					if (url.hasQuery("setrgs")) {
+					if (url.hasQuery("srgs")) {
 						var map = url.search(true);
-						var setrgs = map['setrgs'];
-						dbg('setrgs:'+ setrgs)
-						if (setrgs == '*' || setrgs.length == 0) {
-							app.qm.userRGs(1); //luba kõik RGd
+						var srgs = map['srgs'];
+						dbg('srgs:'+ srgs)
+						if (srgs == '*' || srgs.length == 0) {
+							app.qm.suggRGs(1); //luba kõik RGd
 						} else {
-							uRGs = setrgs.split(',');
-							//ouRGs.set_str(setrgs);
+							uRGs = srgs.split(',');
+							//ouRGs.set_str(srgs);
 							dbg('uRGs', uRGs, typeof uRGs)
 							dbg(uRGs)
 			
 							if (uRGs.length > 0) {
-								app.qm.userRGs(uRGs);
+								app.qm.suggRGs(uRGs);
 							}
 						}
 						
@@ -550,7 +550,7 @@
 							<script type="text/html" id="box_templ">
 
 								
-								<div data-bind="'visible': visible, attr: {'id': id, 'data-reslen': reslen}" class="box col5">
+								<div data-bind="'visible': (reslen() > 0), attr: {'id': id, 'data-reslen': reslen}" class="box col5">
 
 									<div class="boxHead">
 										<!--<span class="expBtn">[+]</span>-->
