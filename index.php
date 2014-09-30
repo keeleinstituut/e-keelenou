@@ -28,6 +28,8 @@
 		<script type='text/javascript' src='lib/qtip/jquery.qtip.min.js'></script>
 		<link rel="stylesheet" type="text/css" href="lib/qtip/jquery.qtip.css" />
 
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		
 		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />
 		
@@ -113,20 +115,41 @@
 			};
 			
 			/**
-			 * @method replaceState
+			 * @method myReplaceState
 			 * @param {String} queryText
 			 */
-			var replaceState = function(queryText) {
+			var myReplaceState = function(queryText) {
 				if (1) {
 
-					dbg('replaceState: ');
 					var st = History.getState();
-					dbg('before replace state: ', st);
 
+					//dbg('before replace state: ', st);
+					//dbg('st.url', st.url)
+					
 					var url = new URI(st.url);
-					url.query({ Q: queryText});
-					dbg('url', url.toString())
+					
+					//url.query({ Q: queryText}); //teised param peale Q kaovad
+					//dbg('url', url.toString())
 
+					if (url.hasQuery("setrgs")) {
+						var map = url.search(true);
+						var setrgs = map['setrgs'];
+						dbg('setrgs:'+ setrgs)
+						if (setrgs == '*' || setrgs.length == 0) {
+							app.qm.userRGs(1); //luba kõik RGd
+						} else {
+							uRGs = setrgs.split(',');
+							//ouRGs.set_str(setrgs);
+							dbg('uRGs', uRGs, typeof uRGs)
+							dbg(uRGs)
+			
+							if (uRGs.length > 0) {
+								app.qm.userRGs(uRGs);
+							}
+						}
+						
+	
+					}
 
 					History.replaceState(
 						{'Q': queryText},
@@ -144,8 +167,12 @@
 
 					//currentQuery = queryText;
 				}
+				
 			};
-			
+
+
+			var ouRGs = cookieList('userRGs');
+
 			/**
 			 * Makes the QueryManager make a search in all it's registered sources
 			 * 
@@ -156,6 +183,7 @@
 				var summq = new SW();
 				app.searching(1);
 				currentQuery = queryStr;
+				
 
 				var p = this.qm.searchAll(queryStr);
 				$('#Q').select();
@@ -165,9 +193,6 @@
 					$('#poscontainer').show(); //parandus
 					console.log('kogu päring ' + summq.get() + "ms");
 					//call was this helpful
-
-					//$(".social-buttons, #preloader").fadeOut("slow", function(){$("#poscontainer").fadeIn("slow");});
-					//$(".info, .social-buttons").fadeOut("slow", function(){$("#page_content").fadeIn("slow");});
 
 				});
 
@@ -212,20 +237,25 @@
 				app.plainSearch(q);
 			}
 			*/
-			var uri = new URI(window.location.search);
+			var url = new URI(window.location.search);
 			
-			if (uri.hasQuery("Q")) {
-				var q = uri.search(true)['Q'];
+			if (url.hasQuery("Q")) {
+				var q = url.search(true)['Q'];
 				app.queryText(q);
 				//app.plainSearch(q);
 
 				onFirstSearch();
-				replaceState(q);
-			} else if (uri.hasQuery("u")) {
-				dbg('found u');
+				
+				
+				myReplaceState(q)
+				
+				
+			} else if (url.hasQuery("u")) {
 				//var u = uri.search(true)['u'];
 				History.replaceState(null, defaultTitle, '/');
-			}
+			};
+			
+			
 
 
 			/*
@@ -519,7 +549,8 @@
 
 							<script type="text/html" id="box_templ">
 
-								<div data-bind="attr: {'id': id}" class="box col5">
+								
+								<div data-bind="'visible': visible, attr: {'id': id, 'data-reslen': reslen}" class="box col5">
 
 									<div class="boxHead">
 										<!--<span class="expBtn">[+]</span>-->
@@ -603,6 +634,7 @@
 									</div>
 
 								</div>
+								
 
 							</script>
 
