@@ -51,49 +51,49 @@ var O = {
 
 
 var cookieList = function(cookieName) {
-    //When the cookie is saved the items will be a comma seperated string
-    //So we will split the cookie by comma to get the original array
-    var cookie = $.cookie(cookieName);
-    //Load the items or a new array if null.
-    var items = cookie ? cookie.split(/,/) : new Array();
+	//When the cookie is saved the items will be a comma seperated string
+	//So we will split the cookie by comma to get the original array
+	var cookie = $.cookie(cookieName);
+	//Load the items or a new array if null.
+	var items = cookie ? cookie.split(/,/) : new Array();
 
-    //Return a object that we can use to access the array.
-    //while hiding direct access to the declared items array
-    //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
-    return {
-        "set_str": function(str) {
-            
-            $.cookie(cookieName, str);
-        },
-        "set": function(arr) {
-            items = arr;
-            $.cookie(cookieName, items.join(','));
-        },
-        "add": function(val) {
-            //Add to the items.
-            items.push(val);
-            //Save the items to a cookie.
-            //EDIT: Modified from linked answer by Nick see 
-            //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
-            $.cookie(cookieName, items.join(','));
-        },
-        "remove": function (val) { 
-            //EDIT: Thx to Assef and luke for remove.
-            indx = items.indexOf(val); 
-            if(indx!=-1) items.splice(indx, 1); 
-            $.cookie(cookieName, items.join(','));        
-        	
-        },
-        "clear": function() {
-            items = null;
-            //clear the cookie.
-            $.cookie(cookieName, null);
-        },
-        "items": function() {
-            //Get all the items.
-            return items;
-        }
-      }
+	//Return a object that we can use to access the array.
+	//while hiding direct access to the declared items array
+	//this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+	return {
+		"set_str": function(str) {
+			
+			$.cookie(cookieName, str);
+		},
+		"set": function(arr) {
+			items = arr;
+			$.cookie(cookieName, items.join(','));
+		},
+		"add": function(val) {
+			//Add to the items.
+			items.push(val);
+			//Save the items to a cookie.
+			//EDIT: Modified from linked answer by Nick see 
+			//      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+			$.cookie(cookieName, items.join(','));
+		},
+		"remove": function (val) { 
+			//EDIT: Thx to Assef and luke for remove.
+			indx = items.indexOf(val); 
+			if(indx!=-1) items.splice(indx, 1); 
+			$.cookie(cookieName, items.join(','));        
+			
+		},
+		"clear": function() {
+			items = null;
+			//clear the cookie.
+			$.cookie(cookieName, null);
+		},
+		"items": function() {
+			//Get all the items.
+			return items;
+		}
+	  }
 
 } 
 
@@ -490,64 +490,68 @@ var App = (function() {
 
 		//CategoryViews
 		this.views = ko.observableArray(new Harray('id')); //miks obs?
-        
-        //RG Management
-        this.RGs = O.plain();
-        this.cookieRGs = cookieList('RGs');
-        
-        this.savedRGs = function() {
-        	return self.cookieRGs.items();
-        } 
-        this.saveRGs = function(arr) {
-        	self.cookieRGs.set(arr);
-        }
-        this.suggRGs = function(v) {//arr või 1
-        	self.screenRGs(v);
-        }
+		
+		//RG Management
+		this.RGs = O.plain();
+		this.cookieRGs = cookieList('RGs');
+		
+		this.savedRGs = function() {
+			return self.cookieRGs.items();
+		} 
+		this.saveRGs = function(arr) {
+			self.cookieRGs.set(arr);
+		}
+		this.forceRGs = function(v) {//arr või 1
+			self.screenRGs(v);
+		}
+		this.suggRGs = function(v) {//arr või 1
+			self.screenRGs(v);
+		}
 
-        //ekraanil näha RG-d
-        this.screenRGs = ko.computed({
-            read: function(){
-                var arr = [];
-                for (var iv = 0; iv < self.views().length; iv++) {
-                    var view = self.views()[iv];
-                    for (var i = 0; i < view.rsltGrps().length; i++) {
-                        if (view.rsltGrps()[i].active()) {
-                            arr.push(view.rsltGrps()[i].id);
-                        }
-                    }
-                }
-                return arr;
-            },
-            write: function(arr) {
-                if (typeof arr === 'object') {
-	                for (var iv = 0; iv < self.views().length; iv++) {
-	                    var view = self.views()[iv];
-	                    for (var i = 0; i < view.rsltGrps().length; i++) {
-	                        var rg = view.rsltGrps()[i];
-	                        if (arr.indexOf(rg.id) != -1) {
-	                            rg.active(1);
-	                        } else {
-	                            rg.active(0);
-	                        }
-	                    }
-	                }
-                	
-                } else {
-	                for (var iv = 0; iv < self.views().length; iv++) {
-	                    var view = self.views()[iv];
-	                    for (var i = 0; i < view.rsltGrps().length; i++) {
-	                        var rg = view.rsltGrps()[i];
-	                        rg.active(1);
-	                        
-	                    }
-	                }
-                	
-                }
-            },
-            owner: this
-        });
-
+		//ekraanil näha RG-d
+		this.screenRGs = ko.computed({
+			read: function(){
+				var arr = [];
+				for (var iv = 0; iv < self.views().length; iv++) {
+					var view = self.views()[iv];
+					for (var i = 0; i < view.rsltGrps().length; i++) {
+						if (view.rsltGrps()[i].active()) {
+							arr.push(view.rsltGrps()[i].id);
+						}
+					}
+				}
+				return arr;
+			},
+			write: function(arr) {
+				if (typeof arr === 'object') {
+					for (var iv = 0; iv < self.views().length; iv++) {
+						var view = self.views()[iv];
+						for (var i = 0; i < view.rsltGrps().length; i++) {
+							var rg = view.rsltGrps()[i];
+							if (arr.indexOf(rg.id) != -1) {
+								rg.active(1);
+							} else {
+								rg.active(0);
+							}
+						}
+					}
+					
+				} else {
+					for (var iv = 0; iv < self.views().length; iv++) {
+						var view = self.views()[iv];
+						for (var i = 0; i < view.rsltGrps().length; i++) {
+							var rg = view.rsltGrps()[i];
+							rg.active(1);
+							
+						}
+					}
+					
+				}
+			},
+			owner: this
+		});
+		//========== RG Management
+		
 		/**
 		 * Adds a Source (as an observer pattern?)
 		 * 
@@ -653,7 +657,7 @@ var App = (function() {
 		this.id = id;
 		var self = this;
 
-        self.active = ko.observable(1); //näitab ja teeb päringuid
+		self.active = ko.observable(1); //näitab ja teeb päringuid
 
 		self.srcs = O.plain(); //{}; //public
 		self.src_ids = '';
@@ -672,7 +676,7 @@ var App = (function() {
 		//resultide kokku kogumiseks eri responsidest.
 		self.rslts = []; //taisvaade
 		self.rsltsComp = []; //lyhivaade
-     
+	 
 		/**
 		 * Resets the result lists
 		 * 
@@ -820,7 +824,7 @@ var App = (function() {
 		 * @method loading
 		 * @return {Bool}
 		 */
-		self.loading = ko.computed(function(){
+		self.loading = ko.pureComputed(function(){
 			for (var i = 0; i < self.rsltGrps().length; i++) {
 				if (self.rsltGrps()[i].loading()) {
 					return true;
@@ -829,9 +833,11 @@ var App = (function() {
 			return false;
 		});
 
-		self.visible = ko.computed(function(){
-			if (self.rsltGrps().length > 0) {
-				return true;
+		self.active = ko.pureComputed(function(){
+			for (var i = 0; i < self.rsltGrps().length; i++) {
+				if (self.rsltGrps()[i].active()) {
+					return true;
+				}
 			}
 			return false;
 		});
@@ -843,7 +849,7 @@ var App = (function() {
 		 * @method reslen
 		 * @return {Number} sum of results found
 		 */
-		self.reslen = ko.computed(function() {
+		self.reslen = ko.pureComputed(function() {
 			var sum = 0;
 			for (var i = 0; i < self.rsltGrps().length; i++) {
 				sum += self.rsltGrps()[i].reslen();
@@ -1523,7 +1529,7 @@ var App = (function() {
 
 		self.procLinks = function() {
 
-            var $rs = $('#'+ id +' .result');
+			var $rs = $('#'+ id +' .result');
 
 			$rs.each(function() {
 				var myTextEl = this;
@@ -1816,7 +1822,7 @@ var App = (function() {
 		};
 	};
 
-    //========================================================================================
+	//========================================================================================
 
 
 	/**
@@ -1877,30 +1883,30 @@ var App = (function() {
 		keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
 	};
 
-    /**
-     * Building the processors defined in app.processors
-     */
-    for (var cid in processors) {
+	/**
+	 * Building the processors defined in app.processors
+	 */
+	for (var cid in processors) {
 
-        var pdef = processors[cid];
+		var pdef = processors[cid];
 
-        var pr; //processor
-        if (typeof pdef['proc'] === 'function') {
-            pr = new pdef.proc(cid);
-        }
+		var pr; //processor
+		if (typeof pdef['proc'] === 'function') {
+			pr = new pdef.proc(cid);
+		}
 
-        //anname processorile tema src-d
-        for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
-            var src_id = pdef.res[i];
-            pr.addSrc(src_id, qm.srcs.h[src_id]);
-        }
+		//anname processorile tema src-d
+		for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
+			var src_id = pdef.res[i];
+			pr.addSrc(src_id, qm.srcs.h[src_id]);
+		}
 
-        qm.addProc(cid, pr);
-    }
+		qm.addProc(cid, pr);
+	}
 
 
 
-    /**
+	/**
 	 * Definitions for building the CategoryView objects
 	 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
 	 * @todo
@@ -1995,7 +2001,7 @@ var App = (function() {
 		qm.addView(cid, catv);
 	}
 
-    //============================================================================
+	//============================================================================
 
 	/**
 	 * Result items are shown in the RGView as a list
