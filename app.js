@@ -398,94 +398,11 @@ var App = (function() {
 
 
 	/**
-	 * ResourceMediator is mediator between sources, processers and views for one resource
-	 * 
-	 * @class ResourceMediator
-	 */
-	var ResourceMediator = function() {
-		var self = this;
-		
-		this.query = function() {
-			
-		}
-		
-		
-	}
-
-	/**
 	 * QueryManager holds a current set of resources that user wants to query
 	 * 
 	 * @class QueryManager
 	 */
 	var QueryManager = function() {
-		var self = this;
-		
-		this.addResource = function() {
-			
-		}
-		
-		this.removeResource = function() {
-			
-		}
-		
-		/**
-		 * Make a search on all registered Source APIs
-		 * 
-		 * @method queryAll
-		 * @param query_str
-		 * @param params
-		 * @return promises
-		 */
-		this.queryAll = function(query_str, params) {
-			var responses = O.plain(); //{};
-			var promises = [];
-
-			//kas teeks teistmoodi?:
-			// 1. käime läbi kõik RG-d, mis antud kasutaja konfi puhul midagi otsida tahavad
-			// 1.1 kogume neilt kokku kõik src-id
-			// 2. teeme päringud
-			// 3. jagame vastused RG-dele.
-			//----------------------
-
-			//tee kõik päringud
-			for (var i = 0; i < self.srcs.length; i += 1) {
-				var s = self.srcs[i];
-				responses[s.id] = s.query(query_str, params); //promise
-			}
-
-			//jaga vastused proc-idele:
-			for (var i = 0; i < self.procs.length; i += 1) {
-				var pr = self.procs[i];
-				var prResponses = O.plain(); //{}; //miks hash?
-				for (var sk in pr.srcs) { //pr.srcs on {}
-					prResponses[sk] = responses[sk];
-				}
-				var p = pr.setResponses(query_str, prResponses);
-				promises.push(p);
-			}
-
-			//jaga vastused cat-idele: iga view saab temale vajalikud vastused
-			for (var i = 0; i < self.views().length; i += 1) {
-				var cat = self.views()[i];
-
-				for (var si = 0; si < cat.rsltGrps().length; si += 1) {
-					var rg = cat.rsltGrps()[si];
-					var vResponses = O.plain(); //{};
-					for (var sk in rg.srcs) { //v.srcs on {}
-						vResponses[sk] = responses[sk];
-					}
-					var p = rg.setResponses(query_str, vResponses);
-					promises.push(p);
-				}
-
-			}
-			
-			return $.when.apply($, promises );
-		};
-
-		
-	}
-	var QueryManager_Old = function() {
 		var self = this;
 		
 		//this.src_ids = [];
@@ -1915,7 +1832,7 @@ var App = (function() {
 	};
 	
 
-	app.qm = new QueryManager_Old();
+	app.qm = new QueryManager();
 	
 	var init = function(qm) {
 		
