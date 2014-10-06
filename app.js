@@ -295,7 +295,7 @@ var App = (function() {
 				params['prop']           += '|categories'; // and page's categories
 				//params['exintro']         = null; // extract only the first paragraph
 				params['exsentences']     = 1;
-				//params['explaintext']     = null; // extract as plaintext
+				params['explaintext']     = null; // extract as plaintext
 				params['redirects']       = null; // handle redirects automatically
 				params['format']          = 'json';
 				params['cllimit']         = 10; // maximum 10 categories
@@ -410,8 +410,11 @@ var App = (function() {
 		//this.view_ids = [];
 		this.procs = new Harray('id');
 
-
-		//CategoryViews
+		/**
+		 * Returns the CategoryViews
+		 * @method views
+		 * @return {array}
+		 */
 		this.views = ko.observableArray(new Harray('id')); //miks obs?
 		
 		//RG Management
@@ -598,7 +601,7 @@ var App = (function() {
 		//resultide kokku kogumiseks eri responsidest.
 		self.rslts = []; //taisvaade
 		self.rsltsComp = []; //lyhivaade
-	 
+		 
 		/**
 		 * Resets the result lists
 		 * 
@@ -1102,7 +1105,22 @@ var App = (function() {
 					var searchterm = data[searchterm_i];
 					var searchtermMatches = data[searchterm_i + 1];
 					
+					// if no matches found, don't do anything
+					if(searchtermMatches.length === 0) {
+						continue; // skip empties
+					}
+					
 					item['content'] = 'Leiti sarnaseid: ';
+					// make each match into a link
+					for(var searchtermMatch_i = 0;
+							searchtermMatch_i < searchtermMatches.length;
+							searchtermMatch_i += 1) {
+								self.word_cnt += 1;
+								var link = searchtermMatches[searchtermMatch_i];
+								link = '<a href="https://et.wikipedia.org/wiki/'+encodeURI(link)+'">'+link+'</a>';
+								// link = encodeURI(link);
+								searchtermMatches[searchtermMatch_i] = link;
+							}
 					item['content'] += searchtermMatches.join(', ');
 					item['content'] += '.';
 					self.rslts.push(item);
@@ -1127,7 +1145,7 @@ var App = (function() {
 							item['url'] = baseUrl + data['redirects'][0]['to'];
 						//}
 					} else {
-						item['title'] = page['title'];
+						//item['title'] = page['title'];
 						item['url'] = baseUrl + page['title'];
 					}
 					
@@ -2137,7 +2155,7 @@ var App = (function() {
 								self.getCol() 
 							: 
 								self.getDefault())
-					  );
+						);
 			return self.id + ' ' + self.keyw + ' ' + html;
 		};
 
