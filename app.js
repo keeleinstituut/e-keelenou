@@ -374,8 +374,9 @@ var App = (function() {
 		 * 
 		 * @method getCol
 		 * @param {Number} nr number of the column
+		 * @uses QueryManager!!!
 		 * @return Array
-		 */
+		 
 		self.getCol = function(nr) {
 			var c = [];
 			var vs = qm.views();
@@ -389,7 +390,7 @@ var App = (function() {
 			}
 			//return ko.observableArray(c);
 			return c
-		};
+		};*/
 		
 	};
 	
@@ -593,7 +594,6 @@ var App = (function() {
 
 			app.lm.add(view_o);
 			//self.views[view_id] = view_o;
-			//console.log('qm.addView: '+ view_id);
 		};
 		
 		/**
@@ -1915,105 +1915,102 @@ var App = (function() {
 	};
 	
 
-	var init = function() {
+	app.qm = new QueryManager_Old();
+	
+	var init = function(qm) {
 		
+		/**
+		 * Building QueryManager's sources following definitions in app.configuration.sources
+		 * @todo: kas kasutajal on enda defineeritud allikate hulk?
+		 */
+		var cs = app.configuration.sources;
+		for (var key in cs) {
+	
+			var src = cs[key];
+			var so; //source obj
+			if (typeof src['cls'] === 'function') {
+				so = new src.cls(key);
+			} else {
+				// @todo throw error;
+			}
+			
+			// copy the initiated sources attributes from the definition
+			$.extend(so, src);
+			qm.addSrc(key, so);
+		} 
+		//qm.addSrc("qs", new EkiSource("qs"));
+		
+
+		/**
+		 * Building the processors defined in app.processors
+		 */
+		var cp = app.configuration.processors;
+		for (var cid in cp) {
+	
+			var pdef = cp[cid];
+	
+			var pr; //processor
+			if (typeof pdef['proc'] === 'function') {
+				pr = new pdef.proc(cid);
+			}
+	
+			//anname processorile tema src-d
+			for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
+				var src_id = pdef.res[i];
+				pr.addSrc(src_id, qm.srcs.h[src_id]);
+			}
+	
+			qm.addProc(cid, pr);
+		}
+	
+
+		/**
+		 * Building CategoryView objects defined in app.configuration.resultCategories
+		 */
+		var rcs = app.configuration.resultCategories;
+		for (var cid in rcs) {
+	
+			var rc = rcs[cid];
+			
+			var catv = new CategoryView(cid); //CategoryView
+	
+			catv.heading = rc.h;
+			catv.col = rc.col;
+	
+	
+			//result Grp-id
+			for (var gid in rc.grps) {
+				var g = rc.grps[gid];
+	
+				var rgv; //RGView
+				if (typeof g['cview'] === 'function') {
+					rgv = new g.cview(gid);
+				} else { //default
+					rgv = new RGView(gid);
+				}
+				//dbg('gid', gid, 'new rgv', rgv);
+	
+				rgv.heading = g.h;
+	
+				if (g.url !== undefined) {
+					rgv.src_url_static_part(g.url);
+				}
+	
+				//ressursid
+				for (var i = 0; i < g.res.length; i++) { //anname cv-le sisendid
+					var src_id = g.res[i];
+					rgv.addSrc(src_id, qm.srcs.h[src_id]);
+				}
+	
+				catv.addRGrp(gid, rgv);
+			}
+	
+			qm.addView(cid, catv);
+		}
+	
 	}
 	
-	/**
-	 * Building QueryManager's sources following definitions in app.configuration.sources
-	 * @todo: kas kasutajal on enda defineeritud allikate hulk?
-	 */
-	var qm = new QueryManager_Old();
-	app.qm = qm;
-	
-	var cs = app.configuration.sources;
-	for (var key in cs) {
-
-		var src = cs[key];
-		var so; //source obj
-		if (typeof src['cls'] === 'function') {
-			so = new src.cls(key);
-		} else {
-			// @todo throw error;
-		}
-		
-		// copy the initiated sources attributes from the definition
-		$.extend(so, src);
-		qm.addSrc(key, so);
-	} 
-	//qm.addSrc("qs", new EkiSource("qs"));
-	
-	
-
-
-	/**
-	 * Building the processors defined in app.processors
-	 */
-	var cp = app.configuration.processors;
-	for (var cid in cp) {
-
-		var pdef = cp[cid];
-
-		var pr; //processor
-		if (typeof pdef['proc'] === 'function') {
-			pr = new pdef.proc(cid);
-		}
-
-		//anname processorile tema src-d
-		for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
-			var src_id = pdef.res[i];
-			pr.addSrc(src_id, qm.srcs.h[src_id]);
-		}
-
-		qm.addProc(cid, pr);
-	}
-
-
-
-	/**
-	 * Building CategoryView objects defined in app.configuration.resultCategories
-	 */
-	var rcs = app.configuration.resultCategories;
-	for (var cid in rcs) {
-
-		var rc = rcs[cid];
-		
-		var catv = new CategoryView(cid); //CategoryView
-
-		catv.heading = rc.h;
-		catv.col = rc.col;
-
-
-		//result Grp-id
-		for (var gid in rc.grps) {
-			var g = rc.grps[gid];
-
-			var rgv; //RGView
-			if (typeof g['cview'] === 'function') {
-				rgv = new g.cview(gid);
-			} else { //default
-				rgv = new RGView(gid);
-			}
-			//dbg('gid', gid, 'new rgv', rgv);
-
-			rgv.heading = g.h;
-
-			if (g.url !== undefined) {
-				rgv.src_url_static_part(g.url);
-			}
-
-			//ressursid
-			for (var i = 0; i < g.res.length; i++) { //anname cv-le sisendid
-				var src_id = g.res[i];
-				rgv.addSrc(src_id, qm.srcs.h[src_id]);
-			}
-
-			catv.addRGrp(gid, rgv);
-		}
-
-		qm.addView(cid, catv);
-	}
-
+	init(app.qm);
 
 	//============================================================================
 
