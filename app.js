@@ -370,20 +370,25 @@ var App = (function() {
 		
 		/**
 		 * Returns all CategoryViews in a column from the LayoutManager
+		 * Ei kasutata praegu kusagil
 		 * 
 		 * @method getCol
 		 * @param {Number} nr number of the column
-		 * @return ko.observableArray
+		 * @return Array
 		 */
 		self.getCol = function(nr) {
 			var c = [];
-			for (var i in qm.views) {
-				var v = qm.views[i];
+			var vs = qm.views();
+			
+			for (var i = 0; i < vs.length; i += 1) {
+				dbg('getCol', i, vs[i]);
+				var v = vs[i];
 				if (v.col === nr) {
 					c.push(v);
 				}
 			}
-			return ko.observableArray(c);
+			//return ko.observableArray(c);
+			return c
 		};
 		
 	};
@@ -1825,39 +1830,106 @@ var App = (function() {
 	//========================================================================================
 
 
-	/**
-	 * Definitions used for building the QueryManager
-	 * @todo
-	 */
-	app.sources = { //$.extend(ekiSources, {
-		qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
-		ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
-		vakk: {id: 'vakk', cls: SourceOTest, abbr: 'KNV', name: 'Keelenõuvakk'},
-		ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti Keele Käsiraamat'},
-		ies: {id: 'ies', cls: SourceOTest, abbr: 'IES', name: 'Inglise-eesti masintõlkesõnastik'},
-		evs: {id: 'evs', cls: SourceOTest, abbr: 'EVS', name: 'Eesti-vene sõnaraamat'},
-		knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed'},
-		knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed'},
-		syn: {id: 'syn', cls: SourceOTest, abbr: 'SÜN', name: 'Sünonüümisõnastik'},
-		thes: {id: 'thes', cls: SourceThesAPI, abbr: 'EWN', name: 'Eesti Wordnet'},
-		ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS', name: 'Ametniku soovitussõnastik'},
-		ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ', name: 'Etümoloogia sõnastik'},
-		stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-		/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
-		WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
-	};
-	//});
+	app.configuration = {
+	
+		/**
+		 * Definitions used for building the QueryManager
+		 * @todo
+		 */
+		sources: {
+			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: 'KNV', name: 'Keelenõuvakk'},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti Keele Käsiraamat'},
+			ies: {id: 'ies', cls: SourceOTest, abbr: 'IES', name: 'Inglise-eesti masintõlkesõnastik'},
+			evs: {id: 'evs', cls: SourceOTest, abbr: 'EVS', name: 'Eesti-vene sõnaraamat'},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed'},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed'},
+			syn: {id: 'syn', cls: SourceOTest, abbr: 'SÜN', name: 'Sünonüümisõnastik'},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: 'EWN', name: 'Eesti Wordnet'},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS', name: 'Ametniku soovitussõnastik'},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ', name: 'Etümoloogia sõnastik'},
+			stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
+			/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
+		},
+		
+		/**
+		 * Definitions used for building shared processors
+		 * @todo
+		 */
+		processors: {
+			// @todo: kas keyw paneb bigword-i? jah.
+			keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
+		},
+		
+		/**
+		 * Definitions for building the CategoryView objects
+		 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
+		 * @todo
+		 * resultCategories = {
+		 *   rid: {
+		 *     h: "this is the header shown in the view",
+		 *     res: ["array of"],
+		 *     cview: NameOfConcreteRGView,
+		 *     url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+		 *   }
+		 * }
+		 */
+		resultCategories: {
+			c_qs: {h: 'ÕS', col: 1, grps: {
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
+			}},
+			c_def: {h: 'Seletused', col: 1, grps: {
+				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
+			}},
+			c_rel: {h: 'Seotud sõnad', col: 1, grps: {
+				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://eki.ee/dict/synonyymid/index.cgi?Q='},
+				thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
+			}},
+			c_ety: {h: 'Etümoloogia', col: 1, grps: {
+				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
+			}},
+			c_trans: {h: 'Tõlkevasted', col: 1, grps: {
+				trans_en: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
+				trans_ru: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
+			}},
+			c_sugg: {h: 'Soovitused', col: 2, grps: {
+				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
+				//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=0&otsi='}
+				vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
+			}},
+			c_knab: {h: 'Kohanimed', col: 1, grps: {
+				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
+				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
+			}},
+			c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
+				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
+				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
+			}},
+			c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
+				ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
+			}}
+		}
 
+	};
+	
+
+	var init = function() {
+		
+	}
+	
 	/**
-	 * Building QueryManager's sources following definitions in app.sources
+	 * Building QueryManager's sources following definitions in app.configuration.sources
 	 * @todo: kas kasutajal on enda defineeritud allikate hulk?
 	 */
 	var qm = new QueryManager_Old();
 	app.qm = qm;
 	
-	for (var key in app.sources) {
+	var cs = app.configuration.sources;
+	for (var key in cs) {
 
-		var src = app.sources[key];
+		var src = cs[key];
 		var so; //source obj
 		if (typeof src['cls'] === 'function') {
 			so = new src.cls(key);
@@ -1866,29 +1938,21 @@ var App = (function() {
 		}
 		
 		// copy the initiated sources attributes from the definition
-		$.extend(so, app.sources[key]);
+		$.extend(so, src);
 		qm.addSrc(key, so);
 	} 
 	//qm.addSrc("qs", new EkiSource("qs"));
 	
 	
 
-	/**
-	 * Definitions used for building shared processors
-	 * @todo
-	 */
-	//Vahetöötlejate defineerimine:
-	var processors = {
-		// @todo: kas keyw paneb bigword-i?
-		keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
-	};
 
 	/**
 	 * Building the processors defined in app.processors
 	 */
-	for (var cid in processors) {
+	var cp = app.configuration.processors;
+	for (var cid in cp) {
 
-		var pdef = processors[cid];
+		var pdef = cp[cid];
 
 		var pr; //processor
 		if (typeof pdef['proc'] === 'function') {
@@ -1907,63 +1971,12 @@ var App = (function() {
 
 
 	/**
-	 * Definitions for building the CategoryView objects
-	 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
-	 * @todo
-	 * resultCategories = {
-	 *   rid: {
-	 *     h: "this is the header shown in the view",
-	 *     res: ["array of"],
-	 *     cview: NameOfConcreteRGView,
-	 *     url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
-	 *   }
-	 * }
+	 * Building CategoryView objects defined in app.configuration.resultCategories
 	 */
-	var resultCategories =
-	app.resultCategories = {
-		c_qs: {h: 'ÕS', col: 1, grps: {
-			qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
-		}},
-		c_def: {h: 'Seletused', col: 1, grps: {
-			ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
-		}},
-		c_rel: {h: 'Seotud sõnad', col: 1, grps: {
-			syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://eki.ee/dict/synonyymid/index.cgi?Q='},
-			thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
-		}},
-		c_ety: {h: 'Etümoloogia', col: 1, grps: {
-			ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
-		}},
-		c_trans: {h: 'Tõlkevasted', col: 1, grps: {
-			trans_en: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
-			trans_ru: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
-		}},
-		c_sugg: {h: 'Soovitused', col: 2, grps: {
-			ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
-			//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=0&otsi='}
-			vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
-		}},
-		c_knab: {h: 'Kohanimed', col: 1, grps: {
-			knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
-			knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
-		}},
-		c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
-			/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
-			WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
-		}},
-		c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
-			ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
-		}}
+	var rcs = app.configuration.resultCategories;
+	for (var cid in rcs) {
 
-	};
-
-
-	/**
-	 * Building CategoryView objects defined in app.resultCategories
-	 */
-	for (var cid in resultCategories) {
-
-		var rc = resultCategories[cid];
+		var rc = rcs[cid];
 		
 		var catv = new CategoryView(cid); //CategoryView
 
@@ -2000,6 +2013,7 @@ var App = (function() {
 
 		qm.addView(cid, catv);
 	}
+
 
 	//============================================================================
 
