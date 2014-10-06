@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>Teksti lausestaja [e-keelenõu]</title>
+		
+		<link rel="stylesheet" type="text/css" href="lausestaja.css" class="votasee">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="EKIToolkit.js" class="votasee"></script>
+		<script src="EKILausestajaModule.js" class="votasee"></script>
+		<script src="lausestaja.js" class="votasee"></script>
+	</head>
+
+<body>
+
+<div id="page_content">
+    <h1 id="bigword">Teksti lausestaja</h1>
+    <div class="box">Lausestaja tükeldab sisestatud teksti ortograafilisteks lauseteks.
+Ortograafilised laused ei pruugi ühtida teksti tegelikele lausetega, siiski
+on teksti lausestamine kasulik teksti analüüsimisel.</div>
+<div id="usertext" contenteditable="true">Aabitsas on kolmkümmend lehte.
+    Minul kaks silma.</div>
+<input type="submit" name="analyze" value="Lausesta">
+<div id="analyzedtext" contenteditable="false"></div>
+</div>
+
+</body></html>
