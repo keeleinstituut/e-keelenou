@@ -1803,11 +1803,17 @@ var App = (function() {
 		 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
 		 * @todo
 		 * resultCategories = {
-		 *   rid: {
-		 *     h: "this is the header shown in the view",
-		 *     res: ["array of"],
-		 *     cview: NameOfConcreteRGView,
-		 *     url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+		 *   c_id: { //categoryView id
+		 *     h: "this is the header shown in the CategoryView box",
+		 *     col: nr of column where box is initially located
+		 *     grps: { //Result Groups
+		 *       rid: { //Result Group id
+		 *         h: "this is the header shown in the ResultGroup box",
+		 *         res: ["array of"],
+		 *         cview: NameOfConcreteRGView,
+		 *         url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+		 *       }
+		 *     }
 		 *   }
 		 * }
 		 */
