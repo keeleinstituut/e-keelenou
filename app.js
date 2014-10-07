@@ -1768,10 +1768,115 @@ var App = (function() {
 	app.configuration = {
 	
 		/**
+		 * Näidatakse allika lehel
+		 * RGid: {id: RGid, ...allika info...} 
+		 * või [{id: RGid, ...allika info...}]
+		 */
+		RG_sources: [
+			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+				url: "http://www.eki.ee/dict/qs/", active: true
+			},
+			{id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
+				url: "http://www.eki.ee/dict/ekss/", active: true
+			},
+			{id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
+				url: "http://keeleabi.eki.ee/?leht=4", active: true
+			},
+			{id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
+				url: "http://www.eki.ee/books/ekk09/", active: true
+			},
+			{id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
+				url: "http://www.eki.ee/dict/ies/", active: true
+			},
+			{id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
+				url: "http://www.eki.ee/dict/evs/", active: true
+			},
+			{id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/", active: true
+			},
+			{id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/", active: true
+			},
+			{id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
+				url: "http://www.eki.ee/dict/synonyymid/", active: true
+			},
+			{id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
+				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et", active: true
+			},
+			{id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
+				url: "http://www.eki.ee/dict/ametnik/", active: true
+			},
+			{id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
+				url: "http://www.eki.ee/dict/ety/", active: true
+			},
+			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
+				url: "http://et.wikipedia.org/", active: true
+			}
+		],
+		RG_sources_hash__: {
+			qs13: {id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+				url: "http://www.eki.ee/dict/qs/"
+			},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
+				url: "http://www.eki.ee/dict/ekss/"
+			},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
+				url: "http://keeleabi.eki.ee/?leht=4"
+			},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
+				url: "http://www.eki.ee/books/ekk09/"
+			},
+			trans_en: {id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
+				url: "http://www.eki.ee/dict/ies/"
+			},
+			trans_ru: {id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
+				url: "http://www.eki.ee/dict/evs/"
+			},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/"
+			},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/"
+			},
+			syn: {id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
+				url: "http://www.eki.ee/dict/synonyymid/"
+			},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
+				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et"
+			},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
+				url: "http://www.eki.ee/dict/ametnik/"
+			},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
+				url: "http://www.eki.ee/dict/ety/"
+			},
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
+				url: "http://et.wikipedia.org/"
+			}
+		},
+	
+		/**
 		 * Definitions used for building the QueryManager
 		 * @todo
 		 */
 		sources: {
+			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)'},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)'},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk'},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)'},
+			ies: {id: 'ies', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik'},
+			evs: {id: 'evs', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)'},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas'},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas'},
+			syn: {id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)'},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet'},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik'},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)'},
+			stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
+			/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
+		},
+		/*sources: {
 			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
 			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
 			vakk: {id: 'vakk', cls: SourceOTest, abbr: 'KNV', name: 'Keelenõuvakk'},
@@ -1785,9 +1890,8 @@ var App = (function() {
 			ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS', name: 'Ametniku soovitussõnastik'},
 			ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ', name: 'Etümoloogia sõnastik'},
 			stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-			/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
 			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
-		},
+		},*/
 		
 		/**
 		 * Definitions used for building shared processors
