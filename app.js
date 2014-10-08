@@ -1813,7 +1813,7 @@ var App = (function() {
 			{id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
 				url: "http://www.eki.ee/dict/ety/", active: true
 			},
-			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
+			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia (beta)',
 				url: "http://et.wikipedia.org/", active: false
 			}
 		],
@@ -1924,6 +1924,7 @@ var App = (function() {
 		 * resultCategories = {
 		 *   c_id: { //categoryView id
 		 *     h: "this is the header shown in the CategoryView box",
+		 *     topmenu: "short header for top menu" (optional, otherwise h for top menu)
 		 *     col: nr of column where box is initially located
 		 *     grps: { //Result Groups
 		 *       rid: { //Result Group id
@@ -1931,6 +1932,7 @@ var App = (function() {
 		 *         res: ["array of"],
 		 *         cview: NameOfConcreteRGView,
 		 *         url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+		 *         closed: boolean  ?
 		 *       }
 		 *     }
 		 *   }
@@ -1940,7 +1942,7 @@ var App = (function() {
 			c_qs: {h: 'ÕS', col: 1, grps: {
 				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
 			}},
-			c_def: {h: 'Seletused', col: 1, grps: {
+			c_def: {h: 'Seletused', topmenu: "Seletav", col: 1, grps: {
 				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
 			}},
 			c_rel: {h: 'Seotud sõnad', col: 1, grps: {
@@ -1963,12 +1965,12 @@ var App = (function() {
 				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
 				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
 			}},
-			c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
-				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
-				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
-			}},
 			c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
 				ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
+			}},
+			c_WikiEst: {h: 'Mujalt veebist', col: 1, grps: {
+				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
+				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
 			}}
 		}
 
