@@ -31,7 +31,7 @@
 				if (cookieRGs.items().length > 0) {
 					sel_RG_IDs = cookieRGs.items();
 				} else {
-					sel_RG_IDs = getInitialRG_IDs();
+					sel_RG_IDs = baseconf.getInitialRG_IDs();
 				}
 				
 				var selected_RGs = ko.observableArray(sel_RG_IDs);
@@ -66,7 +66,7 @@
 			<div class="box">
 				<p>Keeleallikad, millest e-keelenõu mootor otsib:</p>
 				<div id="allikad">
-					<table data-bind="foreach: app.M.RG_srcs">
+					<table data-bind="foreach: app.M.RG_srcs" style="margin-bottom: 1em">
 						<tr>
 							<td>
 								<input type="checkbox" data-bind="attr: {'value': id}, checked: $root.M.selectedRGs" />
