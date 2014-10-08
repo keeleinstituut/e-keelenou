@@ -52,8 +52,8 @@ var O = {
 
 var cookieList = function(cookieName, opt) {
 	var options = opt || {
-		path: '/',
-		expires: 7
+		path: '/'
+		//expires: 7
 	};
 	
 	//When the cookie is saved the items will be a comma seperated string
