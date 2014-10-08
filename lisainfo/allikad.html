@@ -12,24 +12,26 @@
 			$(function(){
 				
 				var baseapp = new App();
-				var RG_baseconf = baseapp.configuration.RG_sources;
+				var baseconf = baseapp.configuration;
+				var RG_baseconf = baseconf.RG_sources;
 				var sel_RG_IDs = [];
 				var cookieRGs; //cookieList path=/
 				
+				/*
 				var getInitialIDs = function () {
 					var ids = [];
 					for (var i=0; i<RG_baseconf.length; i++) {
 						ids.push(RG_baseconf[i].id);
 					};
 					return ids;
-				};
+				};*/
 				
 				//check from cookie
 				cookieRGs = cookieList('RGs');
 				if (cookieRGs.items().length > 0) {
 					sel_RG_IDs = cookieRGs.items();
 				} else {
-					sel_RG_IDs = getInitialIDs();
+					sel_RG_IDs = getInitialRG_IDs();
 				}
 				
 				var selected_RGs = ko.observableArray(sel_RG_IDs);
@@ -49,7 +51,7 @@
 						localDirCL.clear();
 						
 						//var cookie_ids = getInitialIDs();
-						selected_RGs(getInitialIDs()); //
+						selected_RGs(baseconf.getInitialRG_IDs()); //
 					}
 				}
 				

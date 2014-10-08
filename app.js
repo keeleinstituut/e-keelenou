@@ -1814,9 +1814,20 @@ var App = (function() {
 				url: "http://www.eki.ee/dict/ety/", active: true
 			},
 			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
-				url: "http://et.wikipedia.org/", active: true
+				url: "http://et.wikipedia.org/", active: false
 			}
 		],
+		getInitialRG_IDs: function () {
+			var conf = app.configuration;
+			var rgss = conf.RG_sources;
+			var ids = [];
+			for (var i=0; i< rgss.length; i++) {
+				if (rgss[i].active) {
+					ids.push(rgss[i].id);
+				}
+			};
+			return ids;
+		},
 		RG_sources_hash__: {
 			qs13: {id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
 				url: "http://www.eki.ee/dict/qs/"

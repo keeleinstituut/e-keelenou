@@ -217,37 +217,41 @@
 			}
 			*/
 			var url = new URI(window.location.search);
-			
-			
 
-					if (url.hasQuery("frgs")) {
-						var map = url.search(true);
-						var frgs = map['frgs'];
-						dbg('frgs:'+ frgs)
-						if (frgs == '*' || frgs.length == 0) {
-							app.qm.forceRGs(1); //luba kõik RGd
-						} else {
-							uRGs = frgs.split(',');
-							
-							dbg('uRGs', uRGs, typeof uRGs)
-							dbg(uRGs)
 			
-							if (uRGs.length > 0) {
-								app.qm.forceRGs(uRGs);
-							}
-						}
-					} else {
-						//ei sunnita RG valikut, vaatame kas on küpsises salvestatud
-						var saved = app.qm.savedRGs();
-						dbg('____________________________________savedRGs', saved);
-						if (saved.length > 0) {
-							dbg('-----------------------------------', saved.length)
-							app.qm.screenRGs(saved);
-						}
-						
+			//Allikate valik ---------------------------------------------------
+			
+			if (url.hasQuery("frgs")) {
+				var map = url.search(true);
+				var frgs = map['frgs'];
+				dbg('frgs:'+ frgs)
+				if (frgs == '*' || frgs.length == 0) {
+					app.qm.forceRGs(1); //luba kõik RGd
+				} else {
+					uRGs = frgs.split(',');
+					
+					dbg('uRGs', uRGs, typeof uRGs)
+					dbg(uRGs)
+	
+					if (uRGs.length > 0) {
+						app.qm.forceRGs(uRGs);
 					}
-
-
+				}
+			} else {
+				//URLiga ei sunnita RG valikut.
+				//vaatame kas on küpsises salvestatud
+				var saved = app.qm.savedRGs();
+				if (saved.length > 0) {
+					app.qm.screenRGs(saved);
+				} else {
+					//võtame konfist
+					var ids = app.configuration.getInitialRG_IDs();
+					dbg('ids confist:', ids);
+					app.qm.screenRGs(ids);
+				}
+				
+			}
+			//------------------------------------------------------------------
 			
 			if (url.hasQuery("Q")) {
 				var q = url.search(true)['Q'];
