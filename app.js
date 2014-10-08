@@ -963,6 +963,7 @@ var App = (function() {
 
 			for (var i=0; i < data.vaade.length; i++) {
 				r = data.vaade[i];
+				r.sid = sid;
 				self.rslts.push( r );
 				//dbg('vaade:', r)
 			}
@@ -984,8 +985,10 @@ var App = (function() {
 
 				var o = self.rslts[i];
 				//dbg('self.rslts[i]', i, o);
-				var vi = new Result('', o.self, o.l);
-				//var vi = new ExpandableDataItem('', '', '', '', self.rslts[i]);
+				
+				var vi = new Result('', o.t, o.l);
+				//var vi = new ExpandableDataItem('', '', '', o.l, o.t);
+				
 				itemList.push( vi );
 			}
 			self.items(itemList); //näitame uut arrayd
