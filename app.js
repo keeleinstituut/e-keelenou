@@ -1963,12 +1963,12 @@ var App = (function() {
 				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
 				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
 			}},
-			c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
-				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
-				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
-			}},
 			c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
 				ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
+			}},
+			c_WikiEst: {h: 'Mujalt veebist', col: 1, grps: {
+				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
+				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
 			}}
 		}
 
