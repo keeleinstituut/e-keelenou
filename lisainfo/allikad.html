@@ -1,445 +1,134 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Allikad [e-keelenõu]</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
-
-        <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-        <script type='text/javascript' src='../lib/knockout-2.3.0.debug.js'></script>
-        <!--
-        <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout.js'></script>
-        <script type='text/javascript' src='//rawgithub.com/SteveSanderson/knockout.mapping/master/build/output/knockout.mapping-latest.js'></script>
-        <script src="/js/jquery.form.js"></script> 
-        <script type='text/javascript' src='lib/shim.js'></script>
-        -->
-        <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js'></script>
-        <link rel="stylesheet" href="../css/style.css" />
-		
-        <script src="../lib/jquery-ui-1.10.3.custom.min.js"></script>
-        <script src="../lib/jquery.iecors.js" async></script>
-		
-		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.js'></script>
-        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.css" />
-
-        <link rel="stylesheet" type="text/css" href="../css/ressursid.css" />
-        <link rel="stylesheet" type="text/css" href="../css/cleanstickyfooter.css" media="screen" charset="utf-8" />
-        
-        <script type='text/javascript' src="../lib/myshim.js"></script>
-        <script type='text/javascript' src='../lib/harray.js'></script>
-        <script type='text/javascript' src='../app.js'></script>
-		<script type='text/javascript' src="../lib/javascript.js"></script>
-        <!-- Zoombox -->
-        <script type="text/javascript" src="../zoombox/zoombox.js"></script>
-        <link href="../zoombox/zoombox.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
-
-        <script>
-        $(function() {
-
-            app = new App();
-
-            //otsingu k2itumine
-            app.queryText = ko.observable();
-            app.searching = ko.observable(0);
-
-            app.search = function() {
-                //on first call of search() do additional tasks:
-                $('#start_content, .mobile-text').hide();
-                $('#page_content').show();
-
-                //then switch to regular behaviour:
-                app.search = function () {
-                    var summq = new SW();
-                    app.searching(1);
-                    var p = this.qm.searchAll(app.queryText());
-                    $('#Q').select();
-                    p.then(function () {
-                        app.searching(0);
-                        console.log('kogu päring ' + summq.get() + "ms");
-                        //call was this helpful?
-                        $(".social-buttons, #preloader").fadeOut("slow", function(){$("#poscontainer").fadeIn("slow");});
-                    })
-                }
-                //call actual function
-                app.search();
-            }
-
-            ko.applyBindings(app);
-            $('#Q').focus();
-
-
-            //s6na tyybi infomulli tekitamine ===================================
-
-            app.foreachTyypLink(function($a, html, res, tyyp) {
-                //$a - <a> lingi element jquery objektina.
-                //html - tyybi mulli sisu
-                //res - ressursi id ('qs' v6i 'def')
-                //tyyp - tyybi nr
-
-                $a.qtip({
-                    overwrite: false, // Make sure the tooltip won't be overridden once created
-                    content: {
-                        text: function(event, api) {
-
-                            //api.set('content.text', html);
-                            //return 'Laeb...';
-                            return html;
-                        }
-                    },
-                    hide: {
-                        fixed: true,
-                        delay: 300
-                    }
-                });
-
-            });
-
-            //===================================================================
-
-        });
-			function animate(e){
-				var maxHeight = $(e).next(".boxContent").height()+60;
-				var eHeight = $(e).parent(".box").height();
-				var width = $(document).width();
-				if(width < "1080"){
-					console.log($(e).parent().attr("class"));
-					if(eHeight == "26"){
-						$(".box").animate({
-							height: "26px"
-						}, 400);
-						$(e).parent(".box").animate({
-							height: maxHeight
-						}, 600);
-					}else{
-						$(e).parent(".box").animate({
-							height: "26px"
-						}, 600);
+	<head>
+		<title>Allikad [e-keelenõu]</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<script src="../lib/URI.js" class="votasee"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" class="votasee"></script>
+		<script type='text/javascript' src='../lib/harray.js' class="votasee"></script>
+		<script type='text/javascript' src='../app.js' class="votasee"></script>
+		<script class="votasee">
+			$(function(){
+				
+				var baseapp = new App();
+				var baseconf = baseapp.configuration;
+				var RG_baseconf = baseconf.RG_sources;
+				var sel_RG_IDs = [];
+				var cookieRGs; //cookieList path=/
+				
+				/*
+				var getInitialIDs = function () {
+					var ids = [];
+					for (var i=0; i<RG_baseconf.length; i++) {
+						ids.push(RG_baseconf[i].id);
+					};
+					return ids;
+				};*/
+				
+				//check from cookie
+				cookieRGs = cookieList('RGs');
+				if (cookieRGs.items().length > 0) {
+					sel_RG_IDs = cookieRGs.items();
+				} else {
+					sel_RG_IDs = baseconf.getInitialRG_IDs();
+				}
+				
+				var selected_RGs = ko.observableArray(sel_RG_IDs);
+				selected_RGs.subscribe(function(newArr) {
+					dbg('save selected_RGs', newArr);
+					//saveRGs
+					cookieRGs.set(newArr);
+					dbg('cookieRGs', cookieRGs.items())
+				});
+			
+				M = {
+					RG_srcs: RG_baseconf,
+					selectedRGs: selected_RGs,
+					reset: function() {
+						cookieRGs.clear();
+						var localDirCL = cookieList('RGs', {});
+						localDirCL.clear();
+						
+						//var cookie_ids = getInitialIDs();
+						selected_RGs(baseconf.getInitialRG_IDs()); //
 					}
 				}
-			}
-        </script>
+				
+			})	
+		</script>
+	</head>
 
+	<body>
 
-    </head>
-    <body>
-		<div id="preloader"> <div class="loader"></div> </div>
-        <div id="wrapper">
-            <div id="content_wrapper" data-bind="with: app"> 
-                <div id="content_inner_wrapper">
-					<div id="header">
-						<div class="logo-wrapper">
-							<div class="logo">
-								<a href="http://keelenou.tk/"><img src="/gr/logo/logo_eki.gif"/></a>
-							</div>	
-							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
-						</div>
-						<div class="mobile-text">Ühispäring keeleinfot sisaldavatest allikatest</div>
-						<ul id="top-bar">
-							<li class="tools"><a href="#">Keeletööriistad</a>
-								<ul class="submenu">
-									<li><a href="/tool/morfanal.html">Morfoloogiline analüüs</a></li>
-									<li><a href="#">Morfoloogiline süntees</a></li>
-									<li><a href="#">Lemmatiseerimine</a></li>
-									<li><a href="#">Vältetuvastus</a></li>
-									<li><a href="#">Tüübituvastus</a></li>
-									<li><a href="#">Silbitus</a></li>
-									<li><a href="#">Lausestamine</a></li>
-									<li><a href="/tool/emo.html">Emotsioonidetektor</a></li>
-									<li><a href="/tool/speech.html">Kõnesüntees</a></li>
-                                                                        <li><a href="/tool/sonastik.html">Oma sõnastik</a></li>
-								</ul>
-							</li>
-							<li style="display: none;" class="sisene"><a href="#">Sisene</a>
-								<div class="submenu">
-									<div id="login">
-										<strong>Logi sisse kasutajaga</strong>
-										<input onblur="if (this.value == '') {this.value = 'Kasutajanimi';}" onfocus="if (this.value == 'Kasutajanimi') {this.value = '';}" name="login" type="text" value="Kasutajanimi"/>
-										<input onblur="if (this.value == '') {this.value = 'Parool';}" onfocus="if (this.value == 'Parool') {this.value = '';}" name="password" type="text" value="Parool" />
-										<a href="#" class="top_10">Registreeru</a>
-										<a href="#">Unustasin parooli</a>
-										<input type="button" value="Logi sisse"/>
-										<div style="clear:both;"></div>
-									</div>
-									<div id="social-login">
-										<strong>Kasuta sisselogimiseks</strong>
-										<a href="#" class="facebook-login opacity"></a>
-										<a href="#" class="goolge-login opacity"></a>
-										<a href="#" class="twitter-login opacity"></a>
-										<a href="#" class="id-login opacity"></a>
-									</div>
-								</div>
-							</li>
-                                                        <li class="lisainfo"><a href="#">E-keelenõust</a>
-                                                                <ul class="submenu">
-									<li><a href="/lisainfo/keelenoust.html">Keelenõust</a></li>
-									<li><a href="/lisainfo/allikad.html">Allikate kirjeldus</a></li>
-									<li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
-                                                                        <li><a href="/lisainfo/rakendusliidesed.html">Rakendusliidesed</a></li>
-									<!--
-                                                                        <li><a href="#">Statistika</a></li>
-                                                                        <li><a href="/lisainfo/kasutustingimused.html">Kasutustingimused</a></li>
-                                                                        -->
-								</ul>
-                                                        </li>
-							<!--<li><a href="keelenoust.html">E-keelenõust</a></li>
-                                                        -->
-						</ul>
-						<form data-bind="submit: search" id="paring" class="topBar">
-							<input data-bind="value: queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" autofocus="" />
-							<input data-bind="" id="otsi" value="" type="submit" />
-						</form>
-						<div class="social-buttons">
-							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
-						</div>
-						<div id="menu-wrapper">
-							<ul id="menu">
-								<li><a href="#qs">ÕSi vasted</a></li>
-								<li><a href="#def">EKKS seletused</a></li>
-								<li><a href="#ekkr">Käsiraamat</a></li>
-								<li><a href="#trans_en">Inglise vasted</a></li>
-								<li><a href="#trans_ru">Vene vasted</a></li>
-								<li><a href="#knab">Kohanimed</a></li>
-								<li><a href="#syn">Sünonüümid</a></li>
-								<li><a href="#sugg">Soovitused</a></li> 
-							</ul>
-						</div>
-	<!--				
-						<div class="topBar right">
-							<a id="lback" class="zoombox w870 h960 topLink" title="Tagasiside" href="http://keeleabi.tk/v3/iback/iback.php">Tagasiside</a>
-							<a id="about" class="zoombox w780 h1300 topLink" title="e-keelenõust" href="/about.html">e-keelenõust</a>
-						</div>
-						-->
+		<div id="page_content">
+			<h1 id="bigword">Allikad</h1>
+			<div class="box">
+				<p>Keeleallikad, millest e-keelenõu mootor otsib:</p>
+				<div id="allikad">
+					<table data-bind="foreach: app.M.RG_srcs" style="margin-bottom: 1em">
+						<tr>
+							<td>
+								<input type="checkbox" data-bind="attr: {'value': id}, checked: $root.M.selectedRGs" />
+							</td>
+							<td>
+								<!-- ko if: abbr -->
+								<a data-bind="attr: { href: url }, text: abbr"></a> = <span data-bind="text: name"></span>
+								<!-- /ko -->
+								<!-- ko ifnot: abbr -->
+								<a data-bind="attr: { href: url }, text: name"></a>
+								<!-- /ko -->
+							</td>
+						</tr>
+					</table>
 					
-					</div>
-					 <div style="clear: both;"></div>
-                                         <div id="page_content">
-						<h1 id="bigword" >Allikad</h1>
-                                                <div class="box">
-                                                    <p>Keeleallikad, millest e-keelenõu mootor otsib:</p>
-                                                    <div id="allikad">
-
-                                                                    <a href="http://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>
-                                                                    <a href="http://www.eki.ee/dict/ekss/">EKSS</a> = Eesti keele seletav sõnaraamat 1-6 (2009)<br/>
-                                                                    <a href="http://www.eki.ee/dict/synonyymid/">Sünonüümisõnastik</a> (2007)<br/>
-                                                                    <a href="http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et">Eesti Wordnet</a><br/>
-                                                                    <a href="http://www.eki.ee/dict/ety/">Eesti etümoloogiasõnaraamat</a> (2012)<br/>
-                                                                    <a href="http://www.eki.ee/dict/ies/">Inglise-eesti masintõlkesõnastik</a><br/>
-                                                                    <a href="http://www.eki.ee/dict/evs/">Eesti-vene sõnaraamat 1-5</a> (1997-2009)<br/>
-                                                                    <a href="http://www.eki.ee/knab/">KNAB</a> = Eesti Keele Instituudi kohanimeandmebaas<br/>
-                                                                    <a href="http://www.eki.ee/dict/ametnik/">Ametniku soovitussõnastik</a> (2014)<br/>
-                                                                    <a href="http://keeleabi.eki.ee/?leht=4">EKI keelenõuande Keelenõuvakk</a><br/>
-                                                                    <a href="http://www.eki.ee/books/ekk09/">EKKR</a> = Eesti keele käsiraamat (3. trükk 2007)<br/>
-                                                    <!--
-                                                    <div class="half-column">	
-                                                    </div>
-                                                            <div class="half-column">
-
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                    -->
-                                                    </div>
-                                                </div>
-                                                <!-- Märkused enda jaoks ja tulevikus võimalusel lisamiseks
-                                                <p>Soovitud allikad:</p>
-                                                <div id="allikad">
-                                                    <ul>
-                                                        <li>Võõrsõnade leksikon - autoriõiguseküsimused lahendamata</li>
-                                                        <li></li>
-                                                        <li></li>
-                                                        <li></li>
-                                                        <li></li>
-                                                        <li></li>
-                                                    </ul>
-                                                    
-                                                </div>
-                                                
-                                                <p>Muud huvipakkuvad allikad:</p>
-                                                <div id="allikad">
-                                                    <ul>
-                                                        <li></li>
-                                                        <li></li>
-                                                        <li><a href="http://web3.nlib.ee/termin/public_term/">Raamatukogusõnastik</a></li>
-                                                        <li><a href="http://web3.nlib.ee/termin/public_term/">MuIS</a> sõnastik</li>
-                                                        <li></li>
-                                                        <li></li>
-                                                    </ul>
-                                                </div>
-                                                -->
-					</div>
-
-                    <div id="page_content" style="display: none">
-                        <!-- ko if: lm.bigword.displayed -->
-                        <div class="bigword"><span id="bigword" data-bind="text: lm.bigword.text"></span></div>
-                        <!--/ko-->
-
-                        <div id="poscontainer">
-
-                            <div id="poscol1" class="poscol" data-bind="foreach: lm.col1 ">
-
-                                
-                                    <div data-bind="attr:{ id: id}, style: {display: id == 'keyw' ? 'none' : 'block'}" class="box col5" data-bind="css: {loading: (loading()) }">
-
-                                        <div onclick="animate(this);" class="boxHead" data-bind="style: {display: id == 'big' ? 'none' : 'block'}">
-										<!--<span class="expBtn">[+]</span>-->
-
-                                            <h2 data-bind="text: heading">Pealkiri</h2>
-                                           <!-- <span data-bind="text: (loading() == true) ? 'laadimine...':'ok'"></span>&nbsp;
-                                            <span data-bind="text: qry_time"></span>-->
-
-                                        </div>
-
-                                        <div class="boxContent" data-bind="foreach: items">
-
-                                            <!-- ko if: ($data.midapole) -->
-                                            <div class="result">
-                                                <span data-bind="text: typeof $data"></span>
-                                                <div data-bind="html: getHTML()">data</div>
-                                                <!--<div class="res_src"><a target="_blank" data-bind="attr: { href: srcURL(), title: srcTitle() }, html: getSrc()">src</a></div>-->
-                                            </div>
-                                            <!--/ko-->
-                                            <!-- ko if: ($data.getExp) -->
-                                            <div class="result">
-                                                <!--<div style="width: 10%; float:left">
-                                                    <span data-bind="text: id"></span>
-                                                    <a class="expBtn" data-bind="click: toggleExp">[<span data-bind="text: expanded() ? '-' : '+' "></span>]</a>
-                                                </div>-->
-                                                <div data-bind="html: (expanded ? getExp() : getCol() )" style="float:left;">
-
-                                                </div>
-                                                <div style="clear: both;"></div>
-                                                <!--<div class="res_src"><a target="_blank" data-bind="attr: { href: srcURL(), title: srcTitle() }, html: getSrc()">src</a></div>-->
-                                            </div>
-                                            <!--/ko-->
-
-                                        </div>
-                                    </div>
-                                
-
-                            </div>
-                            <div id="poscol2" class="poscol" data-bind="template: { name: 'poscol1', foreach: lm.col2 }"></div>
-
- 
-
-                        </div>
-
-                        <div id="helpful">
-                            <div class="comment-content" id="helpful-question">
-                                Kas leidsite, mida otsisite?<br/>
-                                <input type="button" value="Jah" data-feedback="y"/>
-                                <input type="button" value="Ei" data-feedback="n"/>
-                            </div>
-                            <div class="comment-content" id="helpful-why_n">
-                                Mida me saaksime paremini teha?
-                                <textarea id="why_n" style="width: 230px; height: 60px;"></textarea>
-                                <input type="button" value="Saada" data-feedback="s"/>
-                            </div>
-                            <div class="comment-content" id="helpful-response">
-                                Täname vastamast!
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-			<div id="tagasiside" class="opacity form-button"></div>
-			<div id="language" class="opacity form-button"></div>
-			<div class="tagasiside">
-				<div id="feedback">
-					<div id="feedback-form">
-						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
-						<form action="" method="">
-							<div class="left small">
-								<label for="nimi">Nimi</label>
-								<input type="text" name="nimi">
-							</div>
-							<div class="left small">
-								<label for="email">E-mail</label>
-								<input type="email" name="email">
-							</div>
-							<div class="left big">
-								<label for="teema">Teema</label>
-								<input type="text" name="teema">
-							</div>
-							<div>
-								<label for="comment">Küsimus või kommentaar</label>
-								<textarea name="comment"></textarea>
-							</div>
-							<div id="spam-control">
-								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
-							</div>
-							<div id="feedback-footer">
-								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
-								<input class="send" type="button" value="Saada" name="saada"/>
-							</div>
-						</form>
-					</div>
-					<div class="close opacity"></div>
+					<a href="" data-bind="click: app.M.reset">Lähtesta valik</a>
+					
+					<!--	
+							+	<a href="http://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>
+							+	<a href="http://www.eki.ee/dict/ekss/">EKSS</a> = Eesti keele seletav sõnaraamat 1-6 (2009)<br/>
+							+	<a href="http://www.eki.ee/dict/synonyymid/">Sünonüümisõnastik</a> (2007)<br/>
+							+	<a href="http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et">Eesti Wordnet</a><br/>
+							+	<a href="http://www.eki.ee/dict/ety/">Eesti etümoloogiasõnaraamat</a> (2012)<br/>
+							+	<a href="http://www.eki.ee/dict/ies/">Inglise-eesti masintõlkesõnastik</a><br/>
+							+	<a href="http://www.eki.ee/dict/evs/">Eesti-vene sõnaraamat 1-5</a> (1997-2009)<br/>
+							++	<a href="http://www.eki.ee/knab/">KNAB</a> = Eesti Keele Instituudi kohanimeandmebaas<br/>
+							+	<a href="http://www.eki.ee/dict/ametnik/">Ametniku soovitussõnastik</a> (2014)<br/>
+							+	<a href="http://keeleabi.eki.ee/?leht=4">EKI keelenõuande Keelenõuvakk</a><br/>
+							+	<a href="http://www.eki.ee/books/ekk09/">EKKR</a> = Eesti keele käsiraamat (3. trükk 2007)<br/>
+							+	<a href="http://et.wikipedia.org/">Vikipeedia</a> = Eesti Vikipeedia<br/>
+					-->
+					
 				</div>
 			</div>
-			<div class="language">
-				<div id="feedback">
-					<div id="feedback-form">
-						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
-						<form action="" method="">
-							<div class="left small">
-								<label for="nimi">Nimi</label>
-								<input type="text" name="nimi">
-							</div>
-							<div class="left small">
-								<label for="email">E-mail</label>
-								<input type="email" name="email">
-							</div>
-							<div class="left big">
-								<label for="teema">Teema</label>
-								<input type="text" name="teema">
-							</div>
-							<div>
-								<label for="comment">Küsimus või kommentaar</label>
-								<textarea name="comment"></textarea>
-							</div>
-							<div id="spam-control">
-								<span>Täna on selle nädala </span><input type="text" name="number"/><span> päev</span>.
-							</div>
-							<div id="feedback-footer">
-								<span class="error-message">VIGA: Teie poolt sisestatud e-mail on vigane</span>
-								<input class="send" type="button" value="Saada" name="saada"/>
-							</div>
-						</form>
-					</div>
-					<div class="close opacity"></div>
-				</div>
+			<!-- Märkused enda jaoks ja tulevikus võimalusel lisamiseks
+			<p>Soovitud allikad:</p>
+			<div id="allikad">
+				<ul>
+					<li>Võõrsõnade leksikon - autoriõiguseküsimused lahendamata</li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+				
 			</div>
-			<div id="full-screen"></div>
-			<div style="clear:both"></div>
-			<div id="page-up"></div> 
-        </div> 
-        
-        <div id="footer_wrapper"> 
-            <div id="footer_inner_wrapper">
-				<div id="footer">
-					<div id="footer_l">
-						<div id="footer_r">
-							<p id="syndicate">
-                                                            <a href="http://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
-								Roosikrantsi 6, 10119 Tallinn.
-							</p>
-							<p id="power_by">
-								E-post: <a href="mailto:eki@eki.ee">eki@eki.ee</a><br/>
-								tel: 6177500
-							</p>
-						</div>
-					</div>
-				</div>
-            </div>
-			<div style="clear:both"></div>
-        </div> 
+			
+			<p>Muud huvipakkuvad allikad:</p>
+			<div id="allikad">
+				<ul>
+					<li></li>
+					<li></li>
+					<li><a href="http://web3.nlib.ee/termin/public_term/">Raamatukogusõnastik</a></li>
+					<li><a href="http://web3.nlib.ee/termin/public_term/">MuIS</a> sõnastik</li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+			-->
+		</div>
 
 
-        
-    </body>
+	</body>
 </html>

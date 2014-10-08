@@ -50,6 +50,56 @@ var O = {
 };
 
 
+var cookieList = function(cookieName, opt) {
+	var options = opt || {
+		path: '/'
+		//expires: 7
+	};
+	
+	//When the cookie is saved the items will be a comma seperated string
+	//So we will split the cookie by comma to get the original array
+	var cookie = $.cookie(cookieName);
+	//Load the items or a new array if null.
+	var items = cookie ? cookie.split(',') : new Array();
+
+	//Return a object that we can use to access the array.
+	//while hiding direct access to the declared items array
+	//this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+	return {
+		"set_str": function(str) {//comma separated string
+			$.cookie(cookieName, str, options);
+			items = str.split(',');
+		},
+		"set": function(arr) {
+			items = arr;
+			$.cookie(cookieName, items.join(','), options);
+		},
+		"add": function(val) {
+			//Add to the items.
+			items.push(val);
+			//Save the items to a cookie.
+			//EDIT: Modified from linked answer by Nick see 
+			//      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+			$.cookie(cookieName, items.join(','), options);
+		},
+		"remove": function (val) { 
+			var indx = items.indexOf(val); 
+			if(indx!=-1) items.splice(indx, 1); 
+			$.cookie(cookieName, items.join(','), options);
+		},
+		"clear": function() {
+			items = null;
+			//clear the cookie.
+			$.removeCookie(cookieName, options);
+		},
+		"items": function() {
+			//Get all the items.
+			return items;
+		}
+	}
+
+} 
+
 /**
  * Provides the e-keelenõu application
  * 
@@ -323,32 +373,35 @@ var App = (function() {
 		
 		/**
 		 * Returns all CategoryViews in a column from the LayoutManager
+		 * Ei kasutata praegu kusagil
 		 * 
 		 * @method getCol
 		 * @param {Number} nr number of the column
-		 * @return ko.observableArray
-		 */
+		 * @uses QueryManager!!!
+		 * @return Array
+		 
 		self.getCol = function(nr) {
 			var c = [];
-			for (var i in qm.views) {
-				// @kaur: kas tõesti kasutada 'alert'??
-				alert(qm.views.name);
-				var v = qm.views[i];
+			var vs = qm.views();
+			
+			for (var i = 0; i < vs.length; i += 1) {
+				dbg('getCol', i, vs[i]);
+				var v = vs[i];
 				if (v.col === nr) {
 					c.push(v);
 				}
 			}
-			// @todo: kas tõesti kasutada 'alert'??
-			alert('getCol:' + c.length);
-			return ko.observableArray(c);
-		};
+			//return ko.observableArray(c);
+			return c
+		};*/
 		
 	};
 	
 	app.lm = new LayoutManager();
 
+
 	/**
-	 * QueryManager is some kind of mediator? between sources, processers and views?
+	 * QueryManager holds a current set of resources that user wants to query
 	 * 
 	 * @class QueryManager
 	 */
@@ -359,13 +412,75 @@ var App = (function() {
 		this.srcs = new Harray('id');
 		//this.view_ids = [];
 		this.procs = new Harray('id');
-		
+
 		/**
-		 * Returns the views ?
+		 * Returns the CategoryViews
 		 * @method views
 		 * @return {array}
 		 */
 		this.views = ko.observableArray(new Harray('id')); //miks obs?
+		
+		//RG Management
+		this.RGs = O.plain();
+		this.cookieRGs = cookieList('RGs');
+		
+		this.savedRGs = function() {
+			return self.cookieRGs.items();
+		} 
+		this.saveRGs = function(arr) {
+			self.cookieRGs.set(arr);
+		}
+		this.forceRGs = function(v) {//arr või 1
+			self.screenRGs(v);
+		}
+		this.suggRGs = function(v) {//arr või 1
+			self.screenRGs(v);
+		}
+
+		//ekraanil näha RG-d
+		this.screenRGs = ko.computed({
+			read: function(){
+				var arr = [];
+				for (var iv = 0; iv < self.views().length; iv++) {
+					var view = self.views()[iv];
+					for (var i = 0; i < view.rsltGrps().length; i++) {
+						if (view.rsltGrps()[i].active()) {
+							arr.push(view.rsltGrps()[i].id);
+						}
+					}
+				}
+				return arr;
+			},
+			write: function(arr) {
+				dbg('set screenRGs:', arr)
+				if (typeof arr === 'object') {
+					for (var iv = 0; iv < self.views().length; iv++) {
+						var view = self.views()[iv];
+						for (var i = 0; i < view.rsltGrps().length; i++) {
+							var rg = view.rsltGrps()[i];
+							if (arr.indexOf(rg.id) != -1) {
+								rg.active(1);
+							} else {
+								rg.active(0);
+							}
+						}
+					}
+					
+				} else {
+					for (var iv = 0; iv < self.views().length; iv++) {
+						var view = self.views()[iv];
+						for (var i = 0; i < view.rsltGrps().length; i++) {
+							var rg = view.rsltGrps()[i];
+							rg.active(1);
+							
+						}
+					}
+					
+				}
+			},
+			owner: this
+		});
+		//========== RG Management
 		
 		/**
 		 * Adds a Source (as an observer pattern?)
@@ -403,7 +518,6 @@ var App = (function() {
 
 			app.lm.add(view_o);
 			//self.views[view_id] = view_o;
-			//console.log('qm.addView: '+ view_id);
 		};
 		
 		/**
@@ -471,6 +585,8 @@ var App = (function() {
 	var ResProcessor = function(id) {
 		this.id = id;
 		var self = this;
+
+		self.active = ko.observable(1); //näitab ja teeb päringuid
 
 		self.srcs = O.plain(); //{}; //public
 		self.src_ids = '';
@@ -623,7 +739,6 @@ var App = (function() {
 	 * @param id
 	 */
 	var CategoryView = function(id) {
-		//ResProcessor.apply(this, arguments);
 		this.id = id;
 		var self = this;
 
@@ -638,9 +753,18 @@ var App = (function() {
 		 * @method loading
 		 * @return {Bool}
 		 */
-		self.loading = ko.computed(function(){
+		self.loading = ko.pureComputed(function(){
 			for (var i = 0; i < self.rsltGrps().length; i++) {
 				if (self.rsltGrps()[i].loading()) {
+					return true;
+				}
+			}
+			return false;
+		});
+
+		self.active = ko.pureComputed(function(){
+			for (var i = 0; i < self.rsltGrps().length; i++) {
+				if (self.rsltGrps()[i].active()) {
 					return true;
 				}
 			}
@@ -654,7 +778,7 @@ var App = (function() {
 		 * @method reslen
 		 * @return {Number} sum of results found
 		 */
-		self.reslen = ko.computed(function() {
+		self.reslen = ko.pureComputed(function() {
 			var sum = 0;
 			for (var i = 0; i < self.rsltGrps().length; i++) {
 				sum += self.rsltGrps()[i].reslen();
@@ -672,7 +796,7 @@ var App = (function() {
 
 
 	/**
-	 * General view component for RGs (resource groups?)
+	 * General view component for RGs (Result Groups)
 	 * This handles the viewing of the results and also invokes
 	 * all the corresponding processing required to show the results
 	 * 
@@ -1261,15 +1385,15 @@ var App = (function() {
 	 * Constructor Module
 	 * 
 	 * @class CMLinker
-	 * @param t  @todo: palun paremat nimetust; kas võib vahetada "self"-iga? 
+	 * @param self
 	 * @param id
 	 */
-	var CMLinker = function(t, id) { //Constructor Module
+	var CMLinker = function(self, id) { //Constructor Module
 
 		/**
 		 * @method procLinks
 		 */
-		t.procLinks = function() {
+		self.procLinks = function() {
 			var $a = $('#'+ id +' .tervikart a');
 			$a.each(function() {
 				var $t = $(this);
@@ -1348,10 +1472,8 @@ var App = (function() {
 
 
 		self.procLinks = function() {
-			//dbg(id+ ' procLinks:')
 
 			var $rs = $('#'+ id +' .result');
-
 
 			$rs.each(function() {
 				var myTextEl = this;
@@ -1644,187 +1766,313 @@ var App = (function() {
 		};
 	};
 
+	//========================================================================================
 
-	/**
-	 * Definitions used for building the QueryManager
-	 * @todo
-	 */
-	app.sources = { //$.extend(ekiSources, {
-		qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
-		ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
-		vakk: {id: 'vakk', cls: SourceOTest, abbr: 'KNV', name: 'Keelenõuvakk'},
-		ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti Keele Käsiraamat'},
-		ies: {id: 'ies', cls: SourceOTest, abbr: 'IES', name: 'Inglise-eesti masintõlkesõnastik'},
-		evs: {id: 'evs', cls: SourceOTest, abbr: 'EVS', name: 'Eesti-vene sõnaraamat'},
-		knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed'},
-		knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed'},
-		syn: {id: 'syn', cls: SourceOTest, abbr: 'SÜN', name: 'Sünonüümisõnastik'},
-		thes: {id: 'thes', cls: SourceThesAPI, abbr: 'EWN', name: 'Eesti Wordnet'},
-		ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS', name: 'Ametniku soovitussõnastik'},
-		ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ', name: 'Etümoloogia sõnastik'},
-		stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
-		/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
-		WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
-	};
-	//});
 
-	/**
-	 * Building QueryManager's sources following definitions in app.sources
-	 * @todo: kas kasutajal on enda defineeritud allikate hulk?
-	 */
-	var qm = new QueryManager();
-	app.qm = qm;
+	app.configuration = {
 	
-	for (var key in app.sources) {
-
-		var src = app.sources[key];
-		var so; //source obj
-		if (typeof src['cls'] === 'function') {
-			so = new src.cls(key);
-		} else {
-			// @todo throw error;
-		}
+		/**
+		 * Näidatakse allika lehel
+		 * RGid: {id: RGid, ...allika info...} 
+		 * või [{id: RGid, ...allika info...}]
+		 */
+		RG_sources: [
+			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+				url: "http://www.eki.ee/dict/qs/", active: true
+			},
+			{id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
+				url: "http://www.eki.ee/dict/ekss/", active: true
+			},
+			{id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
+				url: "http://keeleabi.eki.ee/?leht=4", active: true
+			},
+			{id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
+				url: "http://www.eki.ee/books/ekk09/", active: true
+			},
+			{id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
+				url: "http://www.eki.ee/dict/ies/", active: true
+			},
+			{id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
+				url: "http://www.eki.ee/dict/evs/", active: true
+			},
+			{id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/", active: true
+			},
+			{id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/", active: true
+			},
+			{id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
+				url: "http://www.eki.ee/dict/synonyymid/", active: true
+			},
+			{id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
+				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et", active: true
+			},
+			{id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
+				url: "http://www.eki.ee/dict/ametnik/", active: true
+			},
+			{id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
+				url: "http://www.eki.ee/dict/ety/", active: true
+			},
+			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
+				url: "http://et.wikipedia.org/", active: false
+			}
+		],
+		getInitialRG_IDs: function () {
+			var conf = app.configuration;
+			var rgss = conf.RG_sources;
+			var ids = [];
+			for (var i=0; i< rgss.length; i++) {
+				if (rgss[i].active) {
+					ids.push(rgss[i].id);
+				}
+			};
+			return ids;
+		},
+		RG_sources_hash__: {
+			qs13: {id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+				url: "http://www.eki.ee/dict/qs/"
+			},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
+				url: "http://www.eki.ee/dict/ekss/"
+			},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
+				url: "http://keeleabi.eki.ee/?leht=4"
+			},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
+				url: "http://www.eki.ee/books/ekk09/"
+			},
+			trans_en: {id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
+				url: "http://www.eki.ee/dict/ies/"
+			},
+			trans_ru: {id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
+				url: "http://www.eki.ee/dict/evs/"
+			},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/"
+			},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
+				url: "http://www.eki.ee/knab/"
+			},
+			syn: {id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
+				url: "http://www.eki.ee/dict/synonyymid/"
+			},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
+				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et"
+			},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
+				url: "http://www.eki.ee/dict/ametnik/"
+			},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
+				url: "http://www.eki.ee/dict/ety/"
+			},
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
+				url: "http://et.wikipedia.org/"
+			}
+		},
+	
+		/**
+		 * Definitions used for building the QueryManager
+		 * @todo
+		 */
+		sources: {
+			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)'},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)'},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk'},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)'},
+			ies: {id: 'ies', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik'},
+			evs: {id: 'evs', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)'},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas'},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas'},
+			syn: {id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)'},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet'},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik'},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)'},
+			stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
+			/*WiktionaryEst: {id: 'vikisonastik', cls: SourceWiktionaryEstAPI, abbr: 'Vikisõnastik', name: 'Eesti Vikisõnastik'},*/
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
+		},
+		/*sources: {
+			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS', name: 'Eesti õigekeelsussõnaraamat'},
+			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat'},
+			vakk: {id: 'vakk', cls: SourceOTest, abbr: 'KNV', name: 'Keelenõuvakk'},
+			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti Keele Käsiraamat'},
+			ies: {id: 'ies', cls: SourceOTest, abbr: 'IES', name: 'Inglise-eesti masintõlkesõnastik'},
+			evs: {id: 'evs', cls: SourceOTest, abbr: 'EVS', name: 'Eesti-vene sõnaraamat'},
+			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed'},
+			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed'},
+			syn: {id: 'syn', cls: SourceOTest, abbr: 'SÜN', name: 'Sünonüümisõnastik'},
+			thes: {id: 'thes', cls: SourceThesAPI, abbr: 'EWN', name: 'Eesti Wordnet'},
+			ass: {id: 'ass', cls: SourceEknAPI, abbr: 'ASS', name: 'Ametniku soovitussõnastik'},
+			ety: {id: 'ety', cls: SourceEknAPI, abbr: 'ETÜ', name: 'Etümoloogia sõnastik'},
+			stl: {id: 'stl', cls: StlAPI, abbr: 'stl'},
+			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia'}
+		},*/
 		
-		// copy the initiated sources attributes from the definition
-		$.extend(so, app.sources[key]);
-		qm.addSrc(key, so);
-	} 
-	//qm.addSrc("qs", new EkiSource("qs"));
-	
-	
-
-	/**
-	 * Definitions used for building shared processors
-	 * @todo
-	 */
-	//Vahetöötlejate defineerimine:
-	var processors = {
-		// @todo: kas keyw paneb bigword-i?
-		keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
-	};
-
-
-
-	
-	/**
-	 * Definitions for building the CategoryView objects
-	 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
-	 * @todo
-	 * resultCategories = {
-	 *   rid: {
-	 *     h: "this is the header shown in the view",
-	 *     res: ["array of"],
-	 *     cview: NameOfConcreteRGView,
-	 *     url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
-	 *   }
-	 * }
-	 */
-	var resultCategories =
-	app.resultCategories = {
-		c_qs: {h: 'ÕS', col: 1, grps: {
-			qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
-		}},
-		c_def: {h: 'Seletused', col: 1, grps: {
-			ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
-		}},
-		c_rel: {h: 'Seotud sõnad', col: 1, grps: {
-			syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://eki.ee/dict/synonyymid/index.cgi?Q='},
-			thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
-		}},
-		c_ety: {h: 'Etümoloogia', col: 1, grps: {
-			ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
-		}},
-		c_trans: {h: 'Tõlkevasted', col: 1, grps: {
-			trans_en: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
-			trans_ru: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
-		}},
-		c_sugg: {h: 'Soovitused', col: 2, grps: {
-			ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
-			//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=0&otsi='}
-			vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
-		}},
-		c_knab: {h: 'Kohanimed', col: 1, grps: {
-			knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
-			knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
-		}},
-		c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
-			/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
-			WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
-		}},
-		c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
-			ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
-		}}
-
-	};
-
-
-	/**
-	 * Building the processors defined in app.processors
-	 */
-	for (var cid in processors) {
-
-		var pdef = processors[cid];
-
-		var pr;
-		if (typeof pdef['proc'] === 'function') {
-			pr = new pdef.proc(cid);
-		}
-
-		//for (var i in pdef.res)
-		for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
-			var src_id = pdef.res[i];
-			pr.addSrc(src_id, qm.srcs.h[src_id]);
-		}
-
-		qm.addProc(cid, pr);
-	}
-
-
-	/**
-	 * Building CategoryView objects defined in app.resultCategories
-	 */
-	for (var cid in resultCategories) {
-
-		var rc = resultCategories[cid];
+		/**
+		 * Definitions used for building shared processors
+		 * @todo
+		 */
+		processors: {
+			// @todo: kas keyw paneb bigword-i? jah.
+			keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
+		},
 		
-		var catv = new CategoryView(cid); //CategoryView
-
-		catv.heading = rc.h;
-		catv.col = rc.col;
-
-
-		//result Grp-id
-		for (var gid in rc.grps) {
-			var g = rc.grps[gid];
-
-			var rgv; //RGView
-			if (typeof g['cview'] === 'function') {
-				rgv = new g.cview(gid);
-
-			} else { //default
-				rgv = new RGView(gid);
-			}
-			dbg('gid', gid, 'new rgv', rgv);
-
-			rgv.heading = g.h;
-
-			if (g.url !== undefined) {
-				rgv.src_url_static_part(g.url);
-			}
-
-			//ressursid
-			//for (var i in rc.res) {
-			for (var i = 0; i < g.res.length; i++) { //anname cv-le sisendid
-				var src_id = g.res[i];
-				rgv.addSrc(src_id, qm.srcs.h[src_id]);
-			}
-
-			catv.addRGrp(gid, rgv);
+		/**
+		 * Definitions for building the CategoryView objects
+		 * @todo url could be returned by the source itself (after making a query, it knows the exact query_str)
+		 * @todo
+		 * resultCategories = {
+		 *   c_id: { //categoryView id
+		 *     h: "this is the header shown in the CategoryView box",
+		 *     col: nr of column where box is initially located
+		 *     grps: { //Result Groups
+		 *       rid: { //Result Group id
+		 *         h: "this is the header shown in the ResultGroup box",
+		 *         res: ["array of"],
+		 *         cview: NameOfConcreteRGView,
+		 *         url: "url to be assigned the button in the view, current query_str will be appended to the end of this string"
+		 *       }
+		 *     }
+		 *   }
+		 * }
+		 */
+		resultCategories: {
+			c_qs: {h: 'ÕS', col: 1, grps: {
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
+			}},
+			c_def: {h: 'Seletused', col: 1, grps: {
+				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
+			}},
+			c_rel: {h: 'Seotud sõnad', col: 1, grps: {
+				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://eki.ee/dict/synonyymid/index.cgi?Q='},
+				thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
+			}},
+			c_ety: {h: 'Etümoloogia', col: 1, grps: {
+				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
+			}},
+			c_trans: {h: 'Tõlkevasted', col: 1, grps: {
+				trans_en: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
+				trans_ru: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
+			}},
+			c_sugg: {h: 'Soovitused', col: 2, grps: {
+				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
+				//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=0&otsi='}
+				vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
+			}},
+			c_knab: {h: 'Kohanimed', col: 1, grps: {
+				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
+				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
+			}},
+			c_WikiEst: {h: 'Mujalt veebist', col:2, grps: {
+				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
+				WikiEst: {h: 'Eesti Vikipeedia', res: ['WikiEst'], cview: RGWikiEst, url: 'https://et.wikipedia.org/wiki/'}
+			}},
+			c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
+				ekkr: {h: 'Eesti Keele Käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
+			}}
 		}
 
-		qm.addView(cid, catv);
-	}
+	};
+	
 
+	app.qm = new QueryManager();
+	
+	var init = function(qm) {
+		
+		/**
+		 * Building QueryManager's sources following definitions in app.configuration.sources
+		 * @todo: kas kasutajal on enda defineeritud allikate hulk?
+		 */
+		var cs = app.configuration.sources;
+		for (var key in cs) {
+	
+			var src = cs[key];
+			var so; //source obj
+			if (typeof src['cls'] === 'function') {
+				so = new src.cls(key);
+			} else {
+				// @todo throw error;
+			}
+			
+			// copy the initiated sources attributes from the definition
+			$.extend(so, src);
+			qm.addSrc(key, so);
+		} 
+		//qm.addSrc("qs", new EkiSource("qs"));
+		
+
+		/**
+		 * Building the processors defined in app.processors
+		 */
+		var cp = app.configuration.processors;
+		for (var cid in cp) {
+	
+			var pdef = cp[cid];
+	
+			var pr; //processor
+			if (typeof pdef['proc'] === 'function') {
+				pr = new pdef.proc(cid);
+			}
+	
+			//anname processorile tema src-d
+			for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
+				var src_id = pdef.res[i];
+				pr.addSrc(src_id, qm.srcs.h[src_id]);
+			}
+	
+			qm.addProc(cid, pr);
+		}
+	
+
+		/**
+		 * Building CategoryView objects defined in app.configuration.resultCategories
+		 */
+		var rcs = app.configuration.resultCategories;
+		for (var cid in rcs) {
+	
+			var rc = rcs[cid];
+			
+			var catv = new CategoryView(cid); //CategoryView
+	
+			catv.heading = rc.h;
+			catv.col = rc.col;
+	
+	
+			//result Grp-id
+			for (var gid in rc.grps) {
+				var g = rc.grps[gid];
+	
+				var rgv; //RGView
+				if (typeof g['cview'] === 'function') {
+					rgv = new g.cview(gid);
+				} else { //default
+					rgv = new RGView(gid);
+				}
+				//dbg('gid', gid, 'new rgv', rgv);
+	
+				rgv.heading = g.h;
+	
+				if (g.url !== undefined) {
+					rgv.src_url_static_part(g.url);
+				}
+	
+				//ressursid
+				for (var i = 0; i < g.res.length; i++) { //anname cv-le sisendid
+					var src_id = g.res[i];
+					rgv.addSrc(src_id, qm.srcs.h[src_id]);
+				}
+	
+				catv.addRGrp(gid, rgv);
+			}
+	
+			qm.addView(cid, catv);
+		}
+	
+	}
+	
+	init(app.qm);
+
+	//============================================================================
 
 	/**
 	 * Result items are shown in the RGView as a list
@@ -1928,164 +2176,6 @@ var App = (function() {
 
 
 
-
-	/**
-	 * Expandable description
-	 * 
-	 * @class Expandable
-	 * @param id
-	 * @param html
-	 * @uses Result
-	 */
-	var Expandable = function(id, html) {
-		Result.apply(this, arguments);
-		var self = this;
-		
-		/**
-		 * empty function
-		 * 
-		 * @method expand
-		 * @deprecated
-		 */
-		self.expand = function() {
-			
-		};
-		
-		/**
-		 * empty function
-		 * 
-		 * @method collapse
-		 * @deprecated
-		 */
-		self.collapse = function() {
-			
-		};
-		
-	};
-
-	/**
-	 * Section description
-	 * 
-	 * @class Section
-	 * @param id
-	 * @param html
-	 * @uses Expandable
-	 */
-	var Section = function(id, html) {
-		Expandable.apply(this, arguments);
-		var self = this;
-		this.id = id;
-		
-		self.html = '';
-	};
-
-
-	//ResultItem ---------------------------------------------------------------------------------------
-	/**
-	 * ResultItem description 
-	 * 
-	 * @class ResultItem
-	 * @param sid
-	 * @param keyw
-	 * @param [result]
-	 */
-	var ResultItem = function(sid, keyw, result) {
-		
-		var self = this;
-		//self.id is reserved
-		self.sid = sid;
-		self.keyw = keyw;
-		self.results = (result ? [result] : []);
-		
-		/**
-		 * Adds a result to the results list
-		 * Lisab leiu leidude listi
-		 * 
-		 * @method add 
-		 * @param result
-		 */
-		self.add = function(result) {
-			results.push(result);
-		};
-		
-		/**
-		 * Returns the results as a string
-		 * 
-		 * @method getHTML
-		 * @return {string}
-		 */
-		self.getHTML = function() {
-			var outp = '';
-			for (var i in self.results) {
-				outp += self.results[i].html;
-				//outp += '<div class="">'+'stuff'+'</div>';
-			}
-			return outp;
-		};
-		
-		/**
-		 * Returns the abbreviated form of the Source's name
-		 * 
-		 * @method getSrc
-		 * @return {string}
-		 */
-		self.getSrc = function() {
-			return sources[self.sid].abbr;
-		};
-		
-		/**
-		 * Should return the Source's url
-		 * 
-		 * @beta
-		 * @method srcURL
-		 * @return {string}
-		 */
-		self.srcURL = function() {
-			// return sources[self.sid].url;
-			return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=kraam';
-		};
-		
-		/**
-		 * Returns the Source's name
-		 * 
-		 * @srcTitle
-		 * @return {string}
-		 */
-		self.srcTitle = function() {
-			return sources[self.sid].name;
-		};
-
-	};
-	
-	/**
-	 * ResultList description
-	 * 
-	 * @class ResultList
-	 * @extends Harray
-	 * @uses Harray
-	 * @param id
-	 */
-	var ResultList = function(id) {
-		Harray.apply(this, arguments); //<- id
-		var self = this;
-		//self.harr = Harray('id');
-		
-		self.add = function(sid, keyw, result) {
-			if (self.h[keyw]) {
-				self.h[keyw].add(sid, keyw, result);
-			} else {
-				self.push( new ResultItem(sid, keyw, result) );
-			}
-			
-		};
-	};
-	ResultList.prototype = Harray.prototype;
-
-	// // ResultItem -------------------------------------------------------------------------------------
-
-
-	//ExpandableList
-	// kasutab: UniqueList
 	/**
 	 * ExpandableDataitem description
 	 * 
@@ -2284,7 +2374,7 @@ var App = (function() {
 	var UniqueList = function() { //kasutab: ProcKeyw
 		var self = this;
 
-		self.h = {};
+		self.h = O.plain(); //{};
 
 		/**
 		 * Adds an element as an ExpandableDataItem to the list only if it doesn't exist yet

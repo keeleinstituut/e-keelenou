@@ -12,7 +12,7 @@
 		<!--script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js'></script-->
 		<script type='text/javascript' src='lib/jquery.js'></script>
 
-		<script type='text/javascript' src='lib/knockout-3.1.0.js'></script>
+		<script type='text/javascript' src='lib/knockout-3.2.0.js'></script>
 		<!--
 		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout.js'></script>
 		<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js'></script>
@@ -28,6 +28,8 @@
 		<script type='text/javascript' src='lib/qtip/jquery.qtip.min.js'></script>
 		<link rel="stylesheet" type="text/css" href="lib/qtip/jquery.qtip.css" />
 
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		
 		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />
 		
@@ -113,20 +115,22 @@
 			};
 			
 			/**
-			 * @method replaceState
+			 * Käivitatakse esimese päringu puhul (ükskõik kas sisestatud boxi või lingiga saabunud)
+			 * @method myReplaceState
 			 * @param {String} queryText
 			 */
-			var replaceState = function(queryText) {
+			var myReplaceState = function(queryText) {
 				if (1) {
 
-					dbg('replaceState: ');
 					var st = History.getState();
-					dbg('before replace state: ', st);
 
+					//dbg('before replace state: ', st);
+					//dbg('st.url', st.url)
+					
 					var url = new URI(st.url);
-					url.query({ Q: queryText});
-					dbg('url', url.toString())
-
+					
+					//url.query({ Q: queryText}); //teised param peale Q kaovad
+					//dbg('url', url.toString())
 
 					History.replaceState(
 						{'Q': queryText},
@@ -144,8 +148,10 @@
 
 					//currentQuery = queryText;
 				}
+				
 			};
-			
+
+
 			/**
 			 * Makes the QueryManager make a search in all it's registered sources
 			 * 
@@ -156,6 +162,7 @@
 				var summq = new SW();
 				app.searching(1);
 				currentQuery = queryStr;
+				
 
 				var p = this.qm.searchAll(queryStr);
 				$('#Q').select();
@@ -165,9 +172,6 @@
 					$('#poscontainer').show(); //parandus
 					console.log('kogu päring ' + summq.get() + "ms");
 					//call was this helpful
-
-					//$(".social-buttons, #preloader").fadeOut("slow", function(){$("#poscontainer").fadeIn("slow");});
-					//$(".info, .social-buttons").fadeOut("slow", function(){$("#page_content").fadeIn("slow");});
 
 				});
 
@@ -212,20 +216,61 @@
 				app.plainSearch(q);
 			}
 			*/
-			var uri = new URI(window.location.search);
+			var url = new URI(window.location.search);
+
 			
-			if (uri.hasQuery("Q")) {
-				var q = uri.search(true)['Q'];
+			//Allikate valik ---------------------------------------------------
+			
+			if (url.hasQuery("frgs")) {
+				var map = url.search(true);
+				var frgs = map['frgs'];
+				dbg('frgs:'+ frgs)
+				if (frgs == '*' || frgs.length == 0) {
+					app.qm.forceRGs(1); //luba kõik RGd
+				} else {
+					uRGs = frgs.split(',');
+					
+					dbg('uRGs', uRGs, typeof uRGs)
+					dbg(uRGs)
+	
+					if (uRGs.length > 0) {
+						app.qm.forceRGs(uRGs);
+					}
+				}
+			} else {
+				//URLiga ei sunnita RG valikut.
+				//vaatame kas on küpsises salvestatud
+				var saved = app.qm.savedRGs();
+				if (saved.length > 0) {
+					app.qm.screenRGs(saved);
+				} else {
+					//võtame konfist
+					var ids = app.configuration.getInitialRG_IDs();
+					dbg('ids confist:', ids);
+					app.qm.screenRGs(ids);
+				}
+				
+			}
+			//------------------------------------------------------------------
+			
+			if (url.hasQuery("Q")) {
+				var q = url.search(true)['Q'];
 				app.queryText(q);
 				//app.plainSearch(q);
 
+
+
 				onFirstSearch();
-				replaceState(q);
-			} else if (uri.hasQuery("u")) {
-				dbg('found u');
+
+				myReplaceState(q)
+				
+				
+			} else if (url.hasQuery("u")) {
 				//var u = uri.search(true)['u'];
 				History.replaceState(null, defaultTitle, '/');
-			}
+			};
+			
+			
 
 
 			/*
@@ -527,7 +572,8 @@
 
 							<script type="text/html" id="box_templ">
 
-								<div data-bind="attr: {'id': id}" class="box col5">
+								
+								<div data-bind="'visible': active, attr: {'id': id, 'data-active': active(), 'data-reslen': reslen}" class="box col5">
 
 									<div class="boxHead">
 										<!--<span class="expBtn">[+]</span>-->
@@ -542,7 +588,7 @@
 
 									<div class="boxContent" data-bind="css: {loading: loading() }, foreach: rsltGrps">
 
-										<div class="resultGrp" data-bind="attr: {'id': id}">
+										<div class="resultGrp" data-bind="'if': active, attr: {'id': id}">
 
 											<div class="rGrpHead" onclick="show(this);">
 
@@ -556,14 +602,6 @@
 
 											<div class="rGrpCont" data-bind="foreach: items">
 
-												<!-- ko if: ($data.midapole) -->
-												<div class="result" style="float: left;">
-													<span data-bind="text: typeof $data"></span>
-													<div data-bind="html: getHTML()">data</div>
-													<!--<div class="res_src"><a target="_blank" data-bind="attr: { href: srcURL(), title: srcTitle() }, html: getSrc()">src</a></div>-->
-												</div>
-												<!--/ko-->
-
 												<!-- ko ifnot: ($data.collapsible) -->
 												<div class="result">
 													<!-- ko if: ($data.relationshipType) -->
@@ -572,7 +610,6 @@
 														<div data-bind="foreach: words">
 															<a class="vt_sarnane" data-bind="attr: {href: '?Q='+$data}, text: $data"></a>
 														</div>
-
 													</div>
 													<!--/ko-->
 													<!-- ko ifnot: ($data.relationshipType) -->
@@ -581,8 +618,6 @@
 													</div>
 													<!--/ko-->
 
-													<!--<div style="clear: both;"></div>
-													<div class="res_src"><a target="_blank" data-bind="attr: { href: srcURL(), title: srcTitle() }, html: getSrc()">src</a></div>-->
 												</div>
 												<!--/ko-->
 
@@ -609,6 +644,7 @@
 									</div>
 
 								</div>
+								
 
 							</script>
 
@@ -643,9 +679,9 @@
 					<div id="feedback-form">
 						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
 						<form id="f_feedback_dev" method="POST" data-addr="dev"
-                            data-bind="submit: app.forms.sendForm"
-                            action="http://kn.eki.ee/kn/spam.php">
-                            <input type="hidden" name="checkme" value="formmail">
+							data-bind="submit: app.forms.sendForm"
+							action="http://kn.eki.ee/kn/spam.php">
+							<input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffd_nimi">Nimi</label>
 								<input type="text" name="nimi" id="ffd_nimi">
@@ -662,15 +698,15 @@
 								<label for="ffd_comment">Küsimus või kommentaar</label>
 								<textarea name="kiri" id="ffd_comment"></textarea>
 							</div>
-                            <div class="spam-control">
-                                <!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
-                                <span>&nbsp;</span>
-                            </div>
-                            <div class="feedback-footer">
-                                <span class="f_message"></span>
-                                <input class="" type="submit" value="Saada" name="saada"/>
-                                <input class="send" type="hidden" value="vuid" name="uid"/>
-                            </div>
+							<div class="spam-control">
+								<!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
+								<span>&nbsp;</span>
+							</div>
+							<div class="feedback-footer">
+								<span class="f_message"></span>
+								<input class="" type="submit" value="Saada" name="saada"/>
+								<input class="send" type="hidden" value="vuid" name="uid"/>
+							</div>
 						</form>
 					</div>
 					<div class="close opacity"></div>
@@ -681,9 +717,9 @@
 					<div id="feedback-form">
 						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
 						<form id="f_feedback_lang" method="POST" data-addr="lang"
-                          data-bind="submit: app.forms.sendForm"
-                          action="http://kn.eki.ee/kn/spam.php">
-                            <input type="hidden" name="checkme" value="formmail">
+						  data-bind="submit: app.forms.sendForm"
+						  action="http://kn.eki.ee/kn/spam.php">
+							<input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffl_nimi">Nimi</label>
 								<input type="text" name="nimi" id="ffl_nimi">
@@ -702,7 +738,7 @@
 							</div>
 							<div class="spam-control">
 								<!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
-                            	<span>&nbsp;</span>
+								<span>&nbsp;</span>
 							</div>
 							<div class="feedback-footer">
 								<span class="f_message"></span>

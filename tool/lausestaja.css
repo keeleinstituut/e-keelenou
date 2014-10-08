@@ -1,5 +1,5 @@
 #usertext {
-    background-color: lightblue;
+    x-background-color: lightblue;
     border: 1px solid black;
     min-height: 1em;
     max-height: 200px;
@@ -39,9 +39,9 @@
 .morphAnalysis td {
     font-size: 24px;
 }
-td {
+/*td {
     border: 1px solid black;
-}
+}*/
 .menu {
     position: absolute;
     border: 1px solid black;
