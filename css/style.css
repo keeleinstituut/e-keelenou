@@ -889,7 +889,7 @@ input[type='checkbox']{
     -webkit-appearance: checkbox;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1000px) {
 	#start_content, #tagasiside, #language, #menu-wrapper, #poscontainer, #top-bar, .social{
 		display: none;
 	}
