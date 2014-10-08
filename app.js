@@ -50,24 +50,29 @@ var O = {
 };
 
 
-var cookieList = function(cookieName) {
+var cookieList = function(cookieName, opt) {
+	var options = opt || {
+		path: '/',
+		expires: 7
+	};
+	
 	//When the cookie is saved the items will be a comma seperated string
 	//So we will split the cookie by comma to get the original array
 	var cookie = $.cookie(cookieName);
 	//Load the items or a new array if null.
-	var items = cookie ? cookie.split(/,/) : new Array();
+	var items = cookie ? cookie.split(',') : new Array();
 
 	//Return a object that we can use to access the array.
 	//while hiding direct access to the declared items array
 	//this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
 	return {
-		"set_str": function(str) {
-			
-			$.cookie(cookieName, str);
+		"set_str": function(str) {//comma separated string
+			$.cookie(cookieName, str, options);
+			items = str.split(',');
 		},
 		"set": function(arr) {
 			items = arr;
-			$.cookie(cookieName, items.join(','));
+			$.cookie(cookieName, items.join(','), options);
 		},
 		"add": function(val) {
 			//Add to the items.
@@ -75,25 +80,23 @@ var cookieList = function(cookieName) {
 			//Save the items to a cookie.
 			//EDIT: Modified from linked answer by Nick see 
 			//      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
-			$.cookie(cookieName, items.join(','));
+			$.cookie(cookieName, items.join(','), options);
 		},
 		"remove": function (val) { 
-			//EDIT: Thx to Assef and luke for remove.
-			indx = items.indexOf(val); 
+			var indx = items.indexOf(val); 
 			if(indx!=-1) items.splice(indx, 1); 
-			$.cookie(cookieName, items.join(','));        
-			
+			$.cookie(cookieName, items.join(','), options);
 		},
 		"clear": function() {
 			items = null;
 			//clear the cookie.
-			$.cookie(cookieName, null);
+			$.removeCookie(cookieName, options);
 		},
 		"items": function() {
 			//Get all the items.
 			return items;
 		}
-	  }
+	}
 
 } 
 
@@ -449,6 +452,7 @@ var App = (function() {
 				return arr;
 			},
 			write: function(arr) {
+				dbg('set screenRGs:', arr)
 				if (typeof arr === 'object') {
 					for (var iv = 0; iv < self.views().length; iv++) {
 						var view = self.views()[iv];

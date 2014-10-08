@@ -115,6 +115,7 @@
 			};
 			
 			/**
+			 * Käivitatakse esimese päringu puhul (ükskõik kas sisestatud boxi või lingiga saabunud)
 			 * @method myReplaceState
 			 * @param {String} queryText
 			 */
@@ -130,26 +131,6 @@
 					
 					//url.query({ Q: queryText}); //teised param peale Q kaovad
 					//dbg('url', url.toString())
-
-					if (url.hasQuery("frgs")) {
-						var map = url.search(true);
-						var frgs = map['frgs'];
-						dbg('frgs:'+ frgs)
-						if (frgs == '*' || frgs.length == 0) {
-							app.qm.forceRGs(1); //luba kõik RGd
-						} else {
-							uRGs = frgs.split(',');
-							
-							dbg('uRGs', uRGs, typeof uRGs)
-							dbg(uRGs)
-			
-							if (uRGs.length > 0) {
-								app.qm.forceRGs(uRGs);
-							}
-						}
-						
-	
-					}
 
 					History.replaceState(
 						{'Q': queryText},
@@ -237,14 +218,46 @@
 			*/
 			var url = new URI(window.location.search);
 			
+			
+
+					if (url.hasQuery("frgs")) {
+						var map = url.search(true);
+						var frgs = map['frgs'];
+						dbg('frgs:'+ frgs)
+						if (frgs == '*' || frgs.length == 0) {
+							app.qm.forceRGs(1); //luba kõik RGd
+						} else {
+							uRGs = frgs.split(',');
+							
+							dbg('uRGs', uRGs, typeof uRGs)
+							dbg(uRGs)
+			
+							if (uRGs.length > 0) {
+								app.qm.forceRGs(uRGs);
+							}
+						}
+					} else {
+						//ei sunnita RG valikut, vaatame kas on küpsises salvestatud
+						var saved = app.qm.savedRGs();
+						dbg('____________________________________savedRGs', saved);
+						if (saved.length > 0) {
+							dbg('-----------------------------------', saved.length)
+							app.qm.screenRGs(saved);
+						}
+						
+					}
+
+
+			
 			if (url.hasQuery("Q")) {
 				var q = url.search(true)['Q'];
 				app.queryText(q);
 				//app.plainSearch(q);
 
+
+
 				onFirstSearch();
-				
-				
+
 				myReplaceState(q)
 				
 				
@@ -521,19 +534,12 @@
 								<div class="boxContent">
 									<div class="result">
 										<ul>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=262">Vegan (18.9.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=261">Kas <i>refleksioon</i> või <i>reflektsioon</i>? (1.9.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=259">Kuidas käänata pealkirja „Tuhk ja akvaviit”? (21.8.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=257">Egiidi all (19.6.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=256">Miks on ÕSis reka ja late, mitte rekka ja latte, nagu neid sõnu sageli kirjutatakse? (6.6.2014)</a></li>
-
-											<!--
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=255"><i>Enne</i> ja <i>ennem</i>, <i>vahel</i> ja <i>vahest</i> (26.5.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=254">Kuidas küsida? (15.5.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=253"><i>Mida arvavad tippjuhid Noored Koolist?</i> (28.4.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=250">Ukraina nimede kirjutamine (19.3.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=249">Riodejaneirolased ja newyorklased (18.3.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=246">Saame tuttavaks – ohutu-tüüpi võõrsõnu (6.3.2014)</a></li>
+											<!--<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=246">Saame tuttavaks – ohutu-tüüpi võõrsõnu (6.3.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=247">Saame tuttavaks – number-tüüpi sõnu (6.3.2014)</a></li>
 											-->
 										</ul>

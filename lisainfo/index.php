@@ -183,9 +183,6 @@ $html = file_get_html("$module.html");
 							<li><a href="#knabee">Kohanimed</a></li>
 							<li><a href="#ekkr">Käsiraamat</a></li>
 							<li><a href="#ass">Soovitused</a></li>
-							<!--li><a href="#ass">dummy0</a></li>
-							<li><a href="#ass">dummy1</a></li>
-							<li><a href="#ass">dummy2</a></li-->
 						</ul>
 					</div>
 
