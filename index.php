@@ -71,12 +71,12 @@
 
 
 			// Bind to StateChange Event
-			History.Adapter.bind(window, 'statechange', function() {
+			History.Adapter.bind(window, 'statechange', function onStateChange() {
 				var state = History.getState();
 
-				dbg('statechange:', state);
+				//dbg('statechange:', state);
 				var data = state.data;
-				dbg('data:'+ data);
+				//dbg('data:'+ data);
 				if (data['Q'] !== undefined) {
 					var q = data.Q;
 					app.queryText(q);
@@ -85,6 +85,7 @@
 			});
 
 			var currentQuery = '';
+			
 			/**
 			 * Creates a historical state in the browser history *if* the query
 			 * is not the same as the previous state
@@ -95,27 +96,34 @@
 			var createState = function(queryText) {
 				if (currentQuery !== queryText) {
 
-					dbg('createState: ');
+					//dbg('createState: ');
 					var st = History.getState();
-					dbg('old state: ', st);
+					//dbg('old state: ', st);
 
 					var url = new URI(st.url);
-					url.query({ Q: queryText});
-					dbg('url', url.toString())
+					//url on olemasolev, enne uut otsingut olnud url
+					
+					//konstrueerime uue urli
+					var map = url.search(true);
+					map['Q'] = queryText;
+					url.query(map); //kirjutab ?järgse osa üle 
+					
+					//dbg('url', url.toString())
 
 					History.pushState(
-						{'Q': queryText},
+						map,
+						//{'Q': queryText},
 						makeTitle(queryText),
 						url.toString()
 					);
-					dbg('new state: ', History.getState());
+					//dbg('new state: ', History.getState());
 
 					//currentQuery = queryText;
 				}
 			};
 			
 			/**
-			 * Käivitatakse esimese päringu puhul (ükskõik kas sisestatud boxi või lingiga saabunud)
+			 * Käivitatakse lehele saabumisel, kui url sisaldab päringut
 			 * @method myReplaceState
 			 * @param {String} queryText
 			 */
@@ -125,7 +133,7 @@
 					var st = History.getState();
 
 					//dbg('before replace state: ', st);
-					//dbg('st.url', st.url)
+					dbg('st.url', st.url)
 					
 					var url = new URI(st.url);
 					
@@ -221,14 +229,14 @@
 			
 			//Allikate valik ---------------------------------------------------
 			
-			if (url.hasQuery("frgs")) {
+			if (url.hasQuery("frgs")) { //"forced RGs"
 				var map = url.search(true);
 				var frgs = map['frgs'];
 				dbg('frgs:'+ frgs)
 				if (frgs == '*' || frgs.length == 0) {
 					app.qm.forceRGs(1); //luba kõik RGd
 				} else {
-					uRGs = frgs.split(',');
+					var uRGs = frgs.split(',');
 					
 					dbg('uRGs', uRGs, typeof uRGs)
 					dbg(uRGs)
@@ -242,12 +250,30 @@
 				//vaatame kas on küpsises salvestatud
 				var saved = app.qm.savedRGs();
 				if (saved.length > 0) {
+					//küpsises on valik
 					app.qm.screenRGs(saved);
 				} else {
-					//võtame konfist
-					var ids = app.configuration.getInitialRG_IDs();
-					dbg('ids confist:', ids);
-					app.qm.screenRGs(ids);
+					//ei olnud küpsises.
+					//ega url ei soovita valikut?
+					if (url.hasQuery("srgs")) {//"suggested RGs"
+						var map = url.search(true);
+						var srgs = map['srgs'];
+						if (srgs == '*' || srgs.length == 0) {
+							app.qm.suggestRGs(1); //luba kõik RGd
+						} else {
+							uRGs = srgs.split(',');
+							if (uRGs.length > 0) {
+								app.qm.suggestRGs(uRGs);
+							}
+						}
+						
+					} else {
+						//url ei soovita,
+						//võtame vaikimisi konfist
+						var ids = app.configuration.getInitialRG_IDs();
+						//dbg('ids confist:', ids);
+						app.qm.screenRGs(ids);
+					}
 				}
 				
 			}
@@ -258,12 +284,9 @@
 				app.queryText(q);
 				//app.plainSearch(q);
 
-
-
 				onFirstSearch();
 
-				myReplaceState(q)
-				
+				myReplaceState(q);
 				
 			} else if (url.hasQuery("u")) {
 				//var u = uri.search(true)['u'];

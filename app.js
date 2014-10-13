@@ -433,7 +433,7 @@ var App = (function() {
 		this.forceRGs = function(v) {//arr või 1
 			self.screenRGs(v);
 		}
-		this.suggRGs = function(v) {//arr või 1
+		this.suggestRGs = function(v) {//arr või 1
 			self.screenRGs(v);
 		}
 
@@ -1515,8 +1515,8 @@ var App = (function() {
 				});
 			});
 		};
-		
-		
+
+
 		self.onViewReady(function(){
 			//dbg(id+ ' onViewReady')
 			//linkide töötlus
@@ -1888,6 +1888,15 @@ var App = (function() {
 				if (rgss[i].active) {
 					ids.push(rgss[i].id);
 				}
+			};
+			return ids;
+		},
+		getAllRG_IDs: function () {
+			var conf = app.configuration;
+			var rgss = conf.RG_sources;
+			var ids = [];
+			for (var i=0; i< rgss.length; i++) {
+				ids.push(rgss[i].id);
 			};
 			return ids;
 		},

@@ -39,7 +39,7 @@
 					dbg('save selected_RGs', newArr);
 					//saveRGs
 					cookieRGs.set(newArr);
-					dbg('cookieRGs', cookieRGs.items())
+					dbg('cookieRGs now:', cookieRGs.items())
 				});
 			
 				M = {
@@ -52,6 +52,12 @@
 						
 						//var cookie_ids = getInitialIDs();
 						selected_RGs(baseconf.getInitialRG_IDs()); //
+					},
+					selectAll: function() {
+						selected_RGs(baseconf.getAllRG_IDs());
+					},
+					selectNone: function() {
+						selected_RGs([]);
 					}
 				}
 				
@@ -82,7 +88,9 @@
 						</tr>
 					</table>
 					
-					<a href="" data-bind="click: app.M.reset">Lähtesta valik</a>
+					<a href="" data-bind="click: app.M.reset">Lähtesta valik</a><br>
+					<a href="" data-bind="click: app.M.selectAll">Vali kõik</a><br>
+					<a href="" data-bind="click: app.M.selectNone">Tühjenda kõik</a>
 					
 					<!--	
 							+	<a href="http://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>
