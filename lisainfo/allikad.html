@@ -37,6 +37,7 @@
 				var selected_RGs = ko.observableArray(sel_RG_IDs);
 				selected_RGs.subscribe(function(newArr) {
 					dbg('save selected_RGs', newArr);
+					dbg('joined:', newArr.join(','))
 					//saveRGs
 					cookieRGs.set(newArr);
 					dbg('cookieRGs now:', cookieRGs.items())
@@ -58,6 +59,28 @@
 					},
 					selectNone: function() {
 						selected_RGs([]);
+					},
+					furl: ko.pureComputed(function() {
+						var qt = app.queryText();
+						var q = '';
+						dbg('queryText', qt)
+						if (qt.length > 0) {
+							q= '&Q='+ app.queryText();
+						}
+						return 'http://kn.eki.ee/?frgs='+ selected_RGs().join(',') + q;
+					}),
+					surl: ko.pureComputed(function() {
+						var qt = app.queryText();
+						var q = '';
+						dbg('queryText', qt)
+						if (qt.length > 0) {
+							q= '&Q='+ app.queryText();
+						}
+						return 'http://kn.eki.ee/?srgs='+ selected_RGs().join(',') + q;
+					}),
+					linksVisible: ko.observable(false),
+					toggleLinksVisible: function(argument) {
+						this.linksVisible(!this.linksVisible())
 					}
 				}
 				
@@ -71,7 +94,7 @@
 			<h1 id="bigword">Allikad</h1>
 			<div class="box">
 				<p>Keeleallikad, millest e-keelenõu mootor otsib:</p>
-				<div id="allikad">
+				<div id="allikad" data-bind="with: app.M">
 					<table data-bind="foreach: app.M.RG_srcs" style="margin-bottom: 1em">
 						<tr>
 							<td>
@@ -87,10 +110,19 @@
 							</td>
 						</tr>
 					</table>
+					<p style="margin-bottom: 1em">
+						<a href="" data-bind="click: app.M.reset">Lähtesta valik</a><br>
+						<a href="" data-bind="click: app.M.selectAll">Vali kõik</a><br>
+						<a href="" data-bind="click: app.M.selectNone">Tühjenda kõik</a><br>
+					</p>
+					<a href="" data-bind="click: toggleLinksVisible">Link e-keelenõule</a><br>
+					<p data-bind="visible: linksVisible">
+						Link, mis otsib ülal valitud allikatest: <br>
+						<a data-bind="attr: {href: furl}, text: furl"></a><br>
+						Link, mis otsib ülal valitud allikatest vaid juhul, kui kasutaja pole ise eelnevalt teinud oma valikut: <br>
+						<a data-bind="attr: {href: surl}, text: surl"></a>
+					</p>
 					
-					<a href="" data-bind="click: app.M.reset">Lähtesta valik</a><br>
-					<a href="" data-bind="click: app.M.selectAll">Vali kõik</a><br>
-					<a href="" data-bind="click: app.M.selectNone">Tühjenda kõik</a>
 					
 					<!--	
 							+	<a href="http://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>

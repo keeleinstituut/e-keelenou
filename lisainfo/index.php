@@ -71,7 +71,7 @@ $html = file_get_html("$module.html");
 					this.searching(true);
 					return false;
 				},
-
+				queryText: ko.observable(''),
 				testText: ko.observable('test-sisu')
 
 			};
@@ -162,9 +162,9 @@ $html = file_get_html("$module.html");
 
 					</ul>
 					<form id="paring" class="topBar" action="/" method="get">
-						<input onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" />
-						<input data-bind="style: { border: app.searching() ? '2px solid #ff6000' : ''}" id="otsi" value=""
-							   type="submit" />
+						<input data-bind="value: app.queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" />
+						<input data-bind="style: { border: app.searching() ? '2px solid #ff6000' : ''}" 
+							id="otsi" value="" type="submit" />
 						<input type="hidden" data-bind="value: app.testText" />
 					</form>
 					<div class="social-buttons">
