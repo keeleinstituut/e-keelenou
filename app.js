@@ -1394,7 +1394,18 @@ var App = (function() {
 	var CMLinker = function(self, id) { //Constructor Module
 
 		/**
+		 * procLinks teeb koguni kaks asja:
+		 * 
+		 * 1) Kustutab kõik antud id-ga ja .tervikart klassiga linkidest
+		 * absoluutviida index.cgi-le -- teisiti öeldes, kustutab nende
+		 * hrefi algustest ära "index.cgi" -- veel teistmoodi öeldes teeb see
+		 * absoluutlinkidest relatiivseteks, et töötaksid portaalis.
+		 * 
+		 * 2) muudab kõik antud id-ga ning .result ja span.sarnane klassidega
+		 * lõigud portaalis otsingulinkideks.
+		 * 
 		 * @method procLinks
+		 * @param {String} id pole parameeter aga on samas nimeruumis olemas
 		 */
 		self.procLinks = function() {
 			var $a = $('#'+ id +' .tervikart a');
@@ -1402,7 +1413,9 @@ var App = (function() {
 				var $t = $(this);
 				var linkText = $t.text();
 				var href = $t.attr('href');
-				//dbg('____procLinks: ', href, href.slice(0,10))
+				// href = href.replace(/^index\.cgi/i, '');
+				// $t.attr('href', href);
+				// dbg('____procLinks: ', href, href.slice(0,10))
 				if (href.slice(0,9) == 'index.cgi') {
 					$t.attr('href', href.substr(9));
 				}
@@ -1451,8 +1464,18 @@ var App = (function() {
 		RGView.apply(this, arguments);
 
 		var self = this;
-
-		//http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
+		
+		/**
+		 * getTextNodesIn käib HTML-noodi rekursiivselt läbi ja korjab kõik nende
+		 * lapsed kokku mis sisaldavad teksti. Ühe sõnaga koondab noodi kõik
+		 * mitte-tühjad tekstilised alamnoodid kokku massiiviks.
+		 * 
+		 * @method getTextNodesIn
+		 * @param node HTML DOM node
+		 * @return {Array} array of text nodes
+		 * 
+		 * http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
+		 */
 		self.getTextNodesIn = function (node, includeWhitespaceNodes) {
 			var textNodes = [], nonWhitespaceMatcher = /\S/;
 
@@ -1473,7 +1496,12 @@ var App = (function() {
 		};
 
 
-
+		/**
+		 * procLinks muudab kõik antud id-ga ja .result klassiga elemendid
+		 * --- aga kuidas???
+		 * 
+		 * @method procLinks
+		 */
 		self.procLinks = function() {
 
 			var $rs = $('#'+ id +' .result');
@@ -1487,8 +1515,8 @@ var App = (function() {
 				});
 			});
 		};
-
-
+		
+		
 		self.onViewReady(function(){
 			//dbg(id+ ' onViewReady')
 			//linkide töötlus
@@ -1514,7 +1542,9 @@ var App = (function() {
 			"use strict";
 			
 			/**
-			 * Escapes RegExp characters from inputted string by backslashing them
+			 * Escapes special RegExp characters from inputted string by 
+			 * backslashing them
+			 * 
 			 * @method escapeRegex
 			 * @param {String} string
 			 * @return {String}
@@ -1528,8 +1558,8 @@ var App = (function() {
 			 * @method trim
 			 * @param {String} str string to be trimmed?
 			 * @param {String} characters to be removed from string?
-			 * @param {String} [flag] RegExp flags (default "g")
-			 * @param {String}
+			 * @param {String} [flags] RegExp flags (default "g") only 'g' and 'i'
+			 * @return {String} escaped string
 			 * @public
 			 */
 			return function trim(str, characters, flags) {
@@ -1606,9 +1636,17 @@ var App = (function() {
 			self.procLinks();
 			self.procPics();
 		});
-
+		
+		/**
+		 * procLinks töötleb kõik antud id-ga lingid järgmiselt:
+		 * 
+		 * a) muudab suhtelised lingid absoluutseteks
+		 * b) juhul kui lingitekstis olev tekst on hoopis tegelik link, siis
+		 *    muudab lingi korrektseks vastavalt sellele
+		 * @method procLinks
+		 */
 		self.procLinks = function() {
-
+		
 			var $a = $('#'+ id +' a');
 			$a.each(function() {
 				var $t = $(this);
@@ -1618,7 +1656,7 @@ var App = (function() {
 				if (href === undefined) {
 					return true;
 				}
-
+				
 				if (href.slice(0, 15) == 'index.php?link=') {
 					$t.attr('href', "http://www.eki.ee/books/ekk09/" + href);
 					$t.attr('target', 'ekkr3456');
@@ -1649,10 +1687,15 @@ var App = (function() {
 			});
 
 		};
-
+		
+		/**
+		 * Muudab kõik piltide suurused suhteliseks ja laiuselt täitvaks
+		 * 
+		 * @method procPics
+		 */
 		self.procPics = function () {
-
 			var $img = $('#' + id + ' img');
+			
 			$img.each(function () {
 				var $t = $(this);
 				var src = $t.attr('src');
@@ -1668,7 +1711,11 @@ var App = (function() {
 		};
 
 	};
-
+	
+	/**
+	 * 
+	 * @class ProcKeyw
+	 */
 	var ProcKeyw = function(id) {
 		ResProcessor.apply(this, arguments);
 		var self = this;
@@ -1688,21 +1735,34 @@ var App = (function() {
 			self.qtime = new SW();
 			self.qry_str = qrystr;
 		};
-
+		
+		/**
+		 * Embeds html in a div element
+		 * 
+		 * @method getDom
+		 * @param html
+		 * @return jQuery element
+		 */
 		self.getDom = function(html) {
 			var wr_str_html = '<div>'+ html +'</div>';
 			return $.parseHTML(wr_str_html);
 		};
-
+		
+		/**
+		 * Kustutab stringist mõned kirjavahemärgid (ehk .'´+|][)
+		 * ning normaliseerib tühikud
+		 * 
+		 * 
+		 */
 		self.removePunctuation = function(s) {
 			//var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)() punctuation";
 			//var punctuationless = s.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 			var punctuationless = s.replace(/[.'´+|\[\]]/g,"");
 			var finalString = punctuationless.replace(/\s{2,}/g," ");
-
+			
 			//myTxt = myTxt.replace(/[^a-zA-Z0-9 ]+/g, '').replace('/ {2,}/',' ');
 			//myTxt = myTxt.replace(/['";:,.\/?\\-]/g, '');
-
+			
 			return finalString;
 		};
 
