@@ -20,7 +20,7 @@
 		<script src="/js/jquery.form.js"></script> 
 		<script type='text/javascript' src='lib/shim.js'></script>
 		-->
-		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/style.css?v=1.1" />
 		
 		<script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
 		<script src="lib/jquery.iecors.js" async></script>
