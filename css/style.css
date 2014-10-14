@@ -67,25 +67,6 @@ a img{
 .mt a:hover{text-decoration: underline;}
 .qtip-content td{background-color:transparent!important;}
 
-#dqs {
-    background: #f0d698;
-}
-#dekss {
-    background: #ffcaa3;
-}
-#dvakk {
-    background: #CED6E4; /*#e5eef4;*/
-}
-#dekkr {
-    background: #7CA0CE; /*#2460ad;*/
-}
-#dies {
-    background: #8ccb5e;
-}
-#evs {
-    background: #cbbac5;
-}
-
 
 .topBar {
     display: inline-block;

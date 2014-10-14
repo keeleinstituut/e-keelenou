@@ -1,62 +1,424 @@
-
-#ekss .tervikart {margin-top: 3px}
-#ekss .rasvane {font-weight:bold;}
-#ekss .atvw_i, .atvw_tnr, .atvw_rnr, .atvw_att {font-weight:bold;}
-#ekss .atvw_mvtl, .atvw_tvtl {font-size:x-small; text-transform:uppercase;}
-#ekss .etvw_m, .etvw_mm {font-weight:bold;}
-#ekss .etvw_v, .etvw_s, .etvw_sa {font-size:x-small; text-transform:uppercase;}
-#ekss .etvw_gki, .etvw_vk, .etvw_sl, .etvw_rk {font-family:'Arial Narrow'; font-size:smaller;}
-#ekss .etvw_ld, .etvw_n, .etvw_c {font-style:italic;}
-#ekss .etvw_kom {color:Blue;}
-#ekss .inf {font-size:smaller;}
-#ekss .artpart {background-color:#cfecec}
-.leitud_ss {font-weight: 700; background: none!important;}
-
-#evs .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#evs .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#evs .tervikart {margin-top: 3px}
-#evs .rasvane {font-weight:bold;}
-#evs .mvtl, .atvw_mvtl {font-style:italic;}
-#evs .m, .etvw_m {font-weight:bold;}
-#evs .inf {font-size:smaller;}
-#evs .artpart {background-color:#cfecec}
-#evs .leitud_id {background-color:#ddf0ee}
-#evs .ptr {cursor:pointer}
-
-#ies .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#ies .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#ies .tervikart {margin-top: 3px}
-#ies .rasvane {font-weight:bold;}
-#ies .mvtl, .atvw_mvtl {font-style:italic;}
-#ies .m, .etvw_m {font-weight:bold;}
-#ies .inf {font-size:smaller;}
-#ies .artpart {background-color:#cfecec}
-#ies .leitud_id {background-color:#ddf0ee}
-#ies .leitud_ss {background-color:#ffdddd}
-#ies .ptr {cursor:pointer}
-
-#qs13 .p_taandeta {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#qs13 .p_taandega {margin: 0 0 0 0.5cm; padding:0 auto; text-indent: -0.5cm}
-#qs13 .tervikart {margin-top: 3px}
-#qs13 .rasvane {font-weight:bold;}
-#qs13 .atvw_l {font-style:italic;}
-#qs13 .atvw_i {font-weight:bold;}
-#qs13 .etvw_m {font-family: Arial;font-weight:bold;}
-#qs13 .etvw_et {font-size:x-small;}
-#qs13 .etvw_hld, .etvw_k, .etvw_k1, .etvw_k2, .etvw_sl, .etvw_t, .etvw_t1, .etvw_gki, .etvw_vk, .etvw_lvk, .etvw_evk, .etvw_svk, .etvw_qvk, .etvw_avk, .etvw_vtl {font-style:italic;}
-#qs13 .etvw_s, .etvw_s1, .etvw_s2, .etvw_v, .etvw_v1, .etvw_v2 {font-size:x-small;text-transform:uppercase;}
-#qs13 .etvw_kom {background-color:sandybrown;}
-#qs13 .inf {font-size:smaller;}
-#qs13 .lspool {background-color:#dddddd}
-#qs13 .lslisa {background-color:#eeeeee}
-#qs13 .artpart {background-color:#cfecec}
-#qs13 .leitud_id {background-color:#FFFF80}
-#qs13 .leitud_ss {background-color:#ffd700}
-#qs13 .niru { background-color: lightsalmon }
-#qs13 .halb { background-color: lightsalmon; font-size: smaller }
-#qs13 .etem, .hea { background-color: palegreen }
-
-/*#syn .lingike  {text-decoration:underline;color:blue;background-color:cyan;cursor:pointer;}*/
+#ass p { margin: 1em 0 0 0; }
+#ass .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ass .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ass .tervikart { margin-top: 1em; }
+#ass .rasvane { font-weight: bold; }
+#ass .rohk { color: #7e2217; }
+#ass .artpart { background-color: #cfecec; }
+#ass .leitud_id { background-color: #ffff80; }
+#ass .leitud_ss { background-color: #ffd700; }
+#ass .eristus { font-style: italic; font-weight: bold; }
+#ass .ptr { cursor: pointer; }
+#ass h1 { font-size: 1.3em; }
+#ass h2 { font-size: 1.2em; }
+#ass h3 { font-size: 1.1em; }
+#ass ul { margin: 0 1em 0 1em; list-style-type: square; }
+#ass .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#ass .vaheosa { display:block; margin-top:7px; }
+#ass .lingike  {text-decoration:underline;color:blue;background-color:cyan;cursor:pointer;}
+#ass .m  {font-weight:bold;font-family:Arial;font-size:medium;}
+#ass .m_x_liik  {font-style:italic;font-size:x-small;}
+#ass .m_x_i  {vertical-align:super;}
+#ass .vk  {font-style:italic;font-size:x-small;}
+#ass .gki  {font-style:italic;font-size:small;}
+#ass .r  {font-style:italic;font-family:Arial;font-size:x-small;}
+#ass .keel  {font-size:small;}
+#ass .ex  {font-style:italic;}
+#ass .mvt  {font-weight:bold;font-family:Arial;}
+#ass .mvt_x_i  {vertical-align:super;}
+#ass .tp_x_tnr  {font-weight:bold;}
+#ass .v  {font-variant:small-caps;}
+#ass .s  {font-variant:small-caps;}
+#ass .d  {font-style:italic;}
+#ass .do  {font-style:italic;color:blue;}
+#ass .do_x_i  {vertical-align:super;}
+#ass .do_x_lnd  {font-size:x-small;background-color:yellow;}
+#ass .ki  {font-style:italic;}
+#ass .a  {font-family:Calibri;font-size:medium;}
+#ass .tvt  {font-weight:bold;font-family:Arial;}
+#ass .tvt_x_i  {vertical-align:super;}
+#ass .tvt2  {font-weight:bold;font-family:Arial;}
+#ass .tvt2_x_i  {vertical-align:super;}
+#ass .KOM  {background-color:silver;}
+#ass .kom  {color:blue;}
+#ass .kaut  {font-size:x-small;}
+#ass .kaeg  {font-size:x-small;}
+#ass .am  {font-weight:bold;font-family:Arial;color:maroon;}
+#ass .poh  {font-family:Calibri;font-size:medium;}
+#ass .nao  {color:green;}
+#ass .nn  {color:black;}
+#ass .nno  {color:red;}
+#ass .nd  {font-style:italic;}
+#ass .pho  {font-style:italic;}
+#ekkr TABLE {color: black; margin-top: 0px; margin-left: 0px; margin-right: 0px;}
+#ekkr TH {font-size: smaller;}
+#ekkr TD {font-size: smaller;}
+#ekkr ul { margin:0; padding:0; padding-left:20; border:0; border-collapse:separate; border-spacing:0; }
+#ekkr .kuum {list-style-image: url("pildid/item_li_1.gif"); }
+#ekkr .ebakuum {list-style-image: url("pildid/item_li_2.gif"); }
+#ekkr TD.pais { margin: 80; }
+#ekkr h1 {color:#2460ad;font-size: 30px;}
+#ekkr h2 {color:#2460ad;font-size: 18px;}
+#ekkr h3 {color:#2460ad;font-size: 15px;}
+#ekkr .parem {padding:10;}
+#ekkr p { margin-bottom: 0 }
+#ekkr p.taane { text-indent: 1.5em }
+#ekkr p.pildiallkiri { font-style : italic; }
+#ekkr .m { font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+#ekkr .vorm {font-style : italic;}
+#ekkr .r {font-style : italic;}
+#ekkr .eristus {font-style: italic; font-weight: bold;}
+#ekkr .s {font-variant: small-caps;}
+#ekkr .tahendus {font-style : italic;}
+#ekkr .naide {font-style : italic;}
+#ekkr .vtka {font-style : italic;}
+#ekkr .krpealkiri {font-weight: bold; color: navy;}
+#ekkr .leitud_id { background-color: #ffff80; }
+#ekkr .leitud_ss { background-color: #ffd700; }
+#ekss p { margin: 1em 0 0 0; }
+#ekss .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ekss .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ekss .tervikart { margin-top: 1em; }
+#ekss .rasvane { font-weight: bold; }
+#ekss .rohk { color: #7e2217; }
+#ekss .artpart { background-color: #cfecec; }
+#ekss .leitud_id { background-color: #ffff80; }
+#ekss .leitud_ss { background-color: #ffd700; }
+#ekss .eristus { font-style: italic; font-weight: bold; }
+#ekss .ptr { cursor: pointer; }
+#ekss h1 { font-size: 1.3em; }
+#ekss h2 { font-size: 1.2em; }
+#ekss h3 { font-size: 1.1em; }
+#ekss ul { margin: 0 1em 0 1em; list-style-type: square; }
+#ekss .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#ekss .vaheosa { display:block; margin-top:7px; }
+#ekss .m  {font-weight:bold;font-family:Arial;}
+#ekss .m_s_i  {vertical-align:super;}
+#ekss .gki  {font-family:Arial Narrow;font-size:small;}
+#ekss .grg  {font-family:Arial Narrow;font-size:x-small;}
+#ekss .s  {font-variant:small-caps;}
+#ekss .vk  {font-family:Arial Narrow;font-size:small;}
+#ekss .sl  {font-family:Arial Narrow;font-size:small;}
+#ekss .rk  {font-family:Arial Narrow;font-size:small;}
+#ekss .vhom  {color:navy;}
+#ekss .rp_s_rnr  {font-weight:bold;}
+#ekss .sa  {font-variant:small-caps;}
+#ekss .v  {font-variant:small-caps;}
+#ekss .syn  {font-weight:bold;}
+#ekss .ant  {font-weight:bold;}
+#ekss .tp_s_tnr  {font-weight:bold;}
+#ekss .mm  {font-weight:bold;}
+#ekss .tg_s_att  {font-weight:bold;}
+#ekss .ld  {font-style:italic;}
+#ekss .n  {font-style:italic;}
+#ekss .c  {font-style:italic;}
+#ekss .ls  {color:navy;}
+#ekss .KOM  {background-color:silver;}
+#ekss .kom  {color:blue;}
+#ekss .kaut  {font-size:x-small;}
+#ekss .kaeg  {font-size:x-small;}
+#ety p { margin: 1em 0 0 0; }
+#ety .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ety .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ety .tervikart { margin-top: 1em; }
+#ety .rasvane { font-weight: bold; }
+#ety .rohk { color: #7e2217; }
+#ety .artpart { background-color: #cfecec; }
+#ety .leitud_id { background-color: #ffff80; }
+#ety .leitud_ss { background-color: #ffd700; }
+#ety .eristus { font-style: italic; font-weight: bold; }
+#ety .ptr { cursor: pointer; }
+#ety h1 { font-size: 1.3em; }
+#ety h2 { font-size: 1.2em; }
+#ety h3 { font-size: 1.1em; }
+#ety ul { margin: 0 1em 0 1em; list-style-type: square; }
+#ety .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#ety .vaheosa { display:block; margin-top:7px; }
+#ety .lad  {font-style:italic;}
+#ety .mvt  {font-weight:bold;font-style:italic;}
+#ety .mvt_e_mvtl  {font-style:italic;}
+#ety .mvt_e_iv  {vertical-align:super;}
+#ety .mx  {font-style:italic;}
+#ety .dx  {font-weight:bold;font-style:italic;}
+#ety .dx_e_i  {vertical-align:super;}
+#ety .x  {font-style:italic;}
+#ety .cvt  {font-weight:bold;font-style:italic;}
+#ety .cvt_e_cvtl  {font-style:italic;}
+#ety .cvt_e_iv  {vertical-align:super;}
+#evs body {text-align: center; width: 780; font-family: Arial Unicode MS, Arial, Helvetica, sans-serif;}
+#evs .pagecontent {text-align: left; width: 780; margin: 0 auto;}
+#evs .p_taandeta {margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm}
+#evs .p_taandega {margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm}
+#evs .tervikart {margin-top: 1em}
+#evs .rasvane {font-weight: bold;}
+#evs .ms,#evs  .fr {font-weight: bold;}
+#evs .msviide,#evs  .txhviide {font-weight: bold;}
+#evs .vormid {font-size: x-small;}
+#evs .vk,#evs  .hld,#evs  .ervk,#evs  .vgsugu,#evs  .tsliik,#evs  .tksrek,#evs  .tprag {font-size: x-small; font-style: italic;}
+#evs .slyld,#evs  .tyyp,#evs  .vgvormid,#evs  .vgsugu,#evs  .vgarv,#evs  .aspgt,#evs  .prag,#evs  .vstgt,#evs  .vstvk,#evs  .vgervk,#evs  .vgerprag {font-size: x-small; font-style: italic;}
+#evs .vald,#evs  .stiil,#evs  .dvald,#evs  .dstiil,#evs  .vvald,#evs  .vstiil,#evs  .nvald,#evs  .nstiil,#evs  .tlkvald,#evs  .tlkstiil,#evs  .frvvald,#evs  .frvstiil,#evs  .frtlkvald,#evs  .frtlkstiil {font-style: italic;}
+#evs .def,#evs  .ndef,#evs  .frvdef {font-style: italic;}
+#evs .ksrek,#evs  .vrek,#evs  .nrek,#evs  .frvrek {font-style: italic;}
+#evs .xxx {font-size: x-small; text-transform: uppercase;}
+#evs .inf {font-size: smaller;}
+#evs .rohk {color: #7e2217;}
+#evs .artpart {background-color: #cfecec}
+#evs .leitud_id {background-color: #b4d8e7}
+#evs .leitud_ss {background-color: #ffaeae}
+#evs ul { margin: 0 1em 0 1em }
+#evs #keeled { position: relative; float: right; margin: 24px; }
+#evs #samaparing { margin-top: 10px; padding: 0 auto; border: 1px; }
+#ies p { margin: 1em 0 0 0; }
+#ies .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ies .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#ies .tervikart { margin-top: 1em; }
+#ies .rasvane { font-weight: bold; }
+#ies .rohk { color: #7e2217; }
+#ies .artpart { background-color: #cfecec; }
+#ies .leitud_id { background-color: #ffff80; }
+#ies .leitud_ss { background-color: #ffd700; }
+#ies .eristus { font-style: italic; font-weight: bold; }
+#ies .ptr { cursor: pointer; }
+#ies h1 { font-size: 1.3em; }
+#ies h2 { font-size: 1.2em; }
+#ies h3 { font-size: 1.1em; }
+#ies ul { margin: 0 1em 0 1em; list-style-type: square; }
+#ies .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#ies .m  {font-weight:bold;font-family:Arial;}
+#ies .m_i_i  {vertical-align:super;}
+#ies .vk  {font-style:italic;}
+#ies .mvt_i_mvtl  {font-style:italic;}
+#ies .mvt_i_i  {vertical-align:super;}
+#ies .tp_i_tnr  {font-weight:bold;}
+#ies .v  {font-variant:small-caps;}
+#ies .s  {font-variant:small-caps;}
+#ies .KOM  {background-color:silver;}
+#ies .kom  {color:blue;}
+#ies .kaut  {font-size:x-small;}
+#ies .kaeg  {font-size:x-small;}
+#qs06 p { margin: 1em 0 0 0; }
+#qs06 .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs06 .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs06 .tervikart { margin-top: 1em; }
+#qs06 .rasvane { font-weight: bold; }
+#qs06 .rohk { color: #7e2217; }
+#qs06 .artpart { background-color: #cfecec; }
+#qs06 .leitud_id { background-color: #ffff80; }
+#qs06 .leitud_ss { background-color: #ffd700; }
+#qs06 .eristus { font-style: italic; font-weight: bold; }
+#qs06 .ptr { cursor: pointer; }
+#qs06 h1 { font-size: 1.3em; }
+#qs06 h2 { font-size: 1.2em; }
+#qs06 h3 { font-size: 1.1em; }
+#qs06 ul { margin: 0 1em 0 1em; list-style-type: square; }
+#qs06 .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#qs06 .leitud_id {background-color:#FFFF80}
+#qs06 .leitud_ss {background-color:#ffd700}
+#qs06 .niru { background-color: lightsalmon }
+#qs06 .halb { background-color: lightsalmon; font-size: smaller }
+#qs06 .etem, .hea { background-color: palegreen }
+#qs06 .atvw_l  {font-style:italic;}
+#qs06 .atvw_i  {font-weight:bold;}
+#qs06 .etvw_m  {font-family:'Arial';font-weight:bold;}
+#qs06 .etvw_et  {font-size:x-small;}
+#qs06 .etvw_hld,#qs06  .etvw_k,#qs06  .etvw_k1,#qs06  .etvw_k2,#qs06  .etvw_sl,#qs06  .etvw_t,#qs06  .etvw_t1,#qs06  .etvw_gki,#qs06  .etvw_vk,#qs06  .etvw_lvk,#qs06  .etvw_evk,#qs06  .etvw_svk,#qs06  .etvw_qvk,#qs06  .etvw_avk,#qs06  .etvw_vtl  {font-style:italic;}
+#qs06 .etvw_s,#qs06  .etvw_s1,#qs06  .etvw_s2,#qs06  .etvw_v,#qs06  .etvw_v1,#qs06  .etvw_v2  {font-size:x-small;text-transform:uppercase;}
+#qs06 .etvw_kom  {background-color:sandybrown;}
+#qs13 p { margin: 1em 0 0 0; }
+#qs13 .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs13 .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs13 .tervikart { margin-top: 1em; }
+#qs13 .rasvane { font-weight: bold; }
+#qs13 .rohk { color: #7e2217; }
+#qs13 .artpart { background-color: #cfecec; }
+#qs13 .leitud_id { background-color: #ffff80; }
+#qs13 .leitud_ss { background-color: #ffd700; }
+#qs13 .eristus { font-style: italic; font-weight: bold; }
+#qs13 .ptr { cursor: pointer; }
+#qs13 h1 { font-size: 1.3em; }
+#qs13 h2 { font-size: 1.2em; }
+#qs13 h3 { font-size: 1.1em; }
+#qs13 ul { margin: 0 1em 0 1em; list-style-type: square; }
+#qs13 .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#qs13 .d > i, em { font-style:normal; }
+#qs13 .helehall {color: #333333;}
+#qs13 .lsjupp {color: #333333;}
+#qs13 .leitud_id { background-color:#FFFF80; }
+#qs13 .leitud_ss { background-color:#ffd700; }
+#qs13 .lingike, .lingike_kno { background-color: inherit; color: inherit; text-decoration: inherit; }
+#qs13 .mm {font-weight:bold}
+#qs13 .niru, .halb, span.halb > span.leitud_ss { background-color: lightsalmon }
+#qs13 .etem, .hea, span.hea > span.leitud_ss { background-color: palegreen }
+#qs13 .m_kno  {font-weight:bold;font-family:Arial;}
+#qs13 .m_x_i_kno  {vertical-align:super;}
+#qs13 .hld_kno  {font-style:italic;}
+#qs13 .k_kno  {font-size:x-small;}
+#qs13 .vk_kno  {font-style:italic;}
+#qs13 .mv_kno  {background-color:white;}
+#qs13 .d_kno  {font-style:italic;}
+#qs13 .mvt_x_i_kno  {vertical-align:super;}
+#qs13 .mvt_x_mvtl_kno  {font-style:italic;}
+#qs13 .KOM_kno  {background-color:silver;}
+#qs13 .kom_kno  {color:blue;}
+#qs13 .kaut_kno  {font-size:x-small;}
+#qs13 .kaeg_kno  {font-size:x-small;}
+#qs13 .tx_kno  {font-style:italic;}
+#qs13 .ag_x_kvm_kno  {font-style:italic;}
+#qs13 .mvg_x_vn_kno  {font-style:italic;}
+#qs13 .A_q_AS  {background-color:Silver;}
+#qs13 .k  {font-style:italic;}
+#qs13 .m_q_i  {font-weight:bold;}
+#qs13 .hld  {font-style:italic;}
+#qs13 .et  {font-size:x-small;}
+#qs13 .sl  {font-style:italic;}
+#qs13 .vk  {font-style:italic;}
+#qs13 .vk_q_l  {font-style:italic;}
+#qs13 .s  {font-variant:small-caps;}
+#qs13 .s_q_l  {font-style:italic;}
+#qs13 .gki  {font-style:italic;}
+#qs13 .k2  {font-style:italic;}
+#qs13 .r  {font-size:x-small;}
+#qs13 .t1  {font-style:italic;}
+#qs13 .v1  {font-variant:small-caps;}
+#qs13 .v1_q_l  {font-style:italic;}
+#qs13 .s1  {font-variant:small-caps;}
+#qs13 .s1_q_l  {font-style:italic;}
+#qs13 .d  {font-style:italic;}
+#qs13 .d_q_dliik  {background-color:lightgray;}
+#qs13 .vtl  {font-style:italic;}
+#qs13 .v  {font-variant:small-caps;}
+#qs13 .v_q_l  {font-style:italic;}
+#qs13 .mvt_q_mvtl  {font-style:italic;}
+#qs13 .KOM  {background-color:silver;}
+#qs13 .kom  {color:blue;}
+#qs13 .kaut  {font-size:x-small;}
+#qs13 .kaeg  {font-size:x-small;}
+#qs13 .tvt_q_tvtl  {font-style:italic;}
+#qs13 .tvt_q_i  {vertical-align:super;}
+#qs13 .gkg_q_gkn  {font-style:italic;}
+#qs13 .mv  {color:silver;}
+#qs13 .vkg  {color:lime;}
+#qs13 .tx  {font-style:italic;}
+#qs p { margin: 1em 0 0 0; }
+#qs .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#qs .tervikart { margin-top: 1em; }
+#qs .rasvane { font-weight: bold; }
+#qs .rohk { color: #7e2217; }
+#qs .artpart { background-color: #cfecec; }
+#qs .leitud_id { background-color: #ffff80; }
+#qs .leitud_ss { background-color: #ffd700; }
+#qs .eristus { font-style: italic; font-weight: bold; }
+#qs .ptr { cursor: pointer; }
+#qs h1 { font-size: 1.3em; }
+#qs h2 { font-size: 1.2em; }
+#qs h3 { font-size: 1.1em; }
+#qs ul { margin: 0 1em 0 1em; list-style-type: square; }
+#qs .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#qs .d > i, em { font-style:normal; }
+#qs .helehall {color: #333333;}
+#qs .lsjupp {color: #333333;}
+#qs .leitud_id { background-color:#FFFF80; }
+#qs .leitud_ss { background-color:#ffd700; }
+#qs .lingike, .lingike_kno { background-color: inherit; color: inherit; text-decoration: inherit; }
+#qs .mm {font-weight:bold}
+#qs .niru, .halb, span.halb > span.leitud_ss { background-color: lightsalmon }
+#qs .etem, .hea, span.hea > span.leitud_ss { background-color: palegreen }
+#qs .m_kno  {font-weight:bold;font-family:Arial;}
+#qs .m_x_i_kno  {vertical-align:super;}
+#qs .hld_kno  {font-style:italic;}
+#qs .k_kno  {font-size:x-small;}
+#qs .vk_kno  {font-style:italic;}
+#qs .mv_kno  {background-color:white;}
+#qs .d_kno  {font-style:italic;}
+#qs .mvt_x_i_kno  {vertical-align:super;}
+#qs .mvt_x_mvtl_kno  {font-style:italic;}
+#qs .KOM_kno  {background-color:silver;}
+#qs .kom_kno  {color:blue;}
+#qs .kaut_kno  {font-size:x-small;}
+#qs .kaeg_kno  {font-size:x-small;}
+#qs .tx_kno  {font-style:italic;}
+#qs .ag_x_kvm_kno  {font-style:italic;}
+#qs .mvg_x_vn_kno  {font-style:italic;}
+#qs .A_q_AS  {background-color:Silver;}
+#qs .k  {font-style:italic;}
+#qs .m_q_i  {font-weight:bold;}
+#qs .hld  {font-style:italic;}
+#qs .et  {font-size:x-small;}
+#qs .sl  {font-style:italic;}
+#qs .vk  {font-style:italic;}
+#qs .vk_q_l  {font-style:italic;}
+#qs .s  {font-variant:small-caps;}
+#qs .s_q_l  {font-style:italic;}
+#qs .gki  {font-style:italic;}
+#qs .k2  {font-style:italic;}
+#qs .r  {font-size:x-small;}
+#qs .t1  {font-style:italic;}
+#qs .v1  {font-variant:small-caps;}
+#qs .v1_q_l  {font-style:italic;}
+#qs .s1  {font-variant:small-caps;}
+#qs .s1_q_l  {font-style:italic;}
+#qs .d  {font-style:italic;}
+#qs .d_q_dliik  {background-color:lightgray;}
+#qs .vtl  {font-style:italic;}
+#qs .v  {font-variant:small-caps;}
+#qs .v_q_l  {font-style:italic;}
+#qs .mvt_q_mvtl  {font-style:italic;}
+#qs .KOM  {background-color:silver;}
+#qs .kom  {color:blue;}
+#qs .kaut  {font-size:x-small;}
+#qs .kaeg  {font-size:x-small;}
+#qs .tvt_q_tvtl  {font-style:italic;}
+#qs .tvt_q_i  {vertical-align:super;}
+#qs .gkg_q_gkn  {font-style:italic;}
+#qs .mv  {color:silver;}
+#qs .vkg  {color:lime;}
+#qs .tx  {font-style:italic;}
+#spi p { margin: 1em 0 0 0; }
+#spi .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#spi .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#spi .tervikart { margin-top: 1em; }
+#spi .rasvane { font-weight: bold; }
+#spi .rohk { color: #7e2217; }
+#spi .artpart { background-color: #cfecec; }
+#spi .leitud_id { background-color: #ffff80; }
+#spi .leitud_ss { background-color: #ffd700; }
+#spi .eristus { font-style: italic; font-weight: bold; }
+#spi .ptr { cursor: pointer; }
+#spi h1 { font-size: 1.3em; }
+#spi h2 { font-size: 1.2em; }
+#spi h3 { font-size: 1.1em; }
+#spi ul { margin: 0 1em 0 1em; list-style-type: square; }
+#spi .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
+#spi .vaheosa { display:block; margin-top:7px; }
+#spi .A_x_as  {background-color:yellow;}
+#spi .sl  {font-style:italic;font-size:x-small;}
+#spi .mlg_x_as  {background-color:yellow;}
+#spi .mml  {font-family:Times New Roman;color:black;}
+#spi .mml_x_i  {vertical-align:super;font-size:xx-small;}
+#spi .pm  {font-weight:bold;font-family:Calibri;font-size:small;}
+#spi .pm_x_i  {vertical-align:super;font-size:xx-small;}
+#spi .ahel_x_as  {background-color:yellow;}
+#spi .ahel_x_c  {color:gray;}
+#spi .tml_x_i  {vertical-align:super;font-size:xx-small;}
+#spi .pp  {font-style:italic;}
+#spi .pp_x_lpl  {font-size:small;color:gray;}
+#syn p { margin: 1em 0 0 0; }
+#syn .p_taandeta { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#syn .p_taandega { margin: 0 0 0 0.5cm; padding: 0 auto; text-indent: -0.5cm; }
+#syn .tervikart { margin-top: 1em; }
+#syn .rasvane { font-weight: bold; }
+#syn .rohk { color: #7e2217; }
+#syn .artpart { background-color: #cfecec; }
+#syn .leitud_id { background-color: #ffff80; }
+#syn .leitud_ss { background-color: #ffd700; }
+#syn .eristus { font-style: italic; font-weight: bold; }
+#syn .ptr { cursor: pointer; }
+#syn h1 { font-size: 1.3em; }
+#syn h2 { font-size: 1.2em; }
+#syn h3 { font-size: 1.1em; }
+#syn ul { margin: 0 1em 0 1em; list-style-type: square; }
+#syn .lingike { text-decoration: inherit; color: inherit; background-color: inherit; }
 #syn .m  {font-weight:bold;font-family:Arial;}
 #syn .m_x_i  {font-weight:bold;vertical-align:super;font-size:x-small;}
 #syn .s  {font-variant:small-caps;color:green;}
@@ -76,9 +438,5 @@
 #syn .v  {font-variant:small-caps;color:green;}
 #syn .v_x_l  {color:green;}
 #syn .sl  {font-style:italic;}
-#syn .leitud_ss {background-color:#ffd700}
-
-#ekkr .krpealkiri {
-    font-weight: bold;
-    color: navy;
-}
+#vakk .leitud_id {background-color:#FFFF80}
+#vakk .leitud_ss {background-color:#ffd700}

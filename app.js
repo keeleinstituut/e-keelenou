@@ -1852,10 +1852,10 @@ var App = (function() {
 			{id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
 				url: "http://www.eki.ee/books/ekk09/", active: true
 			},
-			{id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
+			{id: 'ies', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
 				url: "http://www.eki.ee/dict/ies/", active: true
 			},
-			{id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
+			{id: 'evs', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
 				url: "http://www.eki.ee/dict/evs/", active: true
 			},
 			{id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
@@ -1891,57 +1891,7 @@ var App = (function() {
 			};
 			return ids;
 		},
-		getAllRG_IDs: function () {
-			var conf = app.configuration;
-			var rgss = conf.RG_sources;
-			var ids = [];
-			for (var i=0; i< rgss.length; i++) {
-				ids.push(rgss[i].id);
-			};
-			return ids;
-		},
-		RG_sources_hash__: {
-			qs13: {id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
-				url: "http://www.eki.ee/dict/qs/"
-			},
-			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
-				url: "http://www.eki.ee/dict/ekss/"
-			},
-			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
-				url: "http://keeleabi.eki.ee/?leht=4"
-			},
-			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
-				url: "http://www.eki.ee/books/ekk09/"
-			},
-			trans_en: {id: 'trans_en', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
-				url: "http://www.eki.ee/dict/ies/"
-			},
-			trans_ru: {id: 'trans_ru', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
-				url: "http://www.eki.ee/dict/evs/"
-			},
-			knabee: {id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
-				url: "http://www.eki.ee/knab/"
-			},
-			knabmm: {id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
-				url: "http://www.eki.ee/knab/"
-			},
-			syn: {id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
-				url: "http://www.eki.ee/dict/synonyymid/"
-			},
-			thes: {id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
-				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et"
-			},
-			ass: {id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
-				url: "http://www.eki.ee/dict/ametnik/"
-			},
-			ety: {id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
-				url: "http://www.eki.ee/dict/ety/"
-			},
-			WikiEst: {id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
-				url: "http://et.wikipedia.org/"
-			}
-		},
-	
+
 		/**
 		 * Definitions used for building the QueryManager
 		 * @todo
@@ -2010,7 +1960,8 @@ var App = (function() {
 		 */
 		resultCategories: {
 			c_qs: {h: 'ÕS', col: 1, grps: {
-				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} //dyn laetav css tahab qs13 nimelist css klassi
+				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} 
 			}},
 			c_def: {h: 'Seletused', col: 1, grps: {
 				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
@@ -2023,8 +1974,8 @@ var App = (function() {
 				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
 			}},
 			c_trans: {h: 'Tõlkevasted', col: 1, grps: {
-				trans_en: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
-				trans_ru: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
+				ies: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
+				evs: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
 			}},
 			c_sugg: {h: 'Soovitused', col: 2, grps: {
 				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
