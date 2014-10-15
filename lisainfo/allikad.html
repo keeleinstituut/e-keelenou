@@ -110,10 +110,10 @@
 							</td>
 						</tr>
 					</table>
-					<p style="margin-bottom: 1em">
-						<a href="" data-bind="click: app.M.reset">Lähtesta valik</a><br>
-						<a href="" data-bind="click: app.M.selectAll">Vali kõik</a><br>
-						<a href="" data-bind="click: app.M.selectNone">Tühjenda kõik</a><br>
+					<p style="margin-bottom: 2em">
+						<a href="" data-bind="click: selectAll" style="margin-right: 2em">Vali kõik</a>
+						<a href="" data-bind="click: selectNone" style="margin-right: 2em">Tühjenda kõik</a>
+						<a href="" data-bind="click: reset">Lähtesta valik</a>
 					</p>
 					<a href="" data-bind="click: toggleLinksVisible">
 						<!-- ko ifnot: linksVisible -->[+]<!-- /ko --><!-- ko if: linksVisible -->[-]<!-- /ko -->

@@ -1891,7 +1891,15 @@ var App = (function() {
 			};
 			return ids;
 		},
-
+		getAllRG_IDs: function () {
+			var conf = app.configuration;
+			var rgss = conf.RG_sources;
+			var ids = [];
+			for (var i=0; i< rgss.length; i++) {
+				ids.push(rgss[i].id);
+			};
+			return ids;
+		},
 		/**
 		 * Definitions used for building the QueryManager
 		 * @todo
