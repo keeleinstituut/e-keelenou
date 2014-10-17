@@ -561,8 +561,8 @@
 								<div class="boxContent">
 									<div class="result">
 										<ul>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=264">Meie mepid Brüsselis</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=263">Rjumotšnajast „shotibaari“</a></li>
+											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=264">Meie mepid Brüsselis (16.10.2014)</a></li>
+											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=263">Rjumotšnajast „shotibaari“ (3.10.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=262">Vegan (18.9.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=261">Kas <i>refleksioon</i> või <i>reflektsioon</i>? (1.9.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=259">Kuidas käänata pealkirja „Tuhk ja akvaviit”? (21.8.2014)</a></li>
