@@ -115,9 +115,9 @@ var App = (function() {
 	 * @class StlAPI
 	 * @param rid
 	 */
-	var StlAPI = function(rid) {
-		this.id = rid;
-		var pars = {R: rid };
+	var StlAPI = function(sid) {
+		this.id = sid;
+		var pars = {R: sid };
 
 		/**
 		 * Make a query (actually it saves the query in the log)
@@ -141,9 +141,9 @@ var App = (function() {
 	 * @class SourceThesAPI
 	 * @param rid
 	 */
-	var SourceThesAPI = function(rid) {
-		this.id = rid;
-		var pars = {R: rid};
+	var SourceThesAPI = function(sid) {
+		this.id = sid;
+		var pars = {R: sid};
 		
 		/**
 		 * Make a query
@@ -167,9 +167,9 @@ var App = (function() {
 	 * @class SourceEknAPI
 	 * @param rid
 	 */
-	var SourceEknAPI = function(rid) {
-		this.id = rid;
-		var pars = {R: rid};
+	var SourceEknAPI = function(sid) {
+		this.id = sid;
+		var pars = {R: sid};
 		var res;
 		
 		/**
@@ -202,11 +202,11 @@ var App = (function() {
 	 * Facade for the *old* EKI e-keelenõu dictionary API
 	 * 
 	 * @class SourceOTest
-	 * @param rid
+	 * @param sid Source ID
 	 */
-	var SourceOTest = function(rid) {
-		this.id = rid;
-		var pars = {R: rid};
+	var SourceOTest = function(sid) {
+		this.id = sid;
+		var pars = {R: sid};
 		
 		/**
 		 * Make a query
@@ -238,8 +238,8 @@ var App = (function() {
 	 * @class SourceWikiEstAPI
 	 * @param rid
 	 */
-	var SourceWikiEstAPI = function(rid) {
-		this.id = rid;
+	var SourceWikiEstAPI = function(sid) {
+		this.id = sid;
 		var self = this;
 		var url = 'https://et.wikipedia.org/w/api.php';
 		
@@ -733,13 +733,13 @@ var App = (function() {
 	};
 
 	/**
-	 * Description
+	 * Category box of sources, can contain multiple result groups (RGView) 
 	 * 
 	 * @class CategoryView
-	 * @param id
+	 * @param cid Category ID
 	 */
-	var CategoryView = function(id) {
-		this.id = id;
+	var CategoryView = function(cid) {
+		this.id = cid;
 		var self = this;
 
 		self.qry_time = ko.observable(0);
@@ -762,6 +762,13 @@ var App = (function() {
 			return false;
 		});
 
+		/**
+		 * Returns true if Category is active = category box is visible on page,
+		 * shows its content and is ready to search next query.
+		 * 
+		 * @method active
+		 * @return {Bool}
+		 */
 		self.active = ko.pureComputed(function(){
 			for (var i = 0; i < self.rsltGrps().length; i++) {
 				if (self.rsltGrps()[i].active()) {

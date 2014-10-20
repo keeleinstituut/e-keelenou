@@ -503,7 +503,9 @@
 
 						</ul>
 						<form data-bind="submit: formSearch" id="paring" class="topBar">
-							<input data-bind="value: queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" value="Sisesta siia sõna või väljend" autofocus="" />
+							<input data-bind="value: queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" 
+								onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" 
+								placeholder="Sisesta siia sõna või väljend" autofocus="" />
 							<input data-bind="style: { border: searching() ? '2px solid #ff6000' : ''}" id="otsi" value=""
 								   type="submit" />
 						</form>
