@@ -577,6 +577,75 @@ var App = (function() {
 	};
 
 	/**
+	 * Category box of sources, can contain multiple result groups (RGView) 
+	 * 
+	 * @class CategoryView
+	 * @param cid Category ID
+	 */
+	var CategoryView = function(cid) {
+		this.id = cid;
+		var self = this;
+
+		self.qry_time = ko.observable(0);
+		self.qry_str = ko.observable('');
+
+		self.rsltGrps = ko.observableArray(new Harray('id'));
+
+		/**
+		 * Returns true if results are still loading, false if finished
+		 * 
+		 * @method loading
+		 * @return {Bool}
+		 */
+		self.loading = ko.pureComputed(function(){
+			for (var i = 0; i < self.rsltGrps().length; i++) {
+				if (self.rsltGrps()[i].loading()) {
+					return true;
+				}
+			}
+			return false;
+		});
+
+		/**
+		 * Returns true if Category is active = category box is visible on page,
+		 * shows its content and is ready to search next query.
+		 * 
+		 * @method active
+		 * @return {Bool}
+		 */
+		self.active = ko.pureComputed(function(){
+			for (var i = 0; i < self.rsltGrps().length; i++) {
+				if (self.rsltGrps()[i].active()) {
+					return true;
+				}
+			}
+			return false;
+		});
+
+		/**
+		 * Returns the summed amount of results found from
+		 * different sources (global across the site's search)
+		 * 
+		 * @method reslen
+		 * @return {Number} sum of results found
+		 */
+		self.reslen = ko.pureComputed(function() {
+			var sum = 0;
+			for (var i = 0; i < self.rsltGrps().length; i++) {
+				sum += self.rsltGrps()[i].reslen();
+			}
+			return sum;
+		});
+
+		self.addRGrp = function(grp_id, grp_o) {
+
+			self.rsltGrps.push(grp_o);
+			dbg('addRGrp:', grp_id, grp_o);
+		};
+
+	};
+
+	/**
 	 * Response processer for promises
 	 * 
 	 * @class ResProcessor
@@ -730,75 +799,6 @@ var App = (function() {
 			setTimeout(fn, 2);
 		};
 		
-	};
-
-	/**
-	 * Category box of sources, can contain multiple result groups (RGView) 
-	 * 
-	 * @class CategoryView
-	 * @param cid Category ID
-	 */
-	var CategoryView = function(cid) {
-		this.id = cid;
-		var self = this;
-
-		self.qry_time = ko.observable(0);
-		self.qry_str = ko.observable('');
-
-		self.rsltGrps = ko.observableArray(new Harray('id'));
-
-		/**
-		 * Returns true if results are still loading, false if finished
-		 * 
-		 * @method loading
-		 * @return {Bool}
-		 */
-		self.loading = ko.pureComputed(function(){
-			for (var i = 0; i < self.rsltGrps().length; i++) {
-				if (self.rsltGrps()[i].loading()) {
-					return true;
-				}
-			}
-			return false;
-		});
-
-		/**
-		 * Returns true if Category is active = category box is visible on page,
-		 * shows its content and is ready to search next query.
-		 * 
-		 * @method active
-		 * @return {Bool}
-		 */
-		self.active = ko.pureComputed(function(){
-			for (var i = 0; i < self.rsltGrps().length; i++) {
-				if (self.rsltGrps()[i].active()) {
-					return true;
-				}
-			}
-			return false;
-		});
-
-		/**
-		 * Returns the summed amount of results found from
-		 * different sources (global across the site's search)
-		 * 
-		 * @method reslen
-		 * @return {Number} sum of results found
-		 */
-		self.reslen = ko.pureComputed(function() {
-			var sum = 0;
-			for (var i = 0; i < self.rsltGrps().length; i++) {
-				sum += self.rsltGrps()[i].reslen();
-			}
-			return sum;
-		});
-
-		self.addRGrp = function(grp_id, grp_o) {
-
-			self.rsltGrps.push(grp_o);
-			dbg('addRGrp:', grp_id, grp_o);
-		};
-
 	};
 
 
@@ -1317,6 +1317,76 @@ var App = (function() {
 
 	};
 
+	//CMLinker...
+
+	/**
+	 * Constructor Module
+	 * 
+	 * @class CMLinker
+	 * @param self
+	 * @param id
+	 */
+	var CMLinker = function(self, id) { //Constructor Module
+
+		/**
+		 * procLinks teeb koguni kaks asja:
+		 * 
+		 * 1) Kustutab kõik antud id-ga ja .tervikart klassiga linkidest
+		 * absoluutviida index.cgi-le -- teisiti öeldes, kustutab nende
+		 * hrefi algustest ära "index.cgi" -- veel teistmoodi öeldes teeb see
+		 * absoluutlinkidest relatiivseteks, et töötaksid portaalis.
+		 * 
+		 * 2) muudab kõik antud id-ga ning .result ja span.sarnane klassidega
+		 * lõigud portaalis otsingulinkideks.
+		 * 
+		 * @method procLinks
+		 * @param {String} id pole parameeter aga on samas nimeruumis olemas
+		 */
+		self.procLinks = function() {
+			var $a = $('#'+ id +' .tervikart a');
+			$a.each(function() {
+				var $t = $(this);
+				var linkText = $t.text();
+				var href = $t.attr('href');
+				// href = href.replace(/^index\.cgi/i, '');
+				// $t.attr('href', href);
+				// dbg('____procLinks: ', href, href.slice(0,10))
+				if (href.slice(0,9) == 'index.cgi') {
+					$t.attr('href', href.substr(9));
+				}
+			});
+
+			var $span = $('#'+ id +' .result span.sarnane');
+			//dbg('span:', $span);
+			$span.each(function() {
+				var $t = $(this);
+				var linkText = $t.text();
+				$t.replaceWith(' <a class="vt_sarnane" href="?Q='+ linkText +'">'+ linkText +'</a> ');
+			});
+		};
+
+	};
+
+	/**
+	 * RGLinker
+	 * 
+	 * @class RGLinker
+	 * @uses RGView
+	 * @param id
+	 */
+	var RGLinker = function(id) {
+		RGView.apply(this, arguments);
+
+		var self = this;
+
+		CMLinker(self, id);
+
+		self.onViewReady(function(){
+			//linkide töötlus
+			self.procLinks();
+		});
+
+	};
 
 	/**
 	 * RGTyyp description
@@ -1388,75 +1458,6 @@ var App = (function() {
 		self.onViewReady(function(){
 			self.prepTyyp();
 		}) ;
-
-	};
-
-	/**
-	 * Constructor Module
-	 * 
-	 * @class CMLinker
-	 * @param self
-	 * @param id
-	 */
-	var CMLinker = function(self, id) { //Constructor Module
-
-		/**
-		 * procLinks teeb koguni kaks asja:
-		 * 
-		 * 1) Kustutab kõik antud id-ga ja .tervikart klassiga linkidest
-		 * absoluutviida index.cgi-le -- teisiti öeldes, kustutab nende
-		 * hrefi algustest ära "index.cgi" -- veel teistmoodi öeldes teeb see
-		 * absoluutlinkidest relatiivseteks, et töötaksid portaalis.
-		 * 
-		 * 2) muudab kõik antud id-ga ning .result ja span.sarnane klassidega
-		 * lõigud portaalis otsingulinkideks.
-		 * 
-		 * @method procLinks
-		 * @param {String} id pole parameeter aga on samas nimeruumis olemas
-		 */
-		self.procLinks = function() {
-			var $a = $('#'+ id +' .tervikart a');
-			$a.each(function() {
-				var $t = $(this);
-				var linkText = $t.text();
-				var href = $t.attr('href');
-				// href = href.replace(/^index\.cgi/i, '');
-				// $t.attr('href', href);
-				// dbg('____procLinks: ', href, href.slice(0,10))
-				if (href.slice(0,9) == 'index.cgi') {
-					$t.attr('href', href.substr(9));
-				}
-			});
-
-			var $span = $('#'+ id +' .result span.sarnane');
-			//dbg('span:', $span);
-			$span.each(function() {
-				var $t = $(this);
-				var linkText = $t.text();
-				$t.replaceWith(' <a class="vt_sarnane" href="?Q='+ linkText +'">'+ linkText +'</a> ');
-			});
-		};
-
-	};
-
-	/**
-	 * RGLinker
-	 * 
-	 * @class RGLinker
-	 * @uses RGView
-	 * @param id
-	 */
-	var RGLinker = function(id) {
-		RGView.apply(this, arguments);
-
-		var self = this;
-
-		CMLinker(self, id);
-
-		self.onViewReady(function(){
-			//linkide töötlus
-			self.procLinks();
-		});
 
 	};
 
