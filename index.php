@@ -563,12 +563,13 @@
 								<div class="boxContent">
 									<div class="result">
 										<ul>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=263">Rjumotšnajast „shotibaari“</a></li>
+											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=264">Meie mepid Brüsselis (16.10.2014)</a></li>
+											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=263">Rjumotšnajast „shotibaari“ (3.10.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=262">Vegan (18.9.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=261">Kas <i>refleksioon</i> või <i>reflektsioon</i>? (1.9.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=259">Kuidas käänata pealkirja „Tuhk ja akvaviit”? (21.8.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=257">Egiidi all (19.6.2014)</a></li>
 											<!--
+											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=257">Egiidi all (19.6.2014)</a></li>
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=256">Miks on ÕSis reka ja late, mitte rekka ja latte, nagu neid sõnu sageli kirjutatakse? (6.6.2014)</a></li>
 
 											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=255"><i>Enne</i> ja <i>ennem</i>, <i>vahel</i> ja <i>vahest</i> (26.5.2014)</a></li>
