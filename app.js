@@ -486,10 +486,10 @@ var App = (function() {
 		 * Adds a Source (as an observer pattern?)
 		 * 
 		 * @method addSrc
-		 * @param src_id
+		 * @param sid Source ID, (not used inside..)
 		 * @param src_o
 		 */
-		this.addSrc = function(src_id, src_o) {
+		this.addSrc = function(sid, src_o) {
 			//self.src_ids.push(src_id);
 			self.srcs.push(src_o);
 		};
@@ -498,10 +498,10 @@ var App = (function() {
 		 * Adds a proc (as an observer pattern?)
 		 * 
 		 * @method addProc
-		 * @param cid
+		 * @param pid Processor ID
 		 * @param proc_o
 		 */
-		this.addProc = function(cid, proc_o) {
+		this.addProc = function(pid, proc_o) {
 			self.procs.push(proc_o);
 		};
 		
@@ -509,7 +509,7 @@ var App = (function() {
 		 * Adds a view (as an observer pattern?)
 		 * 
 		 * @method addView
-		 * @param cid
+		 * @param cid category ID (resultCategories)
 		 * @param view_o
 		 */
 		this.addView = function(cid, view_o) {
@@ -549,8 +549,8 @@ var App = (function() {
 			for (var i = 0; i < self.procs.length; i += 1) {
 				var pr = self.procs[i];
 				var prResponses = O.plain(); //{}; //miks hash?
-				for (var sk in pr.srcs) { //pr.srcs on {}
-					prResponses[sk] = responses[sk];
+				for (var sid in pr.srcs) { //pr.srcs on {}
+					prResponses[sid] = responses[sid];
 				}
 				var p = pr.setResponses(query_str, prResponses);
 				promises.push(p);
@@ -560,11 +560,11 @@ var App = (function() {
 			for (var i = 0; i < self.views().length; i += 1) {
 				var cat = self.views()[i];
 
-				for (var si = 0; si < cat.rsltGrps().length; si += 1) {
-					var rg = cat.rsltGrps()[si];
+				for (var ri = 0; ri < cat.rsltGrps().length; ri += 1) {
+					var rg = cat.rsltGrps()[ri];
 					var vResponses = O.plain(); //{};
-					for (var sk in rg.srcs) { //v.srcs on {}
-						vResponses[sk] = responses[sk];
+					for (var sid in rg.srcs) { //v.srcs on {}
+						vResponses[sid] = responses[sid];
 					}
 					var p = rg.setResponses(query_str, vResponses);
 					promises.push(p);
@@ -577,10 +577,10 @@ var App = (function() {
 	};
 
 	/**
-	 * Response processer for promises
+	 * Generic ancestor for all response processors
 	 * 
 	 * @class ResProcessor
-	 * @param id
+	 * @param id Generic ID (pid or rgid)
 	 */
 	var ResProcessor = function(id) {
 		this.id = id;
@@ -594,12 +594,12 @@ var App = (function() {
 		/**
 		 * Add a source (as an observer pattern?)
 		 * @method addSrc
-		 * @param src_id
+		 * @param sid
 		 * @param src_o
 		 */
-		self.addSrc = function(src_id, src_o) {
-			self.srcs[src_id] = src_o;
-			self.src_ids = (self.src_ids.length) ? (self.src_ids +' '+ src_id) : src_id;
+		self.addSrc = function(sid, src_o) {
+			self.srcs[sid] = src_o;
+			self.src_ids = (self.src_ids.length) ? (self.src_ids +' '+ sid) : sid;
 		};
 
 		//resultide kokku kogumiseks eri responsidest.
@@ -632,8 +632,8 @@ var App = (function() {
 		 * 
 		 * @method setResponses
 		 * @param qrystr
-		 * @param responses
-		 * @return 
+		 * @param responses hash of promises[source id]
+		 * @return p new Promice, resolved when all responses arrived
 		 */
 		//uus päring - antakse kõik responsid promisitena
 		self.setResponses = function(qrystr, responses) {
@@ -647,26 +647,26 @@ var App = (function() {
 			//$.each()
 
 			dbg(self.id+ ' setResponses:', responses);
-			for (var sk in responses) { //responses on {}
-				var r = responses[sk]; //r on Promise
+			for (var sid in responses) { //responses on {}
+				var r = responses[sid]; //r on Promise
 
-				r.id = sk; //läheb jqXHR kylge (va kui SourceOTest .then ei lase jqXHR-i edasi, siis on r lihtsalt Promise)
+				r.id = sid; //läheb jqXHR kylge (va kui SourceOTest .then ei lase jqXHR-i edasi, siis on r lihtsalt Promise)
 
-				var p = r.then(
+				var p = r.then( //ühe Source vastus saabus
 					function( data, textStatus, jqXHR ) {
 						//
-						var sid = sk;
+						var src_id = sid;
 						//self.procResponse(jqXHR.id, data);
-						self.procResponse(sid, data);
+						self.procResponse(src_id, data);
 					},
 					function( x1, x2, x3 ) {
-						dbg(sk +' query failed: ');
+						dbg(sid +' query failed: ');
 						dbg('x1', (typeof x1), x1);
 						dbg('x2', (typeof x2), x2);
 						dbg('x3', (typeof x3), x3);
 					}
 				);
-				p.id = sk;
+				p.id = sid;
 				ready.push(p);
 			}
 			//dbg('ready: ', ready);
@@ -685,10 +685,10 @@ var App = (function() {
 		 * Applies the registered process to the corresponding source's response
 		 * 
 		 * @method procResponse
-		 * @param sid
+		 * @param sid Source ID
 		 * @param data
 		 */
-		//overwriteb ainult ProcKeyw
+		//ainult ProcKeyw overrideb
 		//käivitatakse nii mitu korda kui on src-id
 		self.procResponse = function(sid, data) { //process one response
 			//$.extend(self.items(), data.taisvaade);
@@ -710,13 +710,17 @@ var App = (function() {
 		 * @param prom
 		 */
 		//kõik andmed on saabunud
-		//overwrite?
+		//override in descendants?
 		self.responsesArrived = function(resps, prom) {
 			self.procResults(self.rslts);
 		};
 
-		//overwrite
-		self.procResults = function(rslts) { //process all results
+		/**
+         * See käivitatakse kui kõikide allikate resultid on kohal
+         * @param rslts
+         */
+        //override in descendants
+        self.procResults = function(rslts) { //process all results
 
 		};
 
@@ -804,6 +808,7 @@ var App = (function() {
 
 	/**
 	 * General view component for RGs (Result Groups)
+     * Ancestor for all Result Group view components.
 	 * This handles the viewing of the results and also invokes
 	 * all the corresponding processing required to show the results
 	 * 
@@ -820,7 +825,7 @@ var App = (function() {
 		self.qry_str = ko.observable('');
 		self.loading = ko.observable(false);
 		self.src_url_static_part = ko.observable('http://eki.ee/dict/qs/index.cgi?Q='); //default
-		self.src_url = ko.computed(function() {
+		self.src_url = ko.pureComputed(function() {
 			return self.src_url_static_part() + URI.encode(self.qry_str());
 		});
 
@@ -835,7 +840,7 @@ var App = (function() {
 		// This binds the items datamodels with their HTML views as KO observers
 		self.compItems = ko.observableArray(new Harray('id')); //kuvatavad objektid
 		self.items = ko.observableArray(new Harray('id')); //kuvatavad objektid
-		self.reslen = ko.computed(function() {
+		self.reslen = ko.pureComputed(function() {
 			return self.items().length;
 		});
 
@@ -852,24 +857,6 @@ var App = (function() {
 			self.qtime = new SW();
 			self.loading(true);
 			self.qry_str( qrystr );
-		};
-
-		/**
-		 * @method showThoseItems
-		 * @param rslts
-		 * @return itemList
-		 * @deprecated ???
-		 */
-		self.showThoseItems = function(rslts) {
-			var itemList = [];
-
-			for (var i = 0; i < rslts.length; i++) {
-				var vi = new Result('', rslts[i]);
-				itemList.push( vi );
-			}
-
-			return(itemList); //näitame uut arrayd
-
 		};
 
 		/**
@@ -1210,7 +1197,7 @@ var App = (function() {
 		 */
 		function categoryInBlacklist(catName, stripNamespace) {
 			var blacklist = [
-				'',
+				''
 				];
 			
 			if (typeof stripNamespace === 'undefined') {
@@ -1220,7 +1207,7 @@ var App = (function() {
 				catName = stripNamespace(catName);
 			}
 			
-			return (blacklist.indexOf(catName) === -1 ? false : true);;
+			return (blacklist.indexOf(catName) === -1 ? false : true);
 		}
 		
 		/**
@@ -2043,22 +2030,22 @@ var App = (function() {
 		 * Building the processors defined in app.processors
 		 */
 		var cp = app.configuration.processors;
-		for (var cid in cp) {
+		for (var pid in cp) {
 	
-			var pdef = cp[cid];
+			var pdef = cp[pid];
 	
 			var pr; //processor
 			if (typeof pdef['proc'] === 'function') {
-				pr = new pdef.proc(cid);
+				pr = new pdef.proc(pid);
 			}
 	
 			//anname processorile tema src-d
 			for (var i = 0; i < pdef.res.length; i++) { //anname sisendid //pdef.res on []
-				var src_id = pdef.res[i];
-				pr.addSrc(src_id, qm.srcs.h[src_id]);
+				var sid = pdef.res[i];
+				pr.addSrc(sid, qm.srcs.h[sid]);
 			}
 	
-			qm.addProc(cid, pr);
+			qm.addProc(pid, pr);
 		}
 	
 
