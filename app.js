@@ -221,7 +221,7 @@ var App = (function() {
 			
 			var p = $.getJSON("http://www.eki.ee/ekeeleabi/o_test.cgi", pars);
 			
-			return p.then(function done(data) {
+			return p.then(function processNoResults(data) {
 				if (data['lyhivaade'].length === 1 && 
 						data['lyhivaade'][0] === 'Ei leidnud') {
 					data.lyhivaade = [];
@@ -566,13 +566,13 @@ var App = (function() {
 					for (var sid in rg.srcs) { //v.srcs on {}
 						vResponses[sid] = responses[sid];
 					}
-					var p = rg.setResponses(query_str, vResponses);
-					promises.push(p);
+					var p_whenAllRGsResponsesProcessed = rg.setResponses(query_str, vResponses);
+					promises.push(p_whenAllRGsResponsesProcessed);
 				}
 
 			}
 			
-			return $.when.apply($, promises );
+			return $.when.apply($, promises ); //resolves when All responses of all queries are processed
 		};
 	};
 
@@ -646,7 +646,7 @@ var App = (function() {
 	};
 
 	/**
-	 * Response processer for promises
+	 * Generic ancestor for all response processors including RGView's which also process responses
 	 * 
 	 * @class ResProcessor
 	 * @param id Generic ID (pid or rgid)
@@ -696,33 +696,35 @@ var App = (function() {
 		};
 
 		/**
-		 * Processes all promises that have responded (e.g been received)
-		 * Returns the processed results?
+		 * Selle meetodi kaudu antakse ResProcessorile(või RG-le) iga uue päringu puhul
+         * kõik talle vajalike allikate vastuste lubadused
+         *
+         * Processes all promises for this RG that have responded (e.g been received)
+		 * Returns a new Promice, resolved when all responses arrived
 		 * 
 		 * @method setResponses
 		 * @param qrystr
-		 * @param responses hash of promises[source id]
+		 * @param responses hash of promises[source id] or responses of sources that are meant for this RG
 		 * @return p new Promice, resolved when all responses arrived
 		 */
 		//uus päring - antakse kõik responsid promisitena
 		self.setResponses = function(qrystr, responses) {
-			dbg('ResProcessor setResponses', responses);
+			//dbg('ResProcessor setResponses', responses);
 			//var qtime = new SW();
 			self.reset(); //self.rslts = [];
 			self.initQuery(qrystr);
 
 			var ready = []; //kogutakse kohale jõudnud ja äratöödeldud responside promisid
 
-			//$.each()
-
-			dbg(self.id+ ' setResponses:', responses);
+			//dbg(self.id+ ' setResponses:', responses);
 			for (var sid in responses) { //responses on {}
 				var r = responses[sid]; //r on Promise
 
-				r.id = sid; //läheb jqXHR kylge (va kui SourceOTest .then ei lase jqXHR-i edasi, siis on r lihtsalt Promise)
+				r.id = sid; //läheb jqXHR kylge (va SourceOTest, mille puhul ei tule jqXHR-i
+				// (kuna SourceOTest teeb ise esimese töötluse) vaid r on lihtsalt Promise)
 
-				var p = r.then( //ühe Source vastus saabus
-					function( data, textStatus, jqXHR ) {
+				var p_one = r.then( //ühe Source'i vastus saabus
+					function oneResponseArrived( data, textStatus, jqXHR ) {
 						//
 						var src_id = sid;
 						//self.procResponse(jqXHR.id, data);
@@ -735,19 +737,18 @@ var App = (function() {
 						dbg('x3', (typeof x3), x3);
 					}
 				);
-				p.id = sid;
-				ready.push(p);
+				p_one.id = sid;
+				ready.push(p_one);
 			}
-			//dbg('ready: ', ready);
 
-			var p = $.when.apply($, ready ).then(function() { //kõik responsid on tulnud
+			var p_all = $.when.apply($, ready ).then(function allResponsesArrived() { //kõik responsid on tulnud
 				var arr = $.makeArray( arguments );
 				//dbg('when responses arrived:', arr); // [undefined, undefined] ?
 
-				self.responsesArrived(arr, p);
+				self.responsesArrived(arr, p_all);
 			});
 
-			return p;
+			return p_all; //resolves when all responses arrived and processed
 		};
 
 		/**
@@ -788,7 +789,7 @@ var App = (function() {
          * See käivitatakse kui kõikide allikate resultid on kohal
          * @param rslts
          */
-        //override in descendants
+        //overridden in descendants
         self.procResults = function(rslts) { //process all results
 
 		};
@@ -888,7 +889,7 @@ var App = (function() {
 			self.showItems();
 			self.loading(false);
 			var time = self.qtime.get();
-			console.log(self.id, time);
+			//dbg(self.id, time);
 			self.qry_time(time);
 			self.viewReady();
 			//self.onViewReady();
@@ -946,9 +947,6 @@ var App = (function() {
 		self.procResponse = function(sid, data) { //process one response
 			var r;
 			//$.extend(self.items(), data.taisvaade);
-
-			//dbg('RG_Ekn procResponse', sid, data);
-			//dbg('RG_Ekn procResponse', self.rslts)
 
 			for (var i=0; i < data.sarnased.length; i++) {
 				r = data.sarnased[i];
@@ -1032,8 +1030,6 @@ var App = (function() {
 		 * Process the results
 		 */
 		self.procResponse = function(sid, data) { //process one response
-
-			//dbg('RGThes procResponse', self.rslts)
 
 			for (var i=0; i < data.length; i++) {
 				var o = data[i];
@@ -1779,7 +1775,6 @@ var App = (function() {
 		};
 
 		self.procResponse = function(sid, data) { //process one response
-			//alert('procResponse')
 			//$.extend(self.items(), data.taisvaade);
 
 			//self.rslts.push.apply(self.rslts, data.taisvaade);
