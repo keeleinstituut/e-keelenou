@@ -640,7 +640,7 @@ var App = (function() {
 		self.addRGrp = function(grp_id, grp_o) {
 
 			self.rsltGrps.push(grp_o);
-			dbg('addRGrp:', grp_id, grp_o);
+			//dbg('addRGrp:', grp_id, grp_o);
 		};
 
 	};
@@ -815,7 +815,7 @@ var App = (function() {
 	 * 
 	 * @class RGView
 	 * @uses ResProcessor
-	 * @param id
+	 * @param id RGID
 	 */
 	var RGView = function(id) {
 		ResProcessor.apply(this, arguments);
@@ -926,7 +926,7 @@ var App = (function() {
 	 * 
 	 *  @class RG_Ekn
 	 *  @uses RGView
-	 *  @param id
+	 *  @param id RGID
 	 */
 	var RG_Ekn = function(id) {
 		RGView.apply(this, arguments);
@@ -992,7 +992,7 @@ var App = (function() {
 	 * 
 	 * @class RG_Ekn_Linker
 	 * @uses RG_Ekn
-	 * @param id
+	 * @param id RGID
 	 */
 	var RG_Ekn_Linker = function(id) {
 		RG_Ekn.apply(this, arguments);
@@ -1011,7 +1011,7 @@ var App = (function() {
 	 * 
 	 * @class RGThes
 	 * @uses RGView
-	 * @param id
+	 * @param id RGID
 	 */
 	//Eesti Wordnet
 	var RGThes = function(id) {
@@ -1039,7 +1039,7 @@ var App = (function() {
 		};
 
 		self.word_cnt = 0;
-		self.reslen = ko.computed(function() {
+		self.reslen = ko.pureComputed(function() {
 			if (self.items().length) {
 				return self.word_cnt;
 			}
@@ -1071,7 +1071,7 @@ var App = (function() {
 	 * 
 	 * @class RGWikiEst
 	 * @uses RGView
-	 * @param id
+	 * @param id RGID
 	 */
 	var RGWikiEst = function(id) {
 		RGView.apply(this, arguments);
@@ -1175,7 +1175,7 @@ var App = (function() {
 		 * @method reslen
 		 * @return {Number}
 		 */
-		self.reslen = ko.computed(function () {
+		self.reslen = ko.pureComputed(function () {
 			if (self.items().length) {
 				return self.word_cnt;
 			} else {
@@ -1307,7 +1307,7 @@ var App = (function() {
 	 * 
 	 * @class CMLinker
 	 * @param self
-	 * @param id
+	 * @param id RGID
 	 */
 	var CMLinker = function(self, id) { //Constructor Module
 
@@ -1355,7 +1355,7 @@ var App = (function() {
 	 * 
 	 * @class RGLinker
 	 * @uses RGView
-	 * @param id
+	 * @param id RGID
 	 */
 	var RGLinker = function(id) {
 		RGView.apply(this, arguments);
@@ -1375,7 +1375,7 @@ var App = (function() {
 	 * RGTyyp description
 	 * 
 	 * @class RGTyyp
-	 * @param id
+	 * @param id RGID
 	 * @uses RGLinker
 	 */
 	var RGTyyp = function(id) {
@@ -1385,9 +1385,10 @@ var App = (function() {
 		
 		self.prepTyyp = function() { //leiab ressursi / kasti kõik tyybi-lingid ja ehitab neile infomulli kylge.
 		
-			var res = self.id; //kontseptuaalselt vale - self.id on cat.id mitte res_id
-			//console.log('res:', res)
-			var $a_s;
+			var res = self.id; //kontseptuaalselt vale - self.id on rgid, mitte sid ("ressursi" id)
+            // aga konfiguratsioonis need hetkel ühtivad
+
+            var $a_s;
 
 			if (res == 'qs13') {
 				$a_s = $('#' + res + ' span.grg a, #' + res + ' span.mt_kno a '); //QSi puhul
@@ -1449,7 +1450,7 @@ var App = (function() {
 	 * 
 	 * @class RGVakk
 	 * @uses RGView
-	 * @param id
+	 * @param id RGID
 	 */
 	var RGVakk = function(id) {
 		RGView.apply(this, arguments);
@@ -1522,7 +1523,7 @@ var App = (function() {
 	 * 
 	 * @class RG_EKKR
 	 * @uses RGView
-	 * @param id
+	 * @param id RGID
 	 */
 	var RG_EKKR = function RG_EKKRClosure(id) {
 		RGView.apply(this, arguments);
@@ -1706,6 +1707,8 @@ var App = (function() {
 	/**
 	 * 
 	 * @class ProcKeyw
+     * @uses ResProcessor
+     * @param id processor ID
 	 */
 	var ProcKeyw = function(id) {
 		ResProcessor.apply(this, arguments);
@@ -2160,7 +2163,7 @@ var App = (function() {
 			return r;
 		};
 		//self.HTML = ko.observable(self.getHTML());
-		self.HTML = ko.computed(self.getHTML);
+		self.HTML = ko.pureComputed(self.getHTML);
 		//self.getCol = function() {return self.comp;};
 		//self.getExp = function() {return self.full;};//self.getHTML;
 
@@ -2341,7 +2344,7 @@ var App = (function() {
 	
 	/**
 	 * @class ExpandableList
-	 * @uses Harray
+	 * @extends Harray
 	 */
 	var ExpandableList = function() {
 		//this.keyProperty = 'id';
