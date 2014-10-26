@@ -572,7 +572,7 @@
 											 * @attr rss_limit {Number} kui mitu uudist näidatakse
 											 */
 											$rss_limit = 6;
-											
+											var $title, $url, $date;
 											echo '<ul>';
 											$rss = fetch_rss('http://keeleabi.eki.ee/feeds/nouanded.php?number='.urlencode($rss_limit));
 											foreach ($rss->items as $item) {
