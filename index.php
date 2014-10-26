@@ -2,6 +2,10 @@
 		
 	include_once 'plib/utrack.php';
 	
+	/* uudisvoo teegi laadimine ja seadistamine kasutamaks utf8 */
+	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
+	require_once('plib/magpierss/rss_fetch.inc');
+	
 ?><!DOCTYPE html>
 <html>
 	<head>
@@ -562,26 +566,25 @@
 								<div class="boxHead"><h2>Viimased keelenõuanded</h2></div>
 								<div class="boxContent">
 									<div class="result">
-										<ul>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=264">Meie mepid Brüsselis (16.10.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=263">Rjumotšnajast „shotibaari“ (3.10.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=262">Vegan (18.9.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=261">Kas <i>refleksioon</i> või <i>reflektsioon</i>? (1.9.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=259">Kuidas käänata pealkirja „Tuhk ja akvaviit”? (21.8.2014)</a></li>
-											<!--
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=257">Egiidi all (19.6.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=256">Miks on ÕSis reka ja late, mitte rekka ja latte, nagu neid sõnu sageli kirjutatakse? (6.6.2014)</a></li>
-
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=255"><i>Enne</i> ja <i>ennem</i>, <i>vahel</i> ja <i>vahest</i> (26.5.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=254">Kuidas küsida? (15.5.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=253"><i>Mida arvavad tippjuhid Noored Koolist?</i> (28.4.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=250">Ukraina nimede kirjutamine (19.3.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=249">Riodejaneirolased ja newyorklased (18.3.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=246">Saame tuttavaks – ohutu-tüüpi võõrsõnu (6.3.2014)</a></li>
-											<li><a href="http://keeleabi.eki.ee/index.php?leht=8&amp;id=247">Saame tuttavaks – number-tüüpi sõnu (6.3.2014)</a></li>
-											-->
-										</ul>
-
+										<?php
+											/**
+											 * Keelenõuannete uudisvoo viimased sissekanded
+											 * @attr rss_limit {Number} kui mitu uudist näidatakse
+											 */
+											$rss_limit = 6;
+											
+											echo '<ul>';
+											$rss = fetch_rss('http://keeleabi.eki.ee/feeds/nouanded.php?number='.urlencode($rss_limit));
+											foreach ($rss->items as $item) {
+												$title = $item[title];
+												$url   = $item[link];
+												$date  = new DateTime($item[pubdate]);
+												$date  = $date->format('d.m.Y');
+												echo "<li><a href=\"$url\">$title ($date)</a></li>\n";
+											}
+											echo '</ul>';
+										?>
+										
 										<div style="clear: both;"></div>
 									</div>
 								</div>
