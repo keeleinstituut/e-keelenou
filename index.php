@@ -32,7 +32,7 @@
 		<script type='text/javascript' src='lib/qtip/jquery.qtip.min.js'></script>
 		<link rel="stylesheet" type="text/css" href="lib/qtip/jquery.qtip.css" />
 
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script type='text/javascript' src="lib/jquery.cookie.min.js"></script>
 		
 		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />

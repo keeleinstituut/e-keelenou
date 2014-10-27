@@ -7,3 +7,4 @@ node_modules
 .openshift
 .test
 yuidocs/
+cache/
