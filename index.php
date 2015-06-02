@@ -1,7 +1,8 @@
 <?php
-		
-	include_once 'plib/utrack.php';
-	
+
+include_once 'plib/utrack.php';
+include_once 'plib/redirect.php';
+
 	/* uudisvoo teegi laadimine ja seadistamine kasutamaks utf8 */
 	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	require_once('plib/magpierss/rss_fetch.inc');
@@ -292,9 +293,19 @@
 
 				myReplaceState(q);
 				
-			} else if (url.hasQuery("u")) {
+			};
+
+			if (url.hasQuery("u")) {
+				var m_uri = url.search(true);
+				delete m_uri.u;
+				var s_url = url.search(m_uri).toString();
+				if (s_url.length == 0) {
+					//kui state-url on tühi string, siis replaceState'i ei tehta vist üldse.
+					s_url = '/';
+				}
+				dbg('m_uri', m_uri, s_url );
 				//var u = uri.search(true)['u'];
-				History.replaceState(null, defaultTitle, '/');
+				History.replaceState(null, defaultTitle, s_url);
 			};
 			
 			

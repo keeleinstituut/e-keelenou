@@ -1,17 +1,24 @@
 <?php
 $uid = NULL;
+$iscookie = false;
 
 if ($uid = @$_COOKIE['eknid']) {
     //uid laetud cookiest
+    $iscookie = true;
+
+	if ($u = @$_GET['u']) {
+		//log
+	}
+
 } else {
 	//cookiet pole..
 	
 	if ($uid = @$_GET['u']) {
 		//uid laetud URLi parameetrist
-		header('X-ulr-uid: '. $uid);
+		//header('X-ulr-uid: '. $uid);
 	} else {
 		$uid = uniqid();
-		header('X-ulr-gen: '. $uid);
+		//header('X-ulr-gen: '. $uid);
 	}
 	
     //loome cookie
