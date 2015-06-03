@@ -25,7 +25,7 @@ include_once 'plib/redirect.php';
 		<script src="/js/jquery.form.js"></script> 
 		<script type='text/javascript' src='lib/shim.js'></script>
 		-->
-		<link rel="stylesheet" href="css/style.css?v=1.1" />
+		<link rel="stylesheet" href="css/style.css?v=1.2" />
 		
 		<script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
 		<script src="lib/jquery.iecors.js" async></script>
