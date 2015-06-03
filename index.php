@@ -523,6 +523,8 @@ include_once 'plib/redirect.php';
 								placeholder="Sisesta siia sõna või väljend" autofocus="" />
 							<input data-bind="style: { border: searching() ? '2px solid #ff6000' : ''}" id="otsi" value=""
 								   type="submit" />
+							<a id="mob-allikad" href="/lisainfo/?m=allikad" title="Allikate valik"><img id="gear"
+								   src="gr/icon/1433309672_gear.svg" /></a>
 						</form>
 						<div class="social-buttons">
 							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
@@ -533,11 +535,11 @@ include_once 'plib/redirect.php';
 							<ul id="menu">
 								<li><a href="#c_qs">ÕS</a></li>
 								<li><a href="#c_def">EKSS</a></li>
-																<li><a href="#c_rel">Seotud sõnad</a></li>
-																<li><a href="#c_ety">Etümoloogia</a></li>
-																<li><a href="#c_trans">Tõlkevasted</a></li>
-																<li><a href="#c_knab">Kohanimed</a></li>
-																<li><a href="#c_sugg">Soovitused</a></li>
+								<li><a href="#c_rel">Seotud sõnad</a></li>
+								<li><a href="#c_ety">Etümoloogia</a></li>
+								<li><a href="#c_trans">Tõlkevasted</a></li>
+								<li><a href="#c_knab">Kohanimed</a></li>
+								<li><a href="#c_sugg">Soovitused</a></li>
 								<li><a href="#c_ekkr">Käsiraamat</a></li>
 							</ul>
 						</div>
