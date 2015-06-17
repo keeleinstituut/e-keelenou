@@ -1705,6 +1705,9 @@ var App = (function() {
 	};
 	
 	/**
+	 * ProcKeyw "klass" kontrollib tema sisendiks olevate allikate tulemusi, kas nendes sisaldub otsitavat sõne.
+	 * Selleks on vaja nt ÕSi tulemustes eemaldada leiust '+'-märgid, punktid jm vahemärgid.
+	 * Kui tulemustes leidub otsitav sõne, näidatakse seda suurelt (app.lm.bigword.text)
 	 * 
 	 * @class ProcKeyw
      * @uses ResProcessor
@@ -1760,6 +1763,12 @@ var App = (function() {
 			return finalString;
 		};
 
+		/**
+		 * Eraldab allika poolt tulemuseks saadetud html-st märksõna ja pakib selle koos teiste muutujatega objekti.
+		 *
+		 * @param html
+		 * @returns {{id: *, keyw: *, raw: *, d: (*|jQuery|HTMLElement), html: *}}
+		 */
 		self.getKeywObj = function(html) {
 			var d = self.getDom( html );
 			var $d = $(d);
