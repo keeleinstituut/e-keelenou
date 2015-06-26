@@ -505,8 +505,8 @@ include_once 'plib/redirect.php';
 							</li>
 							<li class="lisainfo"><a href="#">E-keelenõust</a>
 								<ul class="submenu">
-									<li><a href="/lisainfo/?m=keelenoust">Keelenõust</a></li>
-									<li><a href="/lisainfo/?m=allikad">Allikate kirjeldus</a></li>
+									<li><a href="/lisainfo/?m=keelenoust">E-keelenõu portaalist</a></li>
+									<li><a href="/lisainfo/?m=allikad">Allikate valimine</a></li>
 									<li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
 									<!--
 									<li><a href="/lisainfo/?m=rakendusliidesed">Rakendusliidesed</a></li>
