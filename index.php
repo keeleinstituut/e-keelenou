@@ -14,6 +14,8 @@ include_once 'plib/redirect.php';
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
 		<meta name="eknid" content="<?php echo $uid; ?>">
+	        <link rel="alternate" type="application/rss+xml" title="EKI keelenõuannete uudisvoog" href="http://keeleabi.eki.ee/feeds/nouanded.php">
+	        <link rel="search" type="application/opensearchdescription+xml" title="EKI e-keelenõu" href="eki_kn.xml">
 		<!--script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js'></script-->
 		<script type='text/javascript' src='lib/jquery.js'></script>
 
@@ -503,8 +505,8 @@ include_once 'plib/redirect.php';
 							</li>
 							<li class="lisainfo"><a href="#">E-keelenõust</a>
 								<ul class="submenu">
-									<li><a href="/lisainfo/?m=keelenoust">Keelenõust</a></li>
-									<li><a href="/lisainfo/?m=allikad">Allikate kirjeldus</a></li>
+									<li><a href="/lisainfo/?m=keelenoust">E-keelenõu portaalist</a></li>
+									<li><a href="/lisainfo/?m=allikad">Allikate valimine</a></li>
 									<li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
 									<!--
 									<li><a href="/lisainfo/?m=rakendusliidesed">Rakendusliidesed</a></li>
