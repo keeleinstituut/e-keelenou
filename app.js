@@ -1754,7 +1754,7 @@ var App = (function() {
 		self.removePunctuation = function(s) {
 			//var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)() punctuation";
 			//var punctuationless = s.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-			var punctuationless = s.replace(/[.'´+|\[\]]/g,"");
+			var punctuationless = s.replace(/[.'`´+|\[\]]/g,"");
 			var finalString = punctuationless.replace(/\s{2,}/g," ");
 			
 			//myTxt = myTxt.replace(/[^a-zA-Z0-9 ]+/g, '').replace('/ {2,}/',' ');
@@ -1777,13 +1777,15 @@ var App = (function() {
 			var raw_keyw = $span.text();
 			var plain_keyw = self.removePunctuation(raw_keyw);
 			//dbg(id +' - '+ raw_keyw+ ' - '+ plain_keyw);
-			return {
+			var kwo = {
 				id: id,
 				keyw: plain_keyw,
 				raw: raw_keyw,
 				d: $d,
 				html: html
 			};
+			//dbg('kwo', kwo);
+			return kwo;
 		};
 
 		self.procResponse = function(sid, data) { //process one response
@@ -1844,6 +1846,9 @@ var App = (function() {
 		RG_sources: [
 			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
 				url: "http://www.eki.ee/dict/qs/", active: true
+			},
+			{id: 'vsl', cls: SourceOTest, abbr: 'VSL', name: 'Võõrsõnade leksikon (2015)',
+				url: "http://www.eki.ee/dict/vsl/", active: true
 			},
 			{id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
 				url: "http://www.eki.ee/dict/ekss/", active: true
@@ -1908,6 +1913,7 @@ var App = (function() {
 		 */
 		sources: {
 			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)'},
+			vsl: {id: 'vsl', cls: SourceOTest, abbr: 'VSL', name: 'Võõrsõnade leksikon (2015)'},
 			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)'},
 			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk'},
 			ekkr: {id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)'},
@@ -1946,7 +1952,7 @@ var App = (function() {
 		 */
 		processors: {
 			// @todo: kas keyw paneb bigword-i? jah.
-			keyw: {res: ['qs', 'ekss'], proc: ProcKeyw }
+			keyw: {res: ['qs', 'vsl', 'ekss', 'ass'], proc: ProcKeyw }
 		},
 		
 		/**
@@ -1972,6 +1978,9 @@ var App = (function() {
 			c_qs: {h: 'ÕS', col: 1, grps: {
 				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
 				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} 
+			}},
+			c_vsl: {h: 'Võõrsõnad', col: 1, grps: {
+				vsl: {h: 'Võõrsõnade leksikon', res: ['vsl'], cview: RGTyyp, url: 'http://eki.ee/dict/vsl/index.cgi?Q='}
 			}},
 			c_def: {h: 'Seletused', col: 1, grps: {
 				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
