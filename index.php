@@ -37,7 +37,7 @@ include_once 'plib/redirect.php';
 
 		<script type='text/javascript' src="lib/jquery.cookie.min.js"></script>
 		
-		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css" />
+		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css?v=1.0.1" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />
 		
 		<script type='text/javascript' src="lib/myshim.js"></script>
