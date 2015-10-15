@@ -537,7 +537,8 @@ include_once 'plib/redirect.php';
 							<ul id="menu">
 								<li><a href="#c_qs">ÕS</a></li>
 								<li><a href="#c_def">EKSS</a></li>
-								<li><a href="#c_rel">Seotud sõnad</a></li>
+								<li><a href="#c_vsl">VSL</a></li>
+								<li><a href="#c_rel">Seotud</a></li>
 								<li><a href="#c_ety">Etümoloogia</a></li>
 								<li><a href="#c_trans">Tõlkevasted</a></li>
 								<li><a href="#c_knab">Kohanimed</a></li>
