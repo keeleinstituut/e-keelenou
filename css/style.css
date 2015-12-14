@@ -205,6 +205,8 @@ a img{
 .grpheading {
     padding: 3px 5px 3px 40px;
     display: inline-block;
+    min-width: 340px;
+    cursor: pointer;
 }
 .rGrpHead {
     color: #fff;
@@ -212,7 +214,7 @@ a img{
     height: 22px;
 	padding: 4px 0;
 	border-bottom: 1px solid #ffffff;
-	cursor: pointer;
+
 }
 .book{
 	display: block; /**/
@@ -234,7 +236,7 @@ a img{
     height: 22px;
 	padding: 4px 0;
 	border-bottom: 1px solid #ffffff;
-	cursor: pointer;
+	-cursor: pointer;
 }
 #poscol2 .rGrpHead.closed{
 	background: #e5e5e5 url(../images/gray-closed.png) 24px 10px no-repeat;

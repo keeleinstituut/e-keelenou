@@ -27,7 +27,7 @@ include_once 'plib/redirect.php';
 		<script src="/js/jquery.form.js"></script> 
 		<script type='text/javascript' src='lib/shim.js'></script>
 		-->
-		<link rel="stylesheet" href="css/style.css?v=1.2" />
+		<link rel="stylesheet" href="css/style.css?v=1.3" />
 		
 		<script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
 		<script src="lib/jquery.iecors.js" async></script>
@@ -635,10 +635,12 @@ include_once 'plib/redirect.php';
 
 										<div class="resultGrp" data-bind="'if': active, attr: {'id': id}">
 
-											<div class="rGrpHead" onclick="show(this);">
+											<div class="rGrpHead">
+												<span class="grpheading" onclick="show(this.parentElement);">
+													<span data-bind="text: heading">alapealkiri</span>
+													(<span data-bind="text: reslen, attr: {title: ('Tulemusi: '+reslen() )}"></span>)
+												</span>
 
-												<span class="grpheading" data-bind="text: heading">alapealkiri</span>
-												(<span data-bind="text: reslen, attr: {title: ('Tulemusi: '+reslen() )}"></span>)
 												<span class="boxHeadItems">
 													<div class="boxHeadItem" data-bind="'if': loading()"><img src="gr/loading-spinner.gif"></div>
 													<a target="_blank" data-bind="attr: { href: src_url, title: 'Allikas' }" class="book"></a>
