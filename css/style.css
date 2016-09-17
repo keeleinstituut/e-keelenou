@@ -784,8 +784,9 @@ input[type='button'], input[type='submit']{
 	width: 207px;
 }
 #tagasiside{
-	background: url(/gr/tagasiside.png) 0 0 no-repeat;
-	height:112px;
+	background: url(/gr/keelekysimus_bl.png) 0 0 no-repeat;
+	height:137px;
+	/*height:112px;*/
 	width: 51px;
 	right: 0;
 	cursor: pointer;

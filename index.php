@@ -27,7 +27,7 @@ include_once 'plib/redirect.php';
 		<script src="/js/jquery.form.js"></script> 
 		<script type='text/javascript' src='lib/shim.js'></script>
 		-->
-		<link rel="stylesheet" href="css/style.css?v=1.3" />
+		<link rel="stylesheet" href="css/style.css?v=1.4" />
 		
 		<script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
 		<script src="lib/jquery.iecors.js" async></script>
@@ -720,12 +720,12 @@ include_once 'plib/redirect.php';
 				</div>
 			</div>
 			<div id="tagasiside" class="opacity form-button"></div>
-			<div id="language" class="opacity form-button"></div>
+			<!--<div id="language" class="opacity form-button"></div>-->
 			<div class="tagasiside">
 				<div id="feedback">
 					<div id="feedback-form">
-						<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
-						<form id="f_feedback_dev" method="POST" data-addr="dev"
+						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
+						<form id="f_feedback_dev" method="POST" data-addr="lang"
 							data-bind="submit: app.forms.sendForm"
 							action="http://kn.eki.ee/kn/spam.php">
 							<input type="hidden" name="checkme" value="formmail">
@@ -759,6 +759,7 @@ include_once 'plib/redirect.php';
 					<div class="close opacity"></div>
 				</div>
 			</div>
+			<!--
 			<div class="language">
 				<div id="feedback">
 					<div id="feedback-form">
@@ -784,7 +785,7 @@ include_once 'plib/redirect.php';
 								<textarea name="kiri" id="ffl_comment"></textarea>
 							</div>
 							<div class="spam-control">
-								<!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
+
 								<span>&nbsp;</span>
 							</div>
 							<div class="feedback-footer">
@@ -797,6 +798,7 @@ include_once 'plib/redirect.php';
 					<div class="close opacity"></div>
 				</div>
 			</div>
+			-->
 			<div id="full-screen"></div>
 			<div style="clear:both"></div>
 			<div id="page-up"></div> 
