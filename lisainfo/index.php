@@ -210,12 +210,12 @@ $html = file_get_html("$module.html");
 			</div>
 		</div>
 		<div id="tagasiside" class="opacity form-button"></div>
-		<div id="language" class="opacity form-button"></div>
+		<!--<div id="language" class="opacity form-button"></div>-->
 		<div class="tagasiside">
 			<div id="feedback">
 				<div id="feedback-form">
-					<h2>Anna tagasisidet e-keelenõu arendajatele.</h2>
-					<form id="f_feedback_dev" method="POST" data-addr="dev"
+					<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
+					<form id="f_feedback_dev" method="POST" data-addr="lang"
 						  data-bind="submit: app.forms.sendForm"
 						  action="http://kn.eki.ee/kn/spam.php">
 						<input type="hidden" name="checkme" value="formmail">
@@ -249,6 +249,7 @@ $html = file_get_html("$module.html");
 				<div class="close opacity"></div>
 			</div>
 		</div>
+		<!--
 		<div class="language">
 			<div id="feedback">
 				<div id="feedback-form">
@@ -274,7 +275,7 @@ $html = file_get_html("$module.html");
 							<textarea name="kiri" id="ffl_comment"></textarea>
 						</div>
 						<div class="spam-control">
-							<!--<span>Täna on selle nädala </span><input type="text" name="np"/><span> päev</span>.-->
+
 							<span>&nbsp;</span>
 						</div>
 						<div class="feedback-footer">
@@ -287,6 +288,7 @@ $html = file_get_html("$module.html");
 				<div class="close opacity"></div>
 			</div>
 		</div>
+		-->
 		<div id="full-screen"></div>
 		<div style="clear:both"></div>
 		<div id="page-up"></div>
