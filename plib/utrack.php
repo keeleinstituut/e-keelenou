@@ -21,11 +21,15 @@ if ($uid = @$_COOKIE['eknid']) {
 		//header('X-ulr-gen: '. $uid);
 	}
 	
-    //loome cookie
-    setcookie(
-        "eknid",
-        $uid,
-        mktime(0, 0, 0, 11, 25, 2017)
-    );
 }
+
+//loome/updateme cookie
+setcookie(
+	"eknid",
+	$uid,
+	mktime(0, 0, 0, 11, 25, 2019),
+	'/'
+);
+
+
 ?>
