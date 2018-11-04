@@ -44,7 +44,7 @@ include_once 'plib/redirect.php';
 		<script type='text/javascript' src='lib/harray.js'></script>
 		<script type='text/javascript' src='lib/dictarr.js'></script>
 
-		<script type='text/javascript' src='app.js?v=1.0.1'></script>
+		<script type='text/javascript' src='app.js?v=1.0.2'></script>
 		<script type='text/javascript' src="lib/feedbform.js"></script>
 		<script type='text/javascript' src="lib/javascript.js"></script>
 

@@ -156,7 +156,7 @@ var App = (function() {
 		this.query = function(query_str, params) {
 			$.extend(pars, params || {});
 			$.extend(pars, {sone: query_str});
-			return $.getJSON("http://eki.ee/elgar/ekeel/related.cgi", pars); //return promise
+			return $.getJSON("http://www.eki.ee/elgar/ekeel/related.cgi", pars); //return promise
 		};
 	};
 
@@ -1977,24 +1977,24 @@ var App = (function() {
 		resultCategories: {
 			c_qs: {h: 'ÕS', col: 1, grps: {
 				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
-				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://eki.ee/dict/qs/index.cgi?Q='} 
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://www.eki.ee/dict/qs/index.cgi?Q='}
 			}},
 			c_def: {h: 'Seletused', col: 1, grps: {
-				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://eki.ee/dict/ekss/index.cgi?Q='}
+				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://www.eki.ee/dict/ekss/index.cgi?Q='}
 			}},
 			c_vsl: {h: 'Võõrsõnad', col: 1, grps: {
-				vsl: {h: 'Võõrsõnade leksikon', res: ['vsl'], cview: RGTyyp, url: 'http://eki.ee/dict/vsl/index.cgi?Q='}
+				vsl: {h: 'Võõrsõnade leksikon', res: ['vsl'], cview: RGTyyp, url: 'http://www.eki.ee/dict/vsl/index.cgi?Q='}
 			}},
 			c_rel: {h: 'Seotud sõnad', col: 1, grps: {
-				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://eki.ee/dict/synonyymid/index.cgi?Q='},
+				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://www.eki.ee/dict/synonyymid/index.cgi?Q='},
 				thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
 			}},
 			c_ety: {h: 'Etümoloogia', col: 1, grps: {
-				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://eki.ee/dict/ety/index.cgi?Q='}
+				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://www.eki.ee/dict/ety/index.cgi?Q='}
 			}},
 			c_trans: {h: 'Tõlkevasted', col: 1, grps: {
-				ies: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://eki.ee/dict/ies/index.cgi?Q='},
-				evs: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://eki.ee/dict/evs/index.cgi?Q='}
+				ies: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://www.eki.ee/dict/ies/index.cgi?Q='},
+				evs: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://www.eki.ee/dict/evs/index.cgi?Q='}
 			}},
 			c_sugg: {h: 'Soovitused', col: 2, grps: {
 				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
