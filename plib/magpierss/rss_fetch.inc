@@ -190,8 +190,9 @@ function fetch_rss ($url) {
                 elseif ( $resp->error ) {
                     # compensate for Snoopy's annoying habbit to tacking
                     # on '\n'
-                    $http_error = substr($resp->error, 0, -2); 
-                    $errormsg .= "(HTTP Error: $http_error)";
+                    $http_error = substr($resp->error, 0, -2);
+                    //$errormsg .= "(HTTP Error: $http_error) [{$resp->error}]";
+                    $errormsg .= "[{$resp->error}] mpfto:". MAGPIE_FETCH_TIME_OUT;
                 }
                 else {
                     $errormsg .=  "(HTTP Response: " . $resp->response_code .')';
@@ -384,7 +385,7 @@ function init () {
     }
     
     if ( !defined('MAGPIE_FETCH_TIME_OUT') ) {
-        define('MAGPIE_FETCH_TIME_OUT', 5); // 5 second timeout
+        define('MAGPIE_FETCH_TIME_OUT', 2); // 5 second timeout
     }
     
     // use gzip encoding to fetch rss files if supported?

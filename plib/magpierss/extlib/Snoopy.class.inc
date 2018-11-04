@@ -75,7 +75,7 @@ class Snoopy
 	var	$response_code	=	"";					// response code returned from server
 	var	$headers		=	array();			// headers returned from server sent here
 	var	$maxlength		=	500000;				// max return data length (body)
-	var $read_timeout	=	0;					// timeout on read operations, in seconds
+	var $read_timeout	=	3;					// timeout on read operations, in seconds
 												// supported only since PHP 4 Beta 4
 												// set to 0 to disallow timeouts
 	var $timed_out		=	false;				// if a read operation timed out
@@ -111,7 +111,8 @@ class Snoopy
 	var $_framedepth	=	0;					// increments on frame depth
 	
 	var $_isproxy		=	false;				// set if using a proxy server
-	var $_fp_timeout	=	30;					// timeout for socket connection
+	//var $_fp_timeout	=	30;					// timeout for socket connection
+	var $_fp_timeout	=	4;					// timeout for socket connection
 
 /*======================================================================*\
 	Function:	fetch
