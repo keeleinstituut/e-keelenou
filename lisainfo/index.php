@@ -1,12 +1,13 @@
 <?php
 
-error_reporting(E_ALL);
+error_reporting(E_ALL); //TODO
 include_once('../plib/simple_html_dom.php');
 
 if (!$module = @$_GET['m']) {
 	die('no module');
 }
 
+$domain_name = $_SERVER['SERVER_NAME'];
 $html = file_get_html("$module.html");
 
 //$e_start_content = $html->find("div#start_content", 0);
@@ -117,11 +118,11 @@ $html = file_get_html("$module.html");
 					<ul id="top-bar">
 						<li class="tools"><a href="#">Keeletööriistad</a>
 							<ul class="submenu">
-								<li><a href="http://kn.eki.ee/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
-								<li><a href="http://kn.eki.ee/tool/?m=silbitaja">Silbitus</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=silbitaja">Silbitus</a></li>
 								<li><a href="/tool/?m=lausestaja">Lausestamine</a></li>
 								<li><a href="/tool/?m=emo">Emotsioonidetektor</a></li>
-								<li><a href="http://kn.eki.ee/tool/?m=speech">Kõnesüntees</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=speech">Kõnesüntees</a></li>
 								<li><a href="/tool/?m=sonastik">Oma sõnastik</a></li>
 							</ul>
 						</li>
@@ -161,7 +162,7 @@ $html = file_get_html("$module.html");
 						<!--<li><a href="keelenoust.html">E-keelenõust</a></li> -->
 
 					</ul>
-					<form id="paring" class="topBar" action="/" method="get">
+					<form id="paring" class="topBar" action="https://<?php echo $domain_name ?>/" method="get">
 						<input data-bind="value: app.queryText" onblur="if (this.value == '') {this.value = 'Sisesta siia sõna või väljend';}" 
 							onfocus="if (this.value == 'Sisesta siia sõna või väljend') {this.value = '';}" id="Q" name="Q" type="text" 
 							placeholder="Sisesta siia sõna või väljend" />

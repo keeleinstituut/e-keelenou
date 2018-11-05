@@ -6,7 +6,9 @@ include_once 'plib/redirect.php';
 	/* uudisvoo teegi laadimine ja seadistamine kasutamaks utf8 */
 	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	require_once('plib/magpierss/rss_fetch.inc');
-	
+
+$domain_name = $_SERVER['SERVER_NAME'];
+
 ?><!DOCTYPE html>
 <html>
 	<head>
@@ -475,11 +477,11 @@ include_once 'plib/redirect.php';
 						<ul id="top-bar">
 							<li class="tools"><a href="#">Keeletööriistad</a>
 								<ul class="submenu">
-									<li><a href="http://kn.eki.ee/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
-									<li><a href="http://kn.eki.ee/tool/?m=silbitaja">Silbitus</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=silbitaja">Silbitus</a></li>
 									<li><a href="/tool/?m=lausestaja">Lausestamine</a></li>
 									<li><a href="/tool/?m=emo">Emotsioonidetektor</a></li>
-									<li><a href="http://kn.eki.ee/tool/?m=speech">Kõnesüntees</a></li>
+								<li><a href="http://<?php echo $domain_name ?>/tool/?m=speech">Kõnesüntees</a></li>
 									<li><a href="/tool/?m=sonastik">Oma sõnastik</a></li>
 								</ul>
 							</li>
