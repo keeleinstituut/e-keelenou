@@ -63,20 +63,20 @@
 					furl: ko.pureComputed(function() {
 						var qt = app.queryText();
 						var q = '';
-						dbg('queryText', qt)
+						dbg('queryText', qt);
 						if (qt.length > 0) {
 							q= '&Q='+ app.queryText();
 						}
-						return 'http://kn.eki.ee/?frgs='+ selected_RGs().join(',') + q;
+						return '//kn.eki.ee/?frgs='+ selected_RGs().join(',') + q;
 					}),
 					surl: ko.pureComputed(function() {
 						var qt = app.queryText();
 						var q = '';
-						dbg('queryText', qt)
+						dbg('queryText', qt);
 						if (qt.length > 0) {
 							q= '&Q='+ app.queryText();
 						}
-						return 'http://kn.eki.ee/?srgs='+ selected_RGs().join(',') + q;
+						return '//kn.eki.ee/?srgs='+ selected_RGs().join(',') + q;
 					}),
 					linksVisible: ko.observable(false),
 					toggleLinksVisible: function(argument) {
@@ -127,18 +127,18 @@
 					
 					
 					<!--	
-							+	<a href="http://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>
-							+	<a href="http://www.eki.ee/dict/ekss/">EKSS</a> = Eesti keele seletav sõnaraamat 1-6 (2009)<br/>
-							+	<a href="http://www.eki.ee/dict/synonyymid/">Sünonüümisõnastik</a> (2007)<br/>
-							+	<a href="http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et">Eesti Wordnet</a><br/>
-							+	<a href="http://www.eki.ee/dict/ety/">Eesti etümoloogiasõnaraamat</a> (2012)<br/>
-							+	<a href="http://www.eki.ee/dict/ies/">Inglise-eesti masintõlkesõnastik</a><br/>
-							+	<a href="http://www.eki.ee/dict/evs/">Eesti-vene sõnaraamat 1-5</a> (1997-2009)<br/>
-							++	<a href="http://www.eki.ee/knab/">KNAB</a> = Eesti Keele Instituudi kohanimeandmebaas<br/>
-							+	<a href="http://www.eki.ee/dict/ametnik/">Ametniku soovitussõnastik</a> (2014)<br/>
-							+	<a href="http://keeleabi.eki.ee/?leht=4">EKI keelenõuande Keelenõuvakk</a><br/>
-							+	<a href="http://www.eki.ee/books/ekk09/">EKKR</a> = Eesti keele käsiraamat (3. trükk 2007)<br/>
-							+	<a href="http://et.wikipedia.org/">Vikipeedia</a> = Eesti Vikipeedia<br/>
+							+	<a href="https://www.eki.ee/dict/qs/">ÕS 2013</a> = Eesti õigekeelsussõnaraamat ÕS 2013 (2013)<br/>
+							+	<a href="https://www.eki.ee/dict/ekss/">EKSS</a> = Eesti keele seletav sõnaraamat 1-6 (2009)<br/>
+							+	<a href="https://www.eki.ee/dict/synonyymid/">Sünonüümisõnastik</a> (2007)<br/>
+							+	<a href="https://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et">Eesti Wordnet</a><br/>
+							+	<a href="https://www.eki.ee/dict/ety/">Eesti etümoloogiasõnaraamat</a> (2012)<br/>
+							+	<a href="https://www.eki.ee/dict/ies/">Inglise-eesti masintõlkesõnastik</a><br/>
+							+	<a href="https://www.eki.ee/dict/evs/">Eesti-vene sõnaraamat 1-5</a> (1997-2009)<br/>
+							++	<a href="https://www.eki.ee/knab/">KNAB</a> = Eesti Keele Instituudi kohanimeandmebaas<br/>
+							+	<a href="https://www.eki.ee/dict/ametnik/">Ametniku soovitussõnastik</a> (2014)<br/>
+							+	<a href="https://keeleabi.eki.ee/?leht=4">EKI keelenõuande Keelenõuvakk</a><br/>
+							+	<a href="https://www.eki.ee/books/ekk09/">EKKR</a> = Eesti keele käsiraamat (3. trükk 2007)<br/>
+							+	<a href="https://et.wikipedia.org/">Vikipeedia</a> = Eesti Vikipeedia<br/>
 					-->
 					
 				</div>

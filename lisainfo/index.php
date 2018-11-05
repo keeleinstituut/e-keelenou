@@ -32,7 +32,7 @@ $html = file_get_html("$module.html");
 	<link rel="stylesheet" href="../css/style.css" />
 	<link rel="stylesheet" href="../css/cleanstickyfooter.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="../css/tool.css" />
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
 	<script type='text/javascript' src="../lib/myshim.js"></script>
 	<script type='text/javascript' src="../lib/feedbform.js"></script>
 	<script type='text/javascript' src="../lib/javascript.js"></script>
@@ -117,11 +117,11 @@ $html = file_get_html("$module.html");
 					<ul id="top-bar">
 						<li class="tools"><a href="#">Keeletööriistad</a>
 							<ul class="submenu">
-								<li><a href="/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
-								<li><a href="/tool/?m=silbitaja">Silbitus</a></li>
+								<li><a href="http://kn.eki.ee/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
+								<li><a href="http://kn.eki.ee/tool/?m=silbitaja">Silbitus</a></li>
 								<li><a href="/tool/?m=lausestaja">Lausestamine</a></li>
 								<li><a href="/tool/?m=emo">Emotsioonidetektor</a></li>
-								<li><a href="/tool/?m=speech">Kõnesüntees</a></li>
+								<li><a href="http://kn.eki.ee/tool/?m=speech">Kõnesüntees</a></li>
 								<li><a href="/tool/?m=sonastik">Oma sõnastik</a></li>
 							</ul>
 						</li>
@@ -149,7 +149,7 @@ $html = file_get_html("$module.html");
 							<ul class="submenu">
 								<li><a href="/lisainfo/?m=keelenoust">Keelenõust</a></li>
 								<li><a href="/lisainfo/?m=allikad">Allikate kirjeldus</a></li>
-								<li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
+								<li><a href="https://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
 								<!--
 								<li><a href="/lisainfo/?m=rakendusliidesed">Rakendusliidesed</a></li>
 								
@@ -170,9 +170,9 @@ $html = file_get_html("$module.html");
 						<input type="hidden" data-bind="value: app.testText" />
 					</form>
 					<div class="social-buttons">
-						<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
-						<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
-						<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
+						<a class="social opacity" style="clear: both; margin-right:0;" href="https://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
+						<a class="social opacity" href="https://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
+						<a class="social opacity" href="https://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
 					</div>
 					<div id="menu-wrapper">
 						<ul id="menu">
@@ -217,7 +217,7 @@ $html = file_get_html("$module.html");
 					<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
 					<form id="f_feedback_dev" method="POST" data-addr="lang"
 						  data-bind="submit: app.forms.sendForm"
-						  action="http://kn.eki.ee/kn/spam.php">
+						  action="https://kn.eki.ee/kn/spam.php">
 						<input type="hidden" name="checkme" value="formmail">
 						<div class="left small">
 							<label for="ffd_nimi">Nimi</label>
@@ -256,7 +256,7 @@ $html = file_get_html("$module.html");
 					<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
 					<form id="f_feedback_lang" method="POST" data-addr="lang"
 						  data-bind="submit: app.forms.sendForm"
-						  action="http://kn.eki.ee/kn/spam.php">
+						  action="https://kn.eki.ee/kn/spam.php">
 						<input type="hidden" name="checkme" value="formmail">
 						<div class="left small">
 							<label for="ffl_nimi">Nimi</label>
@@ -300,7 +300,7 @@ $html = file_get_html("$module.html");
 				<div id="footer_l">
 					<div id="footer_r">
 						<p id="syndicate">
-							<a href="http://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
+							<a href="https://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
 							Roosikrantsi 6, 10119 Tallinn.
 						</p>
 						<p id="power_by">

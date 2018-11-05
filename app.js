@@ -131,7 +131,7 @@ var App = (function() {
 			$.extend(pars, {u: app.uid});
 			$.extend(pars, params || {});
 			$.extend(pars, {Q: query_str});
-			return $.getJSON("http://kn.eki.ee/stl.php", pars); //return promise
+			return $.getJSON("//kn.eki.ee/stl.php", pars); //return promise
 		};
 	};
 
@@ -156,7 +156,7 @@ var App = (function() {
 		this.query = function(query_str, params) {
 			$.extend(pars, params || {});
 			$.extend(pars, {sone: query_str});
-			return $.getJSON("http://www.eki.ee/elgar/ekeel/related.cgi", pars); //return promise
+			return $.getJSON("https://www.eki.ee/elgar/ekeel/related.cgi", pars); //return promise
 		};
 	};
 
@@ -180,7 +180,7 @@ var App = (function() {
 		 * @return 
 		 */
 		this.init = function() {
-			res = $.getJSON("http://www.eki.ee/ekeeleabi/api.cgi", pars);
+			res = $.getJSON("https://www.eki.ee/ekeeleabi/api.cgi", pars);
 		};
 		
 		/**
@@ -194,7 +194,7 @@ var App = (function() {
 		this.query = function(query_str, params) {
 			$.extend(pars, params || {});
 			$.extend(pars, {Q: query_str});
-			return $.getJSON("http://www.eki.ee/ekeeleabi/api.cgi", pars); //return promise
+			return $.getJSON("https://www.eki.ee/ekeeleabi/api.cgi", pars); //return promise
 		};
 	};
 	
@@ -219,7 +219,7 @@ var App = (function() {
 			$.extend(pars, params || {});
 			$.extend(pars, {Q: query_str});
 			
-			var p = $.getJSON("http://www.eki.ee/ekeeleabi/o_test.cgi", pars);
+			var p = $.getJSON("https://www.eki.ee/ekeeleabi/o_test.cgi", pars);
 			
 			return p.then(function processNoResults(data) {
 				if (data['lyhivaade'].length === 1 && 
@@ -268,7 +268,7 @@ var App = (function() {
 				data: params,
 				xhrFields: {
 					'withCredentials': true, // needed for Cross-Origin Requests
-					'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
+					'User-Agent': 'EKIbot/0.9 (+https://kn.eki.ee/)' // API bot best practices
 				}
 			});
 			
@@ -318,7 +318,7 @@ var App = (function() {
 				data: params,
 				xhrFields: {
 					'withCredentials': true, // needed for Cross-Origin Requests
-					'User-Agent': 'EKIbot/0.9 (+http://kn.eki.ee/)' // API bot best practices 
+					'User-Agent': 'EKIbot/0.9 (+https://kn.eki.ee/)' // API bot best practices
 				}
 			});
 			
@@ -825,7 +825,7 @@ var App = (function() {
 		self.qry_time = ko.observable(0);
 		self.qry_str = ko.observable('');
 		self.loading = ko.observable(false);
-		self.src_url_static_part = ko.observable('http://eki.ee/dict/qs/index.cgi?Q='); //default
+		self.src_url_static_part = ko.observable('https://www.eki.ee/dict/qs/index.cgi?Q='); //default
 		self.src_url = ko.pureComputed(function() {
 			return self.src_url_static_part() + URI.encode(self.qry_str());
 		});
@@ -1650,7 +1650,7 @@ var App = (function() {
 				}
 				
 				if (href.slice(0, 15) == 'index.php?link=') {
-					$t.attr('href', "http://www.eki.ee/books/ekk09/" + href);
+					$t.attr('href', "https://www.eki.ee/books/ekk09/" + href);
 					$t.attr('target', 'ekkr3456');
 				} else {
 					//korrasta jutumärkides täislingid?
@@ -1694,7 +1694,7 @@ var App = (function() {
 				//dbg(href, href.slice(0,10))
 
 				if (src.slice(0, 7) == 'pildid/') {
-					$t.attr('src', "http://www.eki.ee/books/ekk09/" + src);
+					$t.attr('src', "https://www.eki.ee/books/ekk09/" + src);
 					$t.attr('width', '100%');
 				}
 
@@ -1845,46 +1845,46 @@ var App = (function() {
 		 */
 		RG_sources: [
 			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
-				url: "http://www.eki.ee/dict/qs/", active: true
+				url: "https://www.eki.ee/dict/qs/", active: true
 			},
 			{id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
-				url: "http://www.eki.ee/dict/ekss/", active: true
+				url: "https://www.eki.ee/dict/ekss/", active: true
 			},
 			{id: 'vsl', cls: SourceOTest, abbr: 'VSL', name: 'Võõrsõnade leksikon (2015)',
-				url: "http://www.eki.ee/dict/vsl/", active: true
+				url: "https://www.eki.ee/dict/vsl/", active: true
 			},
 			{id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk',
-				url: "http://keeleabi.eki.ee/?leht=4", active: true
+				url: "https://keeleabi.eki.ee/?leht=4", active: true
 			},
 			{id: 'ekkr', cls: SourceOTest, abbr: 'EKKR', name: 'Eesti keele käsiraamat (3. trükk 2007)',
-				url: "http://www.eki.ee/books/ekk09/", active: true
+				url: "https://www.eki.ee/books/ekk09/", active: true
 			},
 			{id: 'ies', cls: SourceOTest, abbr: null, name: 'Inglise-eesti masintõlkesõnastik',
-				url: "http://www.eki.ee/dict/ies/", active: true
+				url: "https://www.eki.ee/dict/ies/", active: true
 			},
 			{id: 'evs', cls: SourceOTest, abbr: null, name: 'Eesti-vene sõnaraamat 1-5 (1997-2009)',
-				url: "http://www.eki.ee/dict/evs/", active: true
+				url: "https://www.eki.ee/dict/evs/", active: true
 			},
 			{id: 'knabee', cls: SourceOTest, abbr: 'KNAB', name: 'Eesti kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
-				url: "http://www.eki.ee/knab/", active: true
+				url: "https://www.eki.ee/knab/", active: true
 			},
 			{id: 'knabmm', cls: SourceOTest, abbr: 'KNAB', name: 'Maailma kohanimed - Eesti Keele Instituudi kohanimeandmebaas',
-				url: "http://www.eki.ee/knab/", active: true
+				url: "https://www.eki.ee/knab/", active: true
 			},
 			{id: 'syn', cls: SourceOTest, abbr: null, name: 'Sünonüümisõnastik (2007)',
-				url: "http://www.eki.ee/dict/synonyymid/", active: true
+				url: "https://www.eki.ee/dict/synonyymid/", active: true
 			},
 			{id: 'thes', cls: SourceThesAPI, abbr: null, name: 'Eesti Wordnet',
-				url: "http://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et", active: true
+				url: "https://www.cl.ut.ee/ressursid/teksaurus/index.php?lang=et", active: true
 			},
 			{id: 'ass', cls: SourceEknAPI, abbr: null, name: 'Ametniku soovitussõnastik',
-				url: "http://www.eki.ee/dict/ametnik/", active: true
+				url: "https://www.eki.ee/dict/ametnik/", active: true
 			},
 			{id: 'ety', cls: SourceEknAPI, abbr: null, name: 'Eesti etümoloogiasõnaraamat (2012)',
-				url: "http://www.eki.ee/dict/ety/", active: true
+				url: "https://www.eki.ee/dict/ety/", active: true
 			},
 			{id: 'WikiEst', cls: SourceWikiEstAPI, abbr: 'Vikipeedia', name: 'Eesti Vikipeedia',
-				url: "http://et.wikipedia.org/", active: false
+				url: "https://et.wikipedia.org/", active: false
 			}
 		],
 		getInitialRG_IDs: function () {
@@ -1895,7 +1895,7 @@ var App = (function() {
 				if (rgss[i].active) {
 					ids.push(rgss[i].id);
 				}
-			};
+			}
 			return ids;
 		},
 		getAllRG_IDs: function () {
@@ -1904,7 +1904,7 @@ var App = (function() {
 			var ids = [];
 			for (var i=0; i< rgss.length; i++) {
 				ids.push(rgss[i].id);
-			};
+			}
 			return ids;
 		},
 		/**
@@ -1977,36 +1977,36 @@ var App = (function() {
 		resultCategories: {
 			c_qs: {h: 'ÕS', col: 1, grps: {
 				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
-				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'http://www.eki.ee/dict/qs/index.cgi?Q='}
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
 			}},
 			c_def: {h: 'Seletused', col: 1, grps: {
-				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'http://www.eki.ee/dict/ekss/index.cgi?Q='}
+				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'https://www.eki.ee/dict/ekss/index.cgi?Q='}
 			}},
 			c_vsl: {h: 'Võõrsõnad', col: 1, grps: {
-				vsl: {h: 'Võõrsõnade leksikon', res: ['vsl'], cview: RGTyyp, url: 'http://www.eki.ee/dict/vsl/index.cgi?Q='}
+				vsl: {h: 'Võõrsõnade leksikon', res: ['vsl'], cview: RGTyyp, url: 'https://www.eki.ee/dict/vsl/index.cgi?Q='}
 			}},
 			c_rel: {h: 'Seotud sõnad', col: 1, grps: {
-				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'http://www.eki.ee/dict/synonyymid/index.cgi?Q='},
-				thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'http://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
+				syn: {h: 'Sünonüümid', res: ['syn'], cview: RGLinker, url: 'https://www.eki.ee/dict/synonyymid/index.cgi?Q='},
+				thes: {h: 'Eesti Wordnet', res: ['thes'], cview: RGThes, url: 'https://www.cl.ut.ee/ressursid/teksaurus/teksaurus.cgi.et?otsi='}
 			}},
 			c_ety: {h: 'Etümoloogia', col: 1, grps: {
-				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'http://www.eki.ee/dict/ety/index.cgi?Q='}
+				ety: {h: 'Eesti etümoloogiasõnaraamat', res: ['ety'], cview: RG_Ekn, url: 'https://www.eki.ee/dict/ety/index.cgi?Q='}
 			}},
 			c_trans: {h: 'Tõlkevasted', col: 1, grps: {
-				ies: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'http://www.eki.ee/dict/ies/index.cgi?Q='},
-				evs: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'http://www.eki.ee/dict/evs/index.cgi?Q='}
+				ies: {h: 'Inglise-eesti masintõlkesõnastik', res: ['ies'], cview: RGLinker, url: 'https://www.eki.ee/dict/ies/index.cgi?Q='},
+				evs: {h: 'Eesti-vene sõnaraamat', res: ['evs'], cview: RGLinker, url: 'https://www.eki.ee/dict/evs/index.cgi?Q='}
 			}},
 			c_sugg: {h: 'Soovitused', col: 2, grps: {
-				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'http://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
-				//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=0&otsi='}
-				vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'http://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
+				ass: {h: 'Ametniku soovitussõnastik', res: ['ass'], cview: RG_Ekn_Linker, url: 'https://www.eki.ee/dict/ametnik/index.cgi?F=M&C06=et&Q='},
+				//vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'https://keeleabi.eki.ee/index.php?leht=0&otsi='}
+				vakk: {h: 'Keelenõuvakk', res: ['vakk'], cview: RGVakk, url: 'https://keeleabi.eki.ee/index.php?leht=4&act=1&otsi='}
 			}},
 			c_knab: {h: 'Kohanimed', col: 1, grps: {
-				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
-				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'http://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
+				knabee: {h: 'Eesti kohanimed', res: ['knabee'], url: 'https://www.eki.ee/cgi-bin/mkn8.cgi?form=ee&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='},
+				knabmm: {h: 'Maailma kohanimed', res: ['knabmm'], url: 'https://www.eki.ee/cgi-bin/mkn8.cgi?form=mm&lang=et&of=tb&f2v=Y&f3v=Y&f10v=Y&f14v=Y&kohanimi='}
 			}},
 			c_ekkr: {h: 'Käsiraamat', col: 2, grps: {
-				ekkr: {h: 'Eesti keele käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'http://www.eki.ee/books/ekk09/index.php?paring='}
+				ekkr: {h: 'Eesti keele käsiraamat', res: ['ekkr'], cview: RG_EKKR, url: 'https://www.eki.ee/books/ekk09/index.php?paring='}
 			}},
 			c_WikiEst: {h: 'Mujalt veebist', col: 1, grps: {
 				/*WiktionaryEst: {h: 'Eesti Vikisõnastik', res: ['WiktionaryEst'], 'lisada'},*/
@@ -2345,7 +2345,7 @@ var App = (function() {
 		 * @deprecated
 		 */
 		self.srcURL = function() {
-			return 'http://www.eki.ee/dict/qs/index.cgi?F=M&Q=test';
+			return 'https://www.eki.ee/dict/qs/index.cgi?F=M&Q=test';
 		};
 		
 		/**

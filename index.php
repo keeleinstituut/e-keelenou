@@ -14,7 +14,7 @@ include_once 'plib/redirect.php';
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
 		<meta name="eknid" content="<?php echo $uid; ?>">
-	        <link rel="alternate" type="application/rss+xml" title="EKI keelenõuannete uudisvoog" href="http://keeleabi.eki.ee/feeds/nouanded.php">
+	        <link rel="alternate" type="application/rss+xml" title="EKI keelenõuannete uudisvoog" href="https://keeleabi.eki.ee/feeds/nouanded.php">
 	        <link rel="search" type="application/opensearchdescription+xml" title="EKI e-keelenõu" href="eki_kn.xml">
 		<!--script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js'></script-->
 		<script type='text/javascript' src='lib/jquery.js'></script>
@@ -37,7 +37,7 @@ include_once 'plib/redirect.php';
 
 		<script type='text/javascript' src="lib/jquery.cookie.min.js"></script>
 		
-		<link rel="stylesheet" type="text/css" href="http://www.eki.ee/ekeeleabi/css/ressursid.css?v=1.0.1" />
+		<link rel="stylesheet" type="text/css" href="https://www.eki.ee/ekeeleabi/css/ressursid.css?v=1.0.1" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />
 		
 		<script type='text/javascript' src="lib/myshim.js"></script>
@@ -475,11 +475,11 @@ include_once 'plib/redirect.php';
 						<ul id="top-bar">
 							<li class="tools"><a href="#">Keeletööriistad</a>
 								<ul class="submenu">
-									<li><a href="/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
-									<li><a href="/tool/?m=silbitaja">Silbitus</a></li>
+									<li><a href="http://kn.eki.ee/tool/?m=morfoloogia">Morfoloogiline analüüs</a></li>
+									<li><a href="http://kn.eki.ee/tool/?m=silbitaja">Silbitus</a></li>
 									<li><a href="/tool/?m=lausestaja">Lausestamine</a></li>
 									<li><a href="/tool/?m=emo">Emotsioonidetektor</a></li>
-									<li><a href="/tool/?m=speech">Kõnesüntees</a></li>
+									<li><a href="http://kn.eki.ee/tool/?m=speech">Kõnesüntees</a></li>
 									<li><a href="/tool/?m=sonastik">Oma sõnastik</a></li>
 								</ul>
 							</li>
@@ -507,7 +507,7 @@ include_once 'plib/redirect.php';
 								<ul class="submenu">
 									<li><a href="/lisainfo/?m=keelenoust">E-keelenõu portaalist</a></li>
 									<li><a href="/lisainfo/?m=allikad">Allikate valimine</a></li>
-									<li><a href="http://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
+									<li><a href="https://keeleabi.eki.ee/?leht=8">Nõuandearhiiv</a></li>
 									<!--
 									<li><a href="/lisainfo/?m=rakendusliidesed">Rakendusliidesed</a></li>
 
@@ -529,9 +529,9 @@ include_once 'plib/redirect.php';
 								   src="gr/icon/1433309672_gear.svg" /></a>
 						</form>
 						<div class="social-buttons">
-							<a class="social opacity" style="clear: both; margin-right:0;" href="http://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
-							<a class="social opacity" href="http://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
+							<a class="social opacity" style="clear: both; margin-right:0;" href="https://www.eki.ee/"><img src="/gr/facebook.png" alt="facebook"/></a>
+							<a class="social opacity" href="https://www.eki.ee/"><img src="/gr/twitter.png" alt="twitter"/></a>
+							<a class="social opacity" href="https://www.eki.ee/"><img style="padding-top: 3px;" src="/gr/email.png" alt="email"/></a>
 						</div>
 						<div id="menu-wrapper">
 							<ul id="menu">
@@ -561,12 +561,12 @@ include_once 'plib/redirect.php';
 								<div class="boxContent">
 									<div class="rGrpCont">
 										<div class="result">
-											<p><a href="http://keeleabi.eki.ee/">Keelenõuande</a> telefonil 631 3731 vastatakse tööpäeviti kl 9–12 ja 13–17.<br>
+											<p><a href="https://keeleabi.eki.ee/">Keelenõuande</a> telefonil 631 3731 vastatakse tööpäeviti kl 9–12 ja 13–17.<br>
 												Keelenõu saab ka meili teel (kasuta paremal olevat nuppu vormi avamiseks) või kirjaga aadressil Eesti Keele Instituut, Roosikrantsi 6, 10119 Tallinn.
 
 											</p>
 											<p>
-												<a style="color: #ff6000;" href="http://keeleabi.eki.ee/">Eesti Keele Instituudi Keelenõuanne (keeleabi.eki.ee)</a>
+												<a style="color: #ff6000;" href="https://keeleabi.eki.ee/">Eesti Keele Instituudi Keelenõuanne (keeleabi.eki.ee)</a>
 												<br/>
 												<br/>
 											</p>
@@ -590,7 +590,7 @@ include_once 'plib/redirect.php';
 											$rss_limit = 6;
 											
 											echo '<ul>';
-											$rss = fetch_rss('http://keeleabi.eki.ee/feeds/nouanded.php?number='.urlencode($rss_limit));
+											$rss = fetch_rss('https://keeleabi.eki.ee/feeds/nouanded.php?number='.urlencode($rss_limit));
 											foreach ($rss->items as $item) {
 												$title = $item['title'];
 												$url   = $item['link'];
@@ -727,7 +727,7 @@ include_once 'plib/redirect.php';
 						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
 						<form id="f_feedback_dev" method="POST" data-addr="lang"
 							data-bind="submit: app.forms.sendForm"
-							action="http://kn.eki.ee/kn/spam.php">
+							action="//kn.eki.ee/kn/spam.php">
 							<input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffd_nimi">Nimi</label>
@@ -766,7 +766,7 @@ include_once 'plib/redirect.php';
 						<h2>Küsi Eesti Keele Instituudi keelenõuandjatelt.</h2>
 						<form id="f_feedback_lang" method="POST" data-addr="lang"
 						  data-bind="submit: app.forms.sendForm"
-						  action="http://kn.eki.ee/kn/spam.php">
+						  action="//kn.eki.ee/kn/spam.php">
 							<input type="hidden" name="checkme" value="formmail">
 							<div class="left small">
 								<label for="ffl_nimi">Nimi</label>
@@ -810,7 +810,7 @@ include_once 'plib/redirect.php';
 					<div id="footer_l">
 						<div id="footer_r">
 							<p id="syndicate">
-								<a href="http://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
+								<a href="https://portaal.eki.ee/">Eesti Keele Instituut</a><br/>
 								Roosikrantsi 6, 10119 Tallinn.
 							</p>
 							<p id="power_by">

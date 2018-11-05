@@ -180,7 +180,7 @@ EKIToolkit.prototype.modules.Lausestaja = function(EKI, config) {
 		jQuery.ajax({
 			type: "POST",
 			//~ async: true,
-			url: 'http://www.eki.ee/elgar/ekeel/sentence.cgi',
+			url: 'https://www.eki.ee/elgar/ekeel/sentence.cgi',
 			//~ contentType: 'application/json; charset=utf-8',
 			dataType: "json",
 			//~ data: JSON.stringify(config),
