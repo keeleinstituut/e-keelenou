@@ -35,7 +35,7 @@ $html = file_get_html("$module.html");
 	<link rel="stylesheet" href="../css/tool.css" />
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
 	<script type='text/javascript' src="../lib/myshim.js"></script>
-	<script type='text/javascript' src="../lib/feedbform.js"></script>
+	<script type='text/javascript' src="../lib/feedbform.js?v=1.0.3"></script>
 	<script type='text/javascript' src="../lib/javascript.js"></script>
 <?php
 /*
