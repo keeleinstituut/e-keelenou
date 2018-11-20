@@ -46,7 +46,7 @@ $domain_name = $_SERVER['SERVER_NAME'];
 		<script type='text/javascript' src='lib/harray.js'></script>
 		<script type='text/javascript' src='lib/dictarr.js'></script>
 
-		<script type='text/javascript' src='app.js?v=1.0.4'></script>
+		<script type='text/javascript' src='app.js?v=1.0.5'></script>
 		<script type='text/javascript' src="lib/feedbform.js?v=1.0.3"></script>
 		<script type='text/javascript' src="lib/javascript.js"></script>
 

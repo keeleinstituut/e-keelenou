@@ -1848,7 +1848,7 @@ var App = (function() {
 		 * või [{id: RGid, ...allika info...}]
 		 */
 		RG_sources: [
-			{id: 'qs', cls: SourceOTest, abbr: 'ÕS 2018', name: 'Eesti õigekeelsussõnaraamat ÕS 2018 (2018)',
+			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2018', name: 'Eesti õigekeelsussõnaraamat ÕS 2018 (2018)',
 				url: "https://www.eki.ee/dict/qs/", active: true
 			},
 			//{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
@@ -1984,7 +1984,7 @@ var App = (function() {
 		 */
 		resultCategories: {
 			c_qs: {h: 'ÕS', col: 1, grps: {
-				qs: {h: 'Eesti õigekeelsussõnaraamat ÕS 2018', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
+				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2018', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
 				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
 				//qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
 			}},
