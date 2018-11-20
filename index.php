@@ -39,14 +39,14 @@ $domain_name = $_SERVER['SERVER_NAME'];
 
 		<script type='text/javascript' src="lib/jquery.cookie.min.js"></script>
 		
-		<link rel="stylesheet" type="text/css" href="https://www.eki.ee/ekeeleabi/css/ressursid.css?v=1.0.1" />
+		<link rel="stylesheet" type="text/css" href="https://www.eki.ee/ekeeleabi/css/ressursid.css?v=1.0.2" />
 		<link rel="stylesheet" type="text/css" href="css/cleanstickyfooter.css" media="screen" charset="utf-8" />
 		
 		<script type='text/javascript' src="lib/myshim.js"></script>
 		<script type='text/javascript' src='lib/harray.js'></script>
 		<script type='text/javascript' src='lib/dictarr.js'></script>
 
-		<script type='text/javascript' src='app.js?v=1.0.3'></script>
+		<script type='text/javascript' src='app.js?v=1.0.4'></script>
 		<script type='text/javascript' src="lib/feedbform.js?v=1.0.3"></script>
 		<script type='text/javascript' src="lib/javascript.js"></script>
 

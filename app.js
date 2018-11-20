@@ -1337,6 +1337,10 @@ var App = (function() {
 				if (href.slice(0,9) == 'index.cgi') {
 					$t.attr('href', href.substr(9));
 				}
+				if (href.slice(0,6) == '/dict/') {
+					$t.attr('href', '//www.eki.ee' + href);
+					$t.attr('target', '_blank');
+				}
 			});
 
 			var $span = $('#'+ id +' .result span.sarnane');
@@ -1844,9 +1848,12 @@ var App = (function() {
 		 * või [{id: RGid, ...allika info...}]
 		 */
 		RG_sources: [
-			{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+			{id: 'qs', cls: SourceOTest, abbr: 'ÕS 2018', name: 'Eesti õigekeelsussõnaraamat ÕS 2018 (2018)',
 				url: "https://www.eki.ee/dict/qs/", active: true
 			},
+			//{id: 'qs13', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)',
+			//	url: "https://www.eki.ee/dict/qs/", active: true
+			//},
 			{id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)',
 				url: "https://www.eki.ee/dict/ekss/", active: true
 			},
@@ -1912,7 +1919,8 @@ var App = (function() {
 		 * @todo
 		 */
 		sources: {
-			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)'},
+			qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2018', name: 'Eesti õigekeelsussõnaraamat ÕS 2018 (2018)'},
+			//qs: {id: 'qs', cls: SourceOTest, abbr: 'ÕS 2013', name: 'Eesti õigekeelsussõnaraamat ÕS 2013 (2013)'},
 			ekss: {id: 'ekss', cls: SourceOTest, abbr: 'EKSS', name: 'Eesti keele seletav sõnaraamat 1-6 (2009)'},
 			vsl: {id: 'vsl', cls: SourceOTest, abbr: 'VSL', name: 'Võõrsõnade leksikon (2015)'},
 			vakk: {id: 'vakk', cls: SourceOTest, abbr: null, name: 'EKI keelenõuande Keelenõuvakk'},
@@ -1976,8 +1984,9 @@ var App = (function() {
 		 */
 		resultCategories: {
 			c_qs: {h: 'ÕS', col: 1, grps: {
+				qs: {h: 'Eesti õigekeelsussõnaraamat ÕS 2018', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
 				//dyn laetav css (ka ressursid.css) tahab qs13 nimelist css klassi
-				qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
+				//qs13: {h: 'Eesti õigekeelsussõnaraamat ÕS 2013', res: ['qs'], cview: RGTyyp, url: 'https://www.eki.ee/dict/qs/index.cgi?Q='}
 			}},
 			c_def: {h: 'Seletused', col: 1, grps: {
 				ekss: {h: 'Eesti keele seletav sõnaraamat', res: ['ekss'], cview: RGTyyp, url: 'https://www.eki.ee/dict/ekss/index.cgi?Q='}
