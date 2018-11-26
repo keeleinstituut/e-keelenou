@@ -736,7 +736,7 @@ $domain_name = $_SERVER['SERVER_NAME'];
 								<input type="text" name="nimi" id="ffd_nimi">
 							</div>
 							<div class="left small">
-								<label for="ffd_email">E-mail</label>
+								<label for="ffd_email">E-post</label>
 								<input type="email" name="email" id="ffd_email">
 							</div>
 							<div class="left big">
